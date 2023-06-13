@@ -12,6 +12,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import joblib
 import pickle
 import scipy.interpolate as spi
+from datetime import datetime
 
 #Summary
 
@@ -60,17 +61,16 @@ def interpolate(X,new_time,old_time=None,tii=False):
 #called before and after the prediction by the base model
 class Model(): 
     
-    def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY):
+    def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history):
         self.model = model
         self.X_T = X_T
         self.Y_T = Y_T
         self.preprocessX = preprocessX
         self.preprocessY = preprocessY
         self.postprocessY = postprocessY
+        self.sum = summary
+        self.history = history
 
-        preX_fn, preX_arg = self.preprocessX
-        preY_fn, preY_arg = self.preprocessY
-        postY_fn, postY_arg = self.postprocessY
 
     def train(self,n_epochs=100,verbose=1):
         if verbose == 1: verbose = 2 
@@ -80,7 +80,10 @@ class Model():
         Xs = preX_fn(self.X_T,*preX_arg)
         Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
-        return self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(self.X_T.n/16),validation_split=0.1)
+        history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(self.X_T.n/16),validation_split=0.1)
+        self.history.append(history)
+        self.sum += f"Trained for {n_epochs} epochs on {self.X_T.n} samples. Call obj.history[{str(len(self.history)-1)}] to see training history.\n"
+        return history
 
     def predict(self,X,return_var=False):
         preX_fn, preX_arg = self.preprocessX
@@ -107,6 +110,9 @@ class Model():
         self.X_T = self.X_T.append(X_A)
         self.Y_T = self.Y_T.append(Y_A)
 
+    def summary(self):
+        print(self.sum)
+
     def save(self,name):
         if str(name)[-4:] != '.pkl':
             name = str(name) + '.pkl'
@@ -117,16 +123,15 @@ class Model():
             'Y_T': self.Y_T,
             'preprocessX': self.preprocessX,
             'preprocessY': self.preprocessY,
-            'postprocessY': self.postprocessY
+            'postprocessY': self.postprocessY,
+            'summary': self.summary,
+            'history': self.history
         }
         
         with open(name, 'wb') as f:
             pickle.dump(data, f)
         
-def load_single(name): #Loads a model from a given pickle file
-    with open(name,'rb') as f:
-        data = pickle.load(f)
-    return Model(data['model'],ExData(data['X_T']),ExData(data['Y_T']),data['preprocessX'],data['preprocessY'],data['postprocessY'])
+
     
 
 #####################
@@ -173,8 +178,22 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
     preprocessX = (F_preX_fn,[scalerX])
     preprocessY = (F_preY_fn,[scalerY])
     postprocessY = (F_postY_fn,[scalerY])
-        
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY)
+
+    summary = f"Forward neural network created on {datetime.now().strftime('%d-%m-%Y %H:%M')}.\n\n"
+    summary += "Architecture :\n"
+    summary += f"Input shape : ({str(X_T.f)},)\n"
+    for i in range(len(HP['layers'])):
+        summary += f"Layer {str(2*i+1)} : LSTM, {str(HP['layers'][i])} cells, activation = tanh\n"
+        summary += f"Layer {str(2*i+2)} : Dropout, Rate = {str(HP['dropout_rate'])}\n"
+    summary += f"Output Layer : Dense, {Y_T.f} neurons, activation = linear \n"
+    summary += "Call obj.model.summary() for more details on architecture (provided by keras)\n\n"
+    summary += f"Optimizer : Adam (learning rate = 0.001)\n"
+    summary += f"Loss measure : {HP['loss']}\n\n"
+    summary += f"Data is scaled before and after prediction using StandardScalers.\n\n"
+
+    history = []
+
+    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history)
 
 
 #####################
@@ -194,6 +213,10 @@ def R_preY_fn(Y,X,scalerY):
 def R_postY_fn(Y,X,scalerY):
     Y = ExData(Y)
     return ExData(Y.scale_back(scalerY),n=X.n)
+
+def R_preX_fn_I(X,scalerX,nt): return R_preX_fn(interpolate(X,nt),scalerX)
+def R_preY_fn_I(Y,X,scalerY,nt): return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.p]),X,scalerY)
+def R_postY_fn_I(Y,X,scalerY,nt): return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.p],old_time=nt),X,scalerY)
 
 
 def RecModel(X_T,Y_T,HP = HyperParameters()):
@@ -233,13 +256,27 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
     else:
         n = HP['interpolation']
         new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.p]),n)
-        preprocessX = (lambda X,scalerX,nt: R_preX_fn(interpolate(X,nt),scalerX),[scalerX,new_time])
-        preprocessY = (lambda Y,X,scalerY,nt: R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.p]),X,scalerY),[scalerY,new_time])
-        postprocessY = (lambda Y,X,scalerY,nt: R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.p],old_time=nt),X,scalerY),[scalerY,new_time])
+        preprocessX = (R_preX_fn_I,[scalerX,new_time])
+        preprocessY = (R_preY_fn_I,[scalerY,new_time])
+        postprocessY = (R_postY_fn_I,[scalerY,new_time])
 
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY)
+    summary = f"Recurrent neural network created on {datetime.now().strftime('%d-%m-%Y %H:%M')}.\n\n"
+    summary += "Architecture :\n"
+    summary += f"Input shape : (None, {str(X_T.f)})\n"
+    for i in range(len(HP['layers'])):
+        summary += f"Layer {str(2*i+1)} : LSTM, {str(HP['layers'][i])} cells, activation = tanh\n"
+        summary += f"Layer {str(2*i+2)} : Dropout, Rate = {str(HP['dropout_rate'])}\n"
+    summary += f"Output Layer : LSTM, {Y_T.f} cells, activation = tanh \n"
+    summary += "Call obj.model.summary() for more details on architecture (provided by keras)\n\n"
+    summary += f"Optimizer : Adam (learning rate = 0.001)\n"
+    summary += f"Loss measure : {HP['loss']}\n\n"
+    summary += f"Data is scaled before and after prediction using StandardScalers.\n"
+    if HP['interpolation'] != None: summary += f"Data is interpolated using {str(HP['interpolation'])} timesteps between 0 and {np.max(np.asarray(X_T)[0,:,X_T.p])} seconds.\n"
+    summary += '\n'
 
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY)
+    history = []
+
+    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history)
 
 
 ####################
@@ -372,6 +409,7 @@ class MegaModel():
         os.mkdir(name)
         for i in range(len(self)):
             self[i].save(Path(name,"Model_"+str(i).zfill(1+int(np.log10(len(self))))))
+
 '''
     def query():
 
@@ -391,10 +429,13 @@ def load(name):
     else:
         return load_mega(name)
 
-def load_single(name):
+def load_single(name): #Loads a model from a given pickle file
     with open(name,'rb') as f:
         data = pickle.load(f)
-    return Model(data['model'],ExData(data['X_T']),ExData(data['Y_T']),data['preprocessX'],data['preprocessY'],data['postprocessY'])
+    return Model(data['model'],
+                 ExData(data['X_T']),ExData(data['Y_T']),
+                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
+                 data['summary'],data['history'])
 
 def load_mega(name):
     file_list = os.listdir(name)

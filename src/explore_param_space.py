@@ -140,8 +140,8 @@ class ExData(Sample):
             obj.t = int(X.shape[0]/n)
             obj.f = X.shape[1]
         if p == None:
-            if len(X.shape) == 3: p = obj.f- np.count_nonzero(X[0,0,:] - X[0,1,:])
-            else : p = obj.f - np.count_nonzero(X[0,:] - X[1,:])
+            if len(X.shape) == 3: p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[0]) == 1)
+            else : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[:obj.t]) == 1)
         obj.p = p
         return obj
         
