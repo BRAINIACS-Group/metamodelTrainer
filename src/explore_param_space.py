@@ -1,51 +1,57 @@
+#Builds the Sample and ExData classes, that are to be handled by the models
+#The Sample class is used to sample the parameter space : several initialization functions (sample method) are given
+#The ExData is used to handle experimental data from FE files
+
 import matplotlib.pyplot as mpl
 import numpy as np
 import random
-from scipy.optimize import minimize
 from scipy.stats.qmc import PoissonDisk
-import pandas as pd
-import os
-
-#make n,t,f,p into properties
-#maybe even flat and volume versions into properties ?
 
 ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
 
+#########################
+### Sample Definition ###
+#########################
+
 class Sample(np.ndarray):
-    def __new__(cls, A=[[]]):
+    def __new__(cls, A=[[]]): #Creates a Sample object from an array-type object
         obj = np.asarray(A).view(cls)
         return obj
 
-    def append(self,X):
+    def append(self,X): #Appends a Sample to another (returns the results)
         return Sample(np.vstack((self,X)))  #Not sure if working
 
-    def plot(self,name = "Sample"):
+    def plot(self,name = "Sample"): #Scatter plots the first two axis
         mpl.scatter(self[:,0], self[:,1], label = name)
         ax = mpl.gca()
 
-    def draw(self,name = "Sample"):
+    def draw(self,name = "Sample"): #Same, but displays the result
         self.plot(name)
         mpl.show()
 
-    def copy(self):
+    def copy(self): #Creates a deepcopy
         return Sample(np.copy(self))
 
-    def map(self,f):
+    def map(self,f): #Apply a function to each sampled point
         res = np.apply_along_axis(lambda x:f(*x),1,self)
         if res.ndim == 1: res = np.vstack(res)
         return res
 
-    def delete(self,X):
+    def delete(self,X): #Deletes all values that are present in X ; returns the result
         mask = ~np.all(np.isin(self,X),axis=1)
-        self = self[mask] #Not sure if working
+        return self[mask] #Not sure if working
 
-    def scale(self,scaler):
+    def scale(self,scaler): #Uses a sklearn.preprocessing Scaler to scale itself
         return scaler.transform(self)
 
-    def save(self,name):
+    def save(self,name): #Save the array in an npy file
         np.save(name,self)
 
-    def spread(self,input_data = ref_input):
+    #Given some input data, creates a 3D ExData object containing, for each parameter set, a 2D array with:
+    #- The material parameters being repeated as many times as there are lines in input_data
+    #- The input_data
+    #Note : input_data is supposed to be in column shape
+    def spread(self,input_data = ref_input): 
         if input_data.ndim == 2:
             n, t = len(self),len(input_data)
             p = self.shape[1]
@@ -64,7 +70,9 @@ class Sample(np.ndarray):
                 X = X.append(self[i].reshape((1,-1)).spread(input_data[i%k]))
             return X
              
-        
+########################
+### Sampling Methods ###
+########################
 
 def scale_to(X,R): #Scales a random sampling in [0,1] square to desired ranges
     for i,r in enumerate(R):
@@ -99,14 +107,25 @@ def LHCuSample(R=[(0,1),(0,1)],k=100): #Creates a Latin Hypercube from k equal d
         Points.append([(grid[i,j]+random.random())/k for j in range(n)])
     return Sample(scale_to(np.array(Points),R))
 
-def PDskSample(R = [(0,1),(0,1)],k=100):
+
+def PDskSample(R = [(0,1),(0,1)],k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
     n = len(R)
     engine = PoissonDisk(d=n, radius=0.61/np.sqrt(k*np.sqrt(3)/4), hypersphere='surface')
     return Sample(scale_to(engine.random(k),R))
 
 
+#########################
+### ExData definition ###
+#########################
+
+#The ExData object is basically a numpy array, enriched with some extra information:
+# self.n : the number of experimental simulations it is supposed to contain
+# self.t : the number of time-steps per simulation
+# self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
+# self.p : among those features, how many are actually material parameters
+
 class ExData(Sample):
-    def __new__(cls,X=np.array([ref_input]),p=None,n=None):
+    def __new__(cls,X=np.array([ref_input]),p=None,n=None): #Creates a new one from an array
         X = np.asarray(X)
         obj = X.view(cls)
         if len(X.shape) == 3:
@@ -126,27 +145,27 @@ class ExData(Sample):
         obj.p = p
         return obj
         
-    def flatten(self):
+    def flatten(self): #Goes into 2D shape (used in Forward Neural Networks)
         if len(self.shape) == 3:
             self.shape = (self.n*self.t,self.f)
         
     
-    def reform(self):
+    def reform(self): #Goes into 3D shape (used in Recurrent Neural Networks)
         if len(self.shape) == 2:
             self.shape = (self.n,self.t,self.f)
 
-    def separate(self):
+    def separate(self): #Returns the Sample and input curve it supposedly originated from
         self.reform()
         S = np.asarray(self[0,:,self.p:]).reshape(self.t,self.f-self.p)
         P = Sample(self[:,0,:self.p].reshape(self.n,self.p))
         return P,S
 
-    def plot(self,name='Sample'):
+    def plot(self,name='Sample'): #Plot the first two values of the original Sample
         self.reform()
         P,S = self.separate()
         P.plot(name)
     
-    def map(self,f):
+    def map(self,f): #Maps a function unto all values
         res = []
         if len(self.shape) == 2: #One input, one output
             return ExData(Sample.map(self,f),p=0,n=self.n)
@@ -156,42 +175,36 @@ class ExData(Sample):
             res.append(f(*parameters, input_curve))
         return ExData(np.array(res))
 
-    def append(self,X):
+    def append(self,X): #Returns the appended array
         A = Sample.append(self,X)
         return ExData(A,self.p,self.n+X.n)
 
-    def save(self,name):
+    def save(self,name): #Save to a .npy file
         self.reform()
         np.save(name,self)
 
-    def scale(self,scaler):
+    def scale(self,scaler): #Given a sklearn.preprocessing Scaler, scales intself
         n = len(self.shape)
         self.flatten()
         res = scaler.transform(self)
         if n == 3: self.reform()
         return res.reshape(self.shape)
 
-    def scale_back(self,scaler):
+    def scale_back(self,scaler): #Same thing, but with the inverted scaler
         n = len(self.shape)
         self.flatten()
         res = scaler.inverse_transform(self)
         if n == 3: self.reform()
         return res.reshape(self.shape)
 
-    def copy(self):
+    def copy(self): #Creates a deepcopy
         return ExData(np.copy(self),self.p,self.n)
 
-    '''def sliding_window(self,size,strip=1,padded=False,skip_first=True):
-        windows = []
-        for i in range(0,self.n):
-            if padded:
-                for j in range(skip_first+i%strip,size,strip):
-                    windows.append(np.vstack((np.repeat(self[i,0].reshape(1,self.f),size-j,axis=0),self[i][:j,:])))
-            for j in range(i%strip,self.t - size + skip_first,strip):
-                windows.append(self[i,j:j+size,:])
-        return ExData(np.array(windows),self.p).copy()'''
 
-    def sliding_window(self,size,strip=1,padded=False):
+    #Creates sliding windows of the given size
+    #strip indicates if consecutive windows need to skip timesteps, and diagonally sample all simulations
+    #padded indicates if the first windows should be padded with zeros
+    def sliding_window(self,size,strip=1,padded=False): 
         windows = []
         for i in range(0,self.n):
             if padded:
@@ -203,7 +216,8 @@ class ExData(Sample):
 
         return ExData(np.array(windows),self.p).copy()
                 
-def load_data(name):
+
+def load_data(name): #Loads either a Sample or ExData
     X = np.load(name)
     if X.ndim == 3:
         n,t,f = X.shape

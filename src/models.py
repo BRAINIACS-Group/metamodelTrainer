@@ -13,7 +13,6 @@ import joblib
 import pickle
 import scipy.interpolate as spi
 
-#Add preprocessing/postprocessing functions for X and Y as attributes to generalize model ?
 #Summary
 
 #HyperParameters that will be used 
@@ -38,11 +37,7 @@ class HyperParameters(dict):
             raise KeyError(f"Key '{key}' not found.")
         return super().__setitem__(key, value)
 
-
-#Possible Improvement : Diversity ?
-
-
-
+#Interpolates new_time values from a given X, whose values are ordered by old_time
 def interpolate(X,new_time,old_time=None,tii=False):
     res = []
     for i in range(X.n):
@@ -61,6 +56,8 @@ def interpolate(X,new_time,old_time=None,tii=False):
         
 
 #Generic model ; only serves as a SuperClass
+#A Model contains the actual model, its training set X_T & Y_T, and preprocessing/postprocessing functions
+#called before and after the prediction by the base model
 class Model(): 
     
     def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY):
@@ -97,20 +94,18 @@ class Model():
         else:
             return postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg)
 
-
-
-    def evaluate(self,X,Y,verbose=1): #?????
+    def evaluate(self,X,Y,verbose=1):
         if verbose == 1: verbose = 2 
         elif verbose == 2: verbose = 1
-        Xs = X.scale(self.scalerX)
-        Ys = Y.scale(self.scalerY)
-        Xs = self.preprocessX(X)
-        Ys = self.preprocessY(Y)
+        preX_fn, preX_arg = self.preprocessX
+        preY_fn, preY_arg = self.preprocessY
+        Xs = preX_fn(self.X_T,*preX_arg)
+        Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
         return self.model.evaluate(Xs,Ys,verbose=verbose)
 
-    def enrich(self,X_A,Y_A):
-        self.X_T.append(X_A)
-        self.Y_T.append(Y_A)
+    def enrich(self,X_A,Y_A): #Adds values to the training set
+        self.X_T = self.X_T.append(X_A)
+        self.Y_T = self.Y_T.append(Y_A)
 
     def save(self,name):
         if str(name)[-4:] != '.pkl':
@@ -128,7 +123,7 @@ class Model():
         with open(name, 'wb') as f:
             pickle.dump(data, f)
         
-def load_single(name):
+def load_single(name): #Loads a model from a given pickle file
     with open(name,'rb') as f:
         data = pickle.load(f)
     return Model(data['model'],ExData(data['X_T']),ExData(data['Y_T']),data['preprocessX'],data['preprocessY'],data['postprocessY'])
@@ -138,6 +133,9 @@ def load_single(name):
 ####FORWARD MODEL####
 #####################
 
+#WORK IN PROGRESS !!!
+
+#Used for Hyperelastic data : one input = one output
 
 def F_preX_fn(X,scalerX):
         X.flatten()
@@ -183,6 +181,7 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
 ###RECURRENT MODEL###
 #####################
 
+#Used for Viscoelastic data : output depends on history (LSTM model)
 
 def R_preX_fn(X,scalerX):
     X.reform()
@@ -247,6 +246,10 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
 ###SLIDING WINDOW###
 ####################
 
+#WORK IN PROGRESS !!!
+
+#A recurrent model, which preprocess the data using a sliding window method
+
 def W_preX_fn(X,scalerX,size):
     W = X.sliding_window(size,strip=10,padded=True)
     return W.scale(scalerX)
@@ -302,9 +305,13 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY)
 
+
 ###################
 ####MEGA MODELS####
 ###################
+
+#Several models are built using the given method and hyperparameters, trained consecutively ; predicted result
+#is the average of all predicted results
 
 class MegaModel():
     def __init__(self,X_T,Y_T,n=10,method='FNN',HP=HyperParameters()):
@@ -373,6 +380,11 @@ class MegaModel():
     def active_learning():
     
 '''
+
+######################
+### Load functions ###
+######################
+
 def load(name):
     if str(name)[-4:] == '.pkl':
         return load_single(name)
