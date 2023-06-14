@@ -1,20 +1,31 @@
 import os
 import numpy as np
-import matplotlib.pyplot as mpl
 from explore_param_space import *
 from pathlib import Path
 from tensorflow import keras
-from keras.models import Sequential, load_model
+from keras.models import Sequential
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
-import keras.backend as K
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import joblib
+#from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
 
-#Summary
+class StandardScaler:
+    def __init__(self,mu=0,std=1):
+        self.mu = mu
+        self.std = std
+
+    def fit(self,X):
+        self.mu = np.mean(X,axis=0)
+        self.std = np.std(X,axis=0)
+
+    def transform(self,X):
+        return (X - self.mu)/self.std
+    
+    def inverse_transform(self,X):
+        return (X*self.std) + self.mu
+
 
 #HyperParameters that will be used 
 class HyperParameters(dict):
