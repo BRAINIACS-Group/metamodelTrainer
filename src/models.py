@@ -124,7 +124,7 @@ class Model():
             'preprocessX': self.preprocessX,
             'preprocessY': self.preprocessY,
             'postprocessY': self.postprocessY,
-            'summary': self.summary,
+            'summary': self.sum,
             'history': self.history
         }
         
