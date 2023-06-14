@@ -37,7 +37,7 @@ def label(X):
     prm = ParameterHandler.from_file(prm_file)
     
     variables = X  
-    dir_name = str(uuid4()[:8])
+    dir_name = str(uuid4())[:8]
     
     wd = Path(f'../FE/out/{dir_name}').resolve()
     if not wd.is_dir():
