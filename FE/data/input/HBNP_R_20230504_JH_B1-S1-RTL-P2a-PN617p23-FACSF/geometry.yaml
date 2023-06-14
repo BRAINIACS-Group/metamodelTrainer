@@ -1,0 +1,5 @@
+type: Cylinder
+global_refinement: 0
+grid_scale: 1.0
+height: 0.00424741796875
+radius: 0.004

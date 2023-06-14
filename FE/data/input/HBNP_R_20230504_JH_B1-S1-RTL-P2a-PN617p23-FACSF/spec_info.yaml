@@ -1,0 +1,6 @@
+type: SpecInfo
+project: HBNP
+device: R
+date: 2023-05-04 00:00:00
+user: JH
+meta: {'brainId': 1, 'specimenId': 1, 'region': 'TL', 'protocol': <SPPROT.P2a: 'P2a'>, 'pathologyNumber': '617p23', 'storageFluid': 'ACSF'}

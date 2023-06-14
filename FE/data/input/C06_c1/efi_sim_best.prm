@@ -1,0 +1,51 @@
+# Listing of Parameters
+# ---------------------
+subsection global
+  set output directory = {simulation_output_directory}
+  set paraview output = false
+  set verbosity console = normal
+  set verbosity logfile = normal
+end
+
+subsection experiment
+  set reset = true
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=2]
+    set input files = {simulation_input_directory}/Compression_c1_mean.csv
+  end
+
+  subsection sample
+
+    subsection finite element
+      set polynomial degree = 1
+    end
+
+    subsection quadrature
+      set quadrature points per space direction = auto
+      set quadrature type = gauss
+    end
+
+    subsection geometry@[type=block]
+      set edge lengths = 2.834e-3, 10e-3, 10e-3
+      set relative maxium element size = 0.125
+    end
+
+    subsection constitutive@[type=modified_one_term_ogden,instance=1]
+      set alpha = 95.7218728910679
+      set bulk modulus = 154.017282891660
+      set empirical coefficient = -2.
+      set shear modulus = 15.93282236810277
+    end
+
+    subsection nonlinear_solver_control
+      set absolute tolerance = 1e-10
+      set linear solver type = direct
+      set maximum number of iterations = 10
+      set relative tolerance = 1e-08
+    end
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=1]
+    set input files = {simulation_input_directory}/Tension_c1_mean.csv
+  end
+end

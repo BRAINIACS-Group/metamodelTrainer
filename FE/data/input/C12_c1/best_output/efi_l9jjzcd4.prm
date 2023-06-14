@@ -1,0 +1,134 @@
+# Listing of Parameters
+# ---------------------
+subsection experiment
+  set reset = true # default: false
+
+
+  subsection sample
+    subsection constitutive@[type=modified_one_term_ogden,instance=1]
+      set alpha                 = -50.0            # default: -20
+      set bulk modulus          = 193.333333333333 # default: 3.e3
+      set empirical coefficient = -2.
+      set shear modulus         = 20.0             # default: 0.7e3
+    end
+
+    subsection finite element
+      set polynomial degree = 1
+    end
+
+    subsection geometry@[type=block]
+      set edge lengths                 = 2.834e-3, 10e-3, 10e-3 # default: 1.0,1.0,1.0
+      # Maximum allowed element size relative to the radius in (0,1].
+      set relative maxium element size = 0.125                  # default: 1.0
+    end
+
+    subsection nonlinear_solver_control
+      set absolute tolerance           = 1e-10  # default: 1e-12
+      # options: direct|CG|GMRES
+      set linear solver type           = direct
+      set maximum number of iterations = 10     # default: 100
+      set relative tolerance           = 1e-08  # default: 1e-8
+    end
+
+    subsection quadrature
+      # options: 'auto' or integer values > 0
+      set quadrature points per space direction = auto
+
+      # options:
+      # gauss|gauss_lobatto|gauss_chebyshev|gauss_radau_chebyshev|gauss_lobatto_chebyshev|midpoint|milne|simpson|trapez|weddle
+      set quadrature type                       = gauss
+    end
+
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=1]
+    # Name of the column in the csv-input files storing the displacement
+    # data.
+    set column name displacement = displacement
+
+    # Name of the column in the csv-input files storing the time data.
+    set column name time         = time
+
+    # When given multiple files, the measured time data is said to be
+    # consecutive when all of time points in all files are measured using to
+    # the same reference time. Setting this flag to false means that the time
+    # starts at  t=0 in each individual file. In both cases, the time data
+    # must be in ascending order for each file, individually.
+    set consecutive time data    = false
+
+    # A comma-separated list of input data file names. The files must be in
+    # csv-format and provide time and displacement data columns. The default
+    # column names are 'time' and 'displacement', respectively. They can be
+    # changed by providing new names via the 'column name time' and 'column
+    # name displacement' fields.
+    set input files              = /data/iwtm66/data/graz_data/C12/Tension_c1_mean.csv # default: 
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=2]
+    # Name of the column in the csv-input files storing the displacement
+    # data.
+    set column name displacement = displacement
+
+    # Name of the column in the csv-input files storing the time data.
+    set column name time         = time
+
+    # When given multiple files, the measured time data is said to be
+    # consecutive when all of time points in all files are measured using to
+    # the same reference time. Setting this flag to false means that the time
+    # starts at  t=0 in each individual file. In both cases, the time data
+    # must be in ascending order for each file, individually.
+    set consecutive time data    = false
+
+    # A comma-separated list of input data file names. The files must be in
+    # csv-format and provide time and displacement data columns. The default
+    # column names are 'time' and 'displacement', respectively. They can be
+    # changed by providing new names via the 'column name time' and 'column
+    # name displacement' fields.
+    set input files              = /data/iwtm66/data/graz_data/C12/Compression_c1_mean.csv # default: 
+  end
+
+  subsection testing_device@[type=translational_rheometer,instance=3]
+    # Name of the column in the csv-input files storing the displacement
+    # data.
+    set column name displacement = displacement
+
+    # Name of the column in the csv-input files storing the time data.
+    set column name time         = time
+
+    # When given multiple files, the measured time data is said to be
+    # consecutive when all of time points in all files are measured using to
+    # the same reference time. Setting this flag to false means that the time
+    # starts at  t=0 in each individual file. In both cases, the time data
+    # must be in ascending order for each file, individually.
+    set consecutive time data    = false
+
+    # A comma-separated list of input data file names. The files must be in
+    # csv-format and provide time and displacement data columns. The default
+    # column names are 'time' and 'displacement', respectively. They can be
+    # changed by providing new names via the 'column name time' and 'column
+    # name displacement' fields.
+    set input files              = /data/iwtm66/data/graz_data/C12/Shear_x_c1_mean.csv # default: 
+
+    # We define direction '0', [1,0,0], as vertical axis of the translational
+    # rheometer. It applies shear deformation by moving the top and bottom
+    # plate relative to each other in eiter of the horizontal directions '1',
+    # [0,1,0] or '2', [0,0,1]. In 2d only '1'-direction can be chosen.
+    set translation axis         = 1
+  end
+
+end
+
+
+subsection global
+  set output directory  = /calculate/iwtm66/graz/C12_c1/efi_cp_8kmx3ois # default: /calculate/iwtm66/graz/C12_c1/out
+  # Set to true if you want to write output for paraview.
+  set paraview output   = false
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity console = normal
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity logfile = normal
+end
+
+

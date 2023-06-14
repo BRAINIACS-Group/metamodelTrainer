@@ -90,7 +90,7 @@ class Model():
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
         if return_var:
-            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(50)])
+            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
             Y = np.mean(predictions,axis=0)
             V = np.var(predictions,axis=0)
             return ExData(Y,n=X.n), ExData(V,n=X.n)
@@ -130,6 +130,9 @@ class Model():
         
         with open(name, 'wb') as f:
             pickle.dump(data, f)
+        
+        with open(name[:-4]+'.txt','w') as f:
+            f.write(self.sum)
         
 
     

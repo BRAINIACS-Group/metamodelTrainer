@@ -1,0 +1,379 @@
+JobId typhon Thu Jul  1 17:59:45 2021
+using efi 0.1.0
+    on: Thu Jul  1 17:59:45 2021
+author: Stefan Kaessmair
+
+EFI::Created file <"/calculate/iwtm66/graz/C12_c1/efi_cp_8kmx3ois/efi_l9jjzcd4.prm">.
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.76694e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.20199e-07     normalized value  0.0680265      
+EFI::SLV | ASM | Check step  2      value  1.55608e-10     normalized value  8.80665e-05    
+EFI::SLV | ASM | Check step  3      value  7.04090e-16     normalized value  3.98480e-10    
+EFI::Convergence step  3      value  7.04090e-16     normalized value  3.98480e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.69937e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.35401e-07     normalized value  0.0796769      
+EFI::SLV | ASM | Check step  2      value  2.83161e-10     normalized value  0.000166627    
+EFI::SLV | ASM | Check step  3      value  3.17576e-15     normalized value  1.86878e-09    
+EFI::Convergence step  3      value  3.17576e-15     normalized value  1.86878e-09    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.66507e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.53703e-07     normalized value  0.0923104      
+EFI::SLV | ASM | Check step  2      value  4.88821e-10     normalized value  0.000293575    
+EFI::SLV | ASM | Check step  3      value  1.07913e-14     normalized value  6.48098e-09    
+EFI::Convergence step  3      value  1.07913e-14     normalized value  6.48098e-09    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.65902e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.72633e-07     normalized value  0.104057       
+EFI::SLV | ASM | Check step  2      value  7.52642e-10     normalized value  0.000453666    
+EFI::SLV | ASM | Check step  3      value  2.66040e-14     normalized value  1.60359e-08    
+EFI::Convergence step  3      value  2.66040e-14     normalized value  1.60359e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.67691e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.90677e-07     normalized value  0.113707       
+EFI::SLV | ASM | Check step  2      value  1.04135e-09     normalized value  0.000620993    
+EFI::SLV | ASM | Check step  3      value  5.10358e-14     normalized value  3.04344e-08    
+EFI::Convergence step  3      value  5.10358e-14     normalized value  3.04344e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.71507e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.07086e-07     normalized value  0.120745       
+EFI::SLV | ASM | Check step  2      value  1.32158e-09     normalized value  0.000770569    
+EFI::SLV | ASM | Check step  3      value  8.07977e-14     normalized value  4.71105e-08    
+EFI::Convergence step  3      value  8.07977e-14     normalized value  4.71105e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.77047e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.21553e-07     normalized value  0.125138       
+EFI::SLV | ASM | Check step  2      value  1.56924e-09     normalized value  0.000886339    
+EFI::SLV | ASM | Check step  3      value  1.10563e-13     normalized value  6.24481e-08    
+EFI::Convergence step  3      value  1.10563e-13     normalized value  6.24481e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.84063e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.33989e-07     normalized value  0.127125       
+EFI::SLV | ASM | Check step  2      value  1.77098e-09     normalized value  0.000962159    
+EFI::SLV | ASM | Check step  3      value  1.35389e-13     normalized value  7.35559e-08    
+EFI::Convergence step  3      value  1.35389e-13     normalized value  7.35559e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.92348e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.44410e-07     normalized value  0.127066       
+EFI::SLV | ASM | Check step  2      value  1.92189e-09     normalized value  0.000999174    
+EFI::SLV | ASM | Check step  3      value  1.52242e-13     normalized value  7.91493e-08    
+EFI::Convergence step  3      value  1.52242e-13     normalized value  7.91493e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.01737e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.52885e-07     normalized value  0.125354       
+EFI::SLV | ASM | Check step  2      value  2.02281e-09     normalized value  0.00100270     
+EFI::SLV | ASM | Check step  3      value  1.60277e-13     normalized value  7.94488e-08    
+EFI::Convergence step  3      value  1.60277e-13     normalized value  7.94488e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.12090e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.59514e-07     normalized value  0.122360       
+EFI::SLV | ASM | Check step  2      value  2.07799e-09     normalized value  0.000979766    
+EFI::SLV | ASM | Check step  3      value  1.60301e-13     normalized value  7.55813e-08    
+EFI::Convergence step  3      value  1.60301e-13     normalized value  7.55813e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.23300e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.64423e-07     normalized value  0.118416       
+EFI::SLV | ASM | Check step  2      value  2.09346e-09     normalized value  0.000937513    
+EFI::SLV | ASM | Check step  3      value  1.54001e-13     normalized value  6.89660e-08    
+EFI::Convergence step  3      value  1.54001e-13     normalized value  6.89660e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.35277e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.67749e-07     normalized value  0.113802       
+EFI::SLV | ASM | Check step  2      value  2.07587e-09     normalized value  0.000882311    
+EFI::SLV | ASM | Check step  3      value  1.43308e-13     normalized value  6.09104e-08    
+EFI::Convergence step  3      value  1.43308e-13     normalized value  6.09104e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.47954e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.69643e-07     normalized value  0.108747       
+EFI::SLV | ASM | Check step  2      value  2.03173e-09     normalized value  0.000819397    
+EFI::SLV | ASM | Check step  3      value  1.29999e-13     normalized value  5.24287e-08    
+EFI::Convergence step  3      value  1.29999e-13     normalized value  5.24287e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.61281e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.70261e-07     normalized value  0.103437       
+EFI::SLV | ASM | Check step  2      value  1.96700e-09     normalized value  0.000752832    
+EFI::SLV | ASM | Check step  3      value  1.15516e-13     normalized value  4.42115e-08    
+EFI::Convergence step  3      value  1.15516e-13     normalized value  4.42115e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.75221e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.69765e-07     normalized value  0.0980177      
+EFI::SLV | ASM | Check step  2      value  1.88695e-09     normalized value  0.000685613    
+EFI::SLV | ASM | Check step  3      value  1.00924e-13     normalized value  3.66702e-08    
+EFI::Convergence step  3      value  1.00924e-13     normalized value  3.66702e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.89750e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.68322e-07     normalized value  0.0926046      
+EFI::SLV | ASM | Check step  2      value  1.79604e-09     normalized value  0.000619856    
+EFI::SLV | ASM | Check step  3      value  8.69445e-14     normalized value  3.00067e-08    
+EFI::Convergence step  3      value  8.69445e-14     normalized value  3.00067e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.04857e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.66103e-07     normalized value  0.0872876      
+EFI::SLV | ASM | Check step  2      value  1.69800e-09     normalized value  0.000556981    
+EFI::SLV | ASM | Check step  3      value  7.40209e-14     normalized value  2.42805e-08    
+EFI::Convergence step  3      value  7.40209e-14     normalized value  2.42805e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.20539e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.63283e-07     normalized value  0.0821376      
+EFI::SLV | ASM | Check step  2      value  1.59591e-09     normalized value  0.000497883    
+EFI::SLV | ASM | Check step  3      value  6.23859e-14     normalized value  1.94628e-08    
+EFI::Convergence step  3      value  6.23859e-14     normalized value  1.94628e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.37654e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.94201e-07     normalized value  0.123794       
+EFI::SLV | ASM | Check step  2      value  2.26245e-10     normalized value  9.51991e-05    
+EFI::SLV | ASM | Check step  3      value  8.23283e-16     normalized value  3.46421e-10    
+EFI::Convergence step  3      value  8.23283e-16     normalized value  3.46421e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.58629e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.03222e-07     normalized value  0.117242       
+EFI::SLV | ASM | Check step  2      value  1.68133e-10     normalized value  6.50095e-05    
+EFI::SLV | ASM | Check step  3      value  5.18631e-16     normalized value  2.00531e-10    
+EFI::Convergence step  3      value  5.18631e-16     normalized value  2.00531e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.86677e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.20961e-07     normalized value  0.111959       
+EFI::SLV | ASM | Check step  2      value  1.43333e-10     normalized value  4.99979e-05    
+EFI::SLV | ASM | Check step  3      value  5.72347e-16     normalized value  1.99649e-10    
+EFI::Convergence step  3      value  5.72347e-16     normalized value  1.99649e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.22813e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.48484e-07     normalized value  0.107952       
+EFI::SLV | ASM | Check step  2      value  1.68436e-10     normalized value  5.21775e-05    
+EFI::SLV | ASM | Check step  3      value  1.22515e-15     normalized value  3.79523e-10    
+EFI::Convergence step  3      value  1.22515e-15     normalized value  3.79523e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.68068e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.86917e-07     normalized value  0.105121       
+EFI::SLV | ASM | Check step  2      value  2.64794e-10     normalized value  7.19414e-05    
+EFI::SLV | ASM | Check step  3      value  3.46684e-15     normalized value  9.41901e-10    
+EFI::Convergence step  3      value  3.46684e-15     normalized value  9.41901e-10    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  4.23511e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  4.37860e-07     normalized value  0.103388       
+EFI::SLV | ASM | Check step  2      value  4.58779e-10     normalized value  0.000108327    
+EFI::SLV | ASM | Check step  3      value  9.29899e-15     normalized value  2.19569e-09    
+EFI::Convergence step  3      value  9.29899e-15     normalized value  2.19569e-09    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  4.90279e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  5.03450e-07     normalized value  0.102686       
+EFI::SLV | ASM | Check step  2      value  7.93967e-10     normalized value  0.000161942    
+EFI::SLV | ASM | Check step  3      value  2.28075e-14     normalized value  4.65194e-09    
+EFI::Convergence step  3      value  2.28075e-14     normalized value  4.65194e-09    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  5.69612e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  5.86251e-07     normalized value  0.102921       
+EFI::SLV | ASM | Check step  2      value  1.32911e-09     normalized value  0.000233337    
+EFI::SLV | ASM | Check step  3      value  5.26684e-14     normalized value  9.24636e-09    
+EFI::Convergence step  3      value  5.26684e-14     normalized value  9.24636e-09    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  6.62889e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  6.89127e-07     normalized value  0.103958       
+EFI::SLV | ASM | Check step  2      value  2.13655e-09     normalized value  0.000322308    
+EFI::SLV | ASM | Check step  3      value  1.16071e-13     normalized value  1.75099e-08    
+EFI::Convergence step  3      value  1.16071e-13     normalized value  1.75099e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  7.71665e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  8.15179e-07     normalized value  0.105639       
+EFI::SLV | ASM | Check step  2      value  3.30399e-09     normalized value  0.000428164    
+EFI::SLV | ASM | Check step  3      value  2.43660e-13     normalized value  3.15758e-08    
+EFI::Convergence step  3      value  2.43660e-13     normalized value  3.15758e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  8.97715e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  9.67759e-07     normalized value  0.107802       
+EFI::SLV | ASM | Check step  2      value  4.93800e-09     normalized value  0.000550063    
+EFI::SLV | ASM | Check step  3      value  4.85854e-13     normalized value  5.41212e-08    
+EFI::Convergence step  3      value  4.85854e-13     normalized value  5.41212e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.04307e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.15054e-06     normalized value  0.110303       
+EFI::SLV | ASM | Check step  2      value  7.16783e-09     normalized value  0.000687185    
+EFI::SLV | ASM | Check step  3      value  9.21531e-13     normalized value  8.83479e-08    
+EFI::Convergence step  3      value  9.21531e-13     normalized value  8.83479e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.21007e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.36759e-06     normalized value  0.113018       
+EFI::SLV | ASM | Check step  2      value  1.01496e-08     normalized value  0.000838766    
+EFI::SLV | ASM | Check step  3      value  1.66996e-12     normalized value  1.38005e-07    
+EFI::Convergence step  3      value  1.66996e-12     normalized value  1.38005e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.40140e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.62351e-06     normalized value  0.115850       
+EFI::SLV | ASM | Check step  2      value  1.40709e-08     normalized value  0.00100406     
+EFI::SLV | ASM | Check step  3      value  2.90674e-12     normalized value  2.07417e-07    
+EFI::Convergence step  3      value  2.90674e-12     normalized value  2.07417e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.62014e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.92349e-06     normalized value  0.118723       
+EFI::SLV | ASM | Check step  2      value  1.91549e-08     normalized value  0.00118229     
+EFI::SLV | ASM | Check step  3      value  4.88463e-12     normalized value  3.01494e-07    
+EFI::Convergence step  3      value  4.88463e-12     normalized value  3.01494e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.86986e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.27339e-06     normalized value  0.121581       
+EFI::SLV | ASM | Check step  2      value  2.56660e-08     normalized value  0.00137261     
+EFI::SLV | ASM | Check step  3      value  7.96015e-12     normalized value  4.25708e-07    
+EFI::Convergence step  3      value  7.96015e-12     normalized value  4.25708e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.15461e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.67987e-06     normalized value  0.124378       
+EFI::SLV | ASM | Check step  2      value  3.39146e-08     normalized value  0.00157405     
+EFI::SLV | ASM | Check step  3      value  1.26267e-11     normalized value  5.86034e-07    
+EFI::Convergence step  3      value  1.26267e-11     normalized value  5.86034e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.47903e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.15044e-06     normalized value  0.127084       
+EFI::SLV | ASM | Check step  2      value  4.42628e-08     normalized value  0.00178549     
+EFI::SLV | ASM | Check step  3      value  1.95554e-11     normalized value  7.88834e-07    
+EFI::Convergence step  3      value  1.95554e-11     normalized value  7.88834e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.84838e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.69356e-06     normalized value  0.129672       
+EFI::SLV | ASM | Check step  2      value  5.71291e-08     normalized value  0.00200567     
+EFI::SLV | ASM | Check step  3      value  2.96429e-11     normalized value  1.04069e-06    
+EFI::Convergence step  3      value  2.96429e-11     normalized value  1.04069e-06    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  6.24198e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.79917e-06     normalized value  0.288237       
+EFI::SLV | ASM | Check step  2      value  1.83501e-07     normalized value  0.0293979      
+EFI::SLV | ASM | Check step  3      value  1.41177e-09     normalized value  0.000226173    
+EFI::SLV | ASM | Check step  4      value  9.13421e-14     normalized value  1.46335e-08    
+EFI::Convergence step  4      value  9.13421e-14     normalized value  1.46335e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  7.09233e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.06147e-06     normalized value  0.290662       
+EFI::SLV | ASM | Check step  2      value  2.51250e-07     normalized value  0.0354255      
+EFI::SLV | ASM | Check step  3      value  3.35154e-09     normalized value  0.000472557    
+EFI::SLV | ASM | Check step  4      value  5.38325e-13     normalized value  7.59024e-08    
+EFI::Convergence step  4      value  5.38325e-13     normalized value  7.59024e-08    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  8.16887e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.38175e-06     normalized value  0.291564       
+EFI::SLV | ASM | Check step  2      value  3.27667e-07     normalized value  0.0401117      
+EFI::SLV | ASM | Check step  3      value  6.50185e-09     normalized value  0.000795930    
+EFI::SLV | ASM | Check step  4      value  2.37631e-12     normalized value  2.90899e-07    
+EFI::Convergence step  4      value  2.37631e-12     normalized value  2.90899e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  9.50515e-06     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.77262e-06     normalized value  0.291696       
+EFI::SLV | ASM | Check step  2      value  4.13822e-07     normalized value  0.0435366      
+EFI::SLV | ASM | Check step  3      value  1.08604e-08     normalized value  0.00114258     
+EFI::SLV | ASM | Check step  4      value  7.28935e-12     normalized value  7.66884e-07    
+EFI::Convergence step  4      value  7.28935e-12     normalized value  7.66884e-07    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.11443e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.24821e-06     normalized value  0.291469       
+EFI::SLV | ASM | Check step  2      value  5.12157e-07     normalized value  0.0459571      
+EFI::SLV | ASM | Check step  3      value  1.63349e-08     normalized value  0.00146577     
+EFI::SLV | ASM | Check step  4      value  1.68744e-11     normalized value  1.51418e-06    
+EFI::Convergence step  4      value  1.68744e-11     normalized value  1.51418e-06    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.31397e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.82495e-06     normalized value  0.291098       
+EFI::SLV | ASM | Check step  2      value  6.25927e-07     normalized value  0.0476361      
+EFI::SLV | ASM | Check step  3      value  2.28661e-08     normalized value  0.00174022     
+EFI::SLV | ASM | Check step  4      value  3.20005e-11     normalized value  2.43540e-06    
+EFI::Convergence step  4      value  3.20005e-11     normalized value  2.43540e-06    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.55568e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  4.52219e-06     normalized value  0.290689       
+EFI::SLV | ASM | Check step  2      value  7.59006e-07     normalized value  0.0487894      
+EFI::SLV | ASM | Check step  3      value  3.04830e-08     normalized value  0.00195947     
+EFI::SLV | ASM | Check step  4      value  5.28402e-11     normalized value  3.39661e-06    
+EFI::Convergence step  4      value  5.28402e-11     normalized value  3.39661e-06    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  1.84734e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  5.36270e-06     normalized value  0.290293       
+EFI::SLV | ASM | Check step  2      value  9.15884e-07     normalized value  0.0495786      
+EFI::SLV | ASM | Check step  3      value  3.93119e-08     normalized value  0.00212803     
+EFI::SLV | ASM | Check step  4      value  7.93013e-11     normalized value  4.29273e-06    
+EFI::Convergence step  4      value  7.93013e-11     normalized value  4.29273e-06    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.19823e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  6.37334e-06     normalized value  0.289931       
+EFI::SLV | ASM | Check step  2      value  1.10174e-06     normalized value  0.0501196      
+EFI::SLV | ASM | Check step  3      value  4.95684e-08     normalized value  0.00225492     
+EFI::SLV | ASM | Check step  4      value  1.11437e-10     normalized value  5.06938e-06    
+EFI::SLV | ASM | Check step  5      value  5.78674e-16     normalized value  2.63245e-11    
+EFI::Convergence step  5      value  5.78674e-16     normalized value  2.63245e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  2.61925e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  7.58552e-06     normalized value  0.289606       
+EFI::SLV | ASM | Check step  2      value  1.32253e-06     normalized value  0.0504927      
+EFI::SLV | ASM | Check step  3      value  6.15444e-08     normalized value  0.00234969     
+EFI::SLV | ASM | Check step  4      value  1.49654e-10     normalized value  5.71360e-06    
+EFI::SLV | ASM | Check step  5      value  9.12852e-16     normalized value  3.48516e-11    
+EFI::Convergence step  5      value  9.12852e-16     normalized value  3.48516e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.12337e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  9.03659e-06     normalized value  0.289322       
+EFI::SLV | ASM | Check step  2      value  1.58528e-06     normalized value  0.0507552      
+EFI::SLV | ASM | Check step  3      value  7.56172e-08     normalized value  0.00242101     
+EFI::SLV | ASM | Check step  4      value  1.94858e-10     normalized value  6.23870e-06    
+EFI::SLV | ASM | Check step  5      value  1.33976e-15     normalized value  4.28945e-11    
+EFI::Convergence step  5      value  1.33976e-15     normalized value  4.28945e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  3.72572e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.07700e-05     normalized value  0.289071       
+EFI::SLV | ASM | Check step  2      value  1.89804e-06     normalized value  0.0509444      
+EFI::SLV | ASM | Check step  3      value  9.22319e-08     normalized value  0.00247555     
+EFI::SLV | ASM | Check step  4      value  2.48372e-10     normalized value  6.66641e-06    
+EFI::SLV | ASM | Check step  5      value  1.87099e-15     normalized value  5.02182e-11    
+EFI::Convergence step  5      value  1.87099e-15     normalized value  5.02182e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  4.44406e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.28367e-05     normalized value  0.288850       
+EFI::SLV | ASM | Check step  2      value  2.27028e-06     normalized value  0.0510857      
+EFI::SLV | ASM | Check step  3      value  1.11919e-07     normalized value  0.00251840     
+EFI::SLV | ASM | Check step  4      value  3.11973e-10     normalized value  7.02002e-06    
+EFI::SLV | ASM | Check step  5      value  2.52549e-15     normalized value  5.68285e-11    
+EFI::Convergence step  5      value  2.52549e-15     normalized value  5.68285e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  5.29923e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.52964e-05     normalized value  0.288653       
+EFI::SLV | ASM | Check step  2      value  2.71301e-06     normalized value  0.0511964      
+EFI::SLV | ASM | Check step  3      value  1.35302e-07     normalized value  0.00255324     
+EFI::SLV | ASM | Check step  4      value  3.87890e-10     normalized value  7.31974e-06    
+EFI::SLV | ASM | Check step  5      value  3.33047e-15     normalized value  6.28483e-11    
+EFI::Convergence step  5      value  3.33047e-15     normalized value  6.28483e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  6.31560e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  1.82191e-05     normalized value  0.288477       
+EFI::SLV | ASM | Check step  2      value  3.23912e-06     normalized value  0.0512876      
+EFI::SLV | ASM | Check step  3      value  1.63112e-07     normalized value  0.00258268     
+EFI::SLV | ASM | Check step  4      value  4.78816e-10     normalized value  7.58147e-06    
+EFI::SLV | ASM | Check step  5      value  4.32207e-15     normalized value  6.84347e-11    
+EFI::Convergence step  5      value  4.32207e-15     normalized value  6.84347e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  7.52164e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.16862e-05     normalized value  0.288317       
+EFI::SLV | ASM | Check step  2      value  3.86363e-06     normalized value  0.0513668      
+EFI::SLV | ASM | Check step  3      value  1.96202e-07     normalized value  0.00260850     
+EFI::SLV | ASM | Check step  4      value  5.87958e-10     normalized value  7.81688e-06    
+EFI::SLV | ASM | Check step  5      value  5.54589e-15     normalized value  7.37325e-11    
+EFI::Convergence step  5      value  5.54589e-15     normalized value  7.37325e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  8.95055e-05     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  2.57929e-05     normalized value  0.288171       
+EFI::SLV | ASM | Check step  2      value  4.60405e-06     normalized value  0.0514387      
+EFI::SLV | ASM | Check step  3      value  2.35572e-07     normalized value  0.00263192     
+EFI::SLV | ASM | Check step  4      value  7.19092e-10     normalized value  8.03405e-06    
+EFI::SLV | ASM | Check step  5      value  7.05762e-15     normalized value  7.88513e-11    
+EFI::Convergence step  5      value  7.05762e-15     normalized value  7.88513e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  0.000106410     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.06499e-05     normalized value  0.288037       
+EFI::SLV | ASM | Check step  2      value  5.48077e-06     normalized value  0.0515063      
+EFI::SLV | ASM | Check step  3      value  2.82382e-07     normalized value  0.00265372     
+EFI::SLV | ASM | Check step  4      value  8.76629e-10     normalized value  8.23824e-06    
+EFI::SLV | ASM | Check step  5      value  8.92385e-15     normalized value  8.38630e-11    
+EFI::Convergence step  5      value  8.92385e-15     normalized value  8.38630e-11    
+EFI::_____________________________________________________________________________________
+EFI::    | ASM | Check step  0      value  0.000126379     normalized value  1.00000        
+EFI::SLV | ASM | Check step  1      value  3.63861e-05     normalized value  0.287911       
+EFI::SLV | ASM | Check step  2      value  6.51750e-06     normalized value  0.0515709      
+EFI::SLV | ASM | Check step  3      value  3.37984e-07     normalized value  0.00267436     
+EFI::SLV | ASM | Check step  4      value  1.06571e-09     normalized value  8.43259e-06    
+EFI::SLV | ASM | Check step  5      value  1.12228e-14     normalized value  8.88023e-11    
+EFI::Convergence step  5      value  1.12228e-14     normalized value  8.88023e-11    
+EFI::

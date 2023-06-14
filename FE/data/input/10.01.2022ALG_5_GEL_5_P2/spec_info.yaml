@@ -1,0 +1,6 @@
+type: SpecInfoGADATE
+record_time: 2022-01-10 00:00:00
+comp_names: ['ALG', 'GEL']
+comp_ratios: [5, 5]
+spec_id: 2
+prot: P2a

@@ -1,0 +1,597 @@
+2021-07-02 14:20:14,769 - efi - DEBUG | started logging to logfile /calculate/iwtm66/graz/C06_c1/efiopt.log
+2021-07-02 14:20:14,770 - efi - DEBUG | set up mail notification for ['j.hinrichsen95@gmail.com']
+2021-07-02 14:20:14,775 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:20:14,776 - efi - WARNING | Overwriting file /calculate/iwtm66/graz/C06_c1/opt_hist.csv
+2021-07-02 14:20:14,776 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:20:14,776 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:20:14,777 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:20:14,777 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_zlpqzvkk
+2021-07-02 14:20:14,777 - efi - DEBUG | JacobiJob::x0: [-50.  20.]
+2021-07-02 14:20:14,777 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:20:14,785 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:20:14,785 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:20:14,787 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:20:14,788 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:20:14,788 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_dw9nfskx
+2021-07-02 14:20:14,789 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:20:14,789 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_rmep59_8
+2021-07-02 14:23:34,924 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:23:34,925 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:23:34,925 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:23:34,925 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:23:34,926 - efi - INFO | Found new best optimization variables:
+          alpha =       -50.0000000000 in [      -inf,        inf]
+             mu =        20.0000000000 in [      -inf,        inf]
+  cost: 0.5210862713674115
+  R2:    inf
+2021-07-02 14:23:34,926 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:23:34,926 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:23:38,166 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:23:38,166 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:23:38,167 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:23:38,167 - efi - DEBUG | ObjectiveFunc::x: [-50.005  20.   ]
+2021-07-02 14:23:38,168 - efi - DEBUG | ObjectiveFunc::x: [-50.     20.002]
+2021-07-02 14:23:38,168 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:23:38,168 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:23:38,169 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:23:38,169 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:23:38,169 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_8qfapkpf
+2021-07-02 14:23:38,169 - efi - DEBUG | JacobiJob::x0: [21.95788712 33.34448857]
+2021-07-02 14:23:38,170 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:23:38,174 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:23:38,178 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:23:38,179 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:23:38,179 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:23:38,179 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:23:38,179 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_fs62jmj5
+2021-07-02 14:23:38,179 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_s3h1hv1g
+2021-07-02 14:26:26,876 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:26:26,876 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:26:26,876 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:26:26,876 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:26:26,877 - efi - INFO | Found new best optimization variables:
+          alpha =        21.9578871180 in [      -inf,        inf]
+             mu =        33.3444885734 in [      -inf,        inf]
+  cost: 0.1559890368623709
+  R2:    inf
+2021-07-02 14:26:26,877 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:26:26,877 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:26:29,890 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:26:29,890 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:26:29,891 - efi - DEBUG | ObjectiveFunc::x: [21.96008291 33.34448857]
+2021-07-02 14:26:29,891 - efi - DEBUG | ObjectiveFunc::x: [21.95788712 33.34782302]
+2021-07-02 14:26:29,891 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:26:29,892 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:26:29,892 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:26:29,892 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:26:29,892 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_6cc32ss1
+2021-07-02 14:26:29,892 - efi - DEBUG | JacobiJob::x0: [75.26888154 17.35217915]
+2021-07-02 14:26:29,893 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:26:29,897 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:26:29,901 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:26:29,902 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:26:29,902 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:26:29,902 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_604o9i14
+2021-07-02 14:26:29,902 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:26:29,903 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_y787ltqg
+2021-07-02 14:30:52,740 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:30:52,740 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:30:52,740 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:30:52,740 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:30:52,741 - efi - INFO | Found new best optimization variables:
+          alpha =        75.2688815434 in [      -inf,        inf]
+             mu =        17.3521791546 in [      -inf,        inf]
+  cost: 0.07572594199247198
+  R2:    inf
+2021-07-02 14:30:52,741 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:30:52,741 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:30:52,741 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:30:52,741 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:30:52,741 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:30:52,741 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:30:52,741 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:30:52,742 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::x: [75.27640843 17.35217915]
+2021-07-02 14:30:52,742 - efi - DEBUG | ObjectiveFunc::x: [75.26888154 17.35391437]
+2021-07-02 14:30:52,743 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:30:52,743 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:30:52,743 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:30:52,744 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:30:52,744 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_53hd3t6k
+2021-07-02 14:30:52,744 - efi - DEBUG | JacobiJob::x0: [106.34182578  14.37098294]
+2021-07-02 14:30:52,744 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:30:52,749 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:30:52,753 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:30:52,754 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:30:52,754 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:30:52,754 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_reutkjey
+2021-07-02 14:30:52,755 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:30:52,759 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_hfdlag_6
+2021-07-02 14:35:27,625 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:35:27,626 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:35:27,626 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:35:27,626 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:35:27,627 - efi - INFO | Found new best optimization variables:
+          alpha =       106.3418257752 in [      -inf,        inf]
+             mu =        14.3709829351 in [      -inf,        inf]
+  cost: 0.06250498560561871
+  R2:    inf
+2021-07-02 14:35:27,627 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:35:27,627 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:35:30,082 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:35:30,082 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:35:30,082 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:35:30,082 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:35:30,082 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:35:30,083 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::x: [106.35245996  14.37098294]
+2021-07-02 14:35:30,083 - efi - DEBUG | ObjectiveFunc::x: [106.34182578  14.37242003]
+2021-07-02 14:35:30,084 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:35:30,084 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:35:30,084 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:35:30,085 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:35:30,085 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_ae6lzs3t
+2021-07-02 14:35:30,085 - efi - DEBUG | JacobiJob::x0: [96.26290369 15.81913368]
+2021-07-02 14:35:30,085 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:35:30,090 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:35:30,094 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:35:30,095 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:35:30,095 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:35:30,095 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_y767irzf
+2021-07-02 14:35:30,096 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:35:30,096 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_sh93erar
+2021-07-02 14:40:06,953 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:40:06,953 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:40:06,953 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:40:06,953 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:40:06,954 - efi - INFO | Found new best optimization variables:
+          alpha =        96.2629036933 in [      -inf,        inf]
+             mu =        15.8191336774 in [      -inf,        inf]
+  cost: 0.05853057925761838
+  R2:    inf
+2021-07-02 14:40:06,954 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:40:06,954 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:40:06,954 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:40:06,954 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:40:06,954 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:40:06,954 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:40:06,955 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::x: [96.27252998 15.81913368]
+2021-07-02 14:40:06,955 - efi - DEBUG | ObjectiveFunc::x: [96.26290369 15.82071559]
+2021-07-02 14:40:06,956 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:40:06,956 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:40:06,956 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:40:06,956 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:40:06,957 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_82e2pocx
+2021-07-02 14:40:06,957 - efi - DEBUG | JacobiJob::x0: [95.95620622 15.87684059]
+2021-07-02 14:40:06,957 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:40:06,962 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:40:06,966 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:40:06,966 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:40:06,967 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:40:06,967 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_ag8p5biu
+2021-07-02 14:40:06,967 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:40:06,972 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_8q69vo1j
+2021-07-02 14:44:40,138 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:44:40,138 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:44:40,139 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:44:40,139 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:44:40,139 - efi - INFO | Found new best optimization variables:
+          alpha =        95.9562062174 in [      -inf,        inf]
+             mu =        15.8768405915 in [      -inf,        inf]
+  cost: 0.05852208665222192
+  R2:    inf
+2021-07-02 14:44:40,140 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:44:40,140 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:44:40,328 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:44:40,328 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:44:40,328 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:44:40,329 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:44:40,329 - efi - DEBUG | ObjectiveFunc::x: [95.96580184 15.87684059]
+2021-07-02 14:44:40,330 - efi - DEBUG | ObjectiveFunc::x: [95.95620622 15.87842828]
+2021-07-02 14:44:40,330 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:44:40,330 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:44:40,330 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:44:40,331 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:44:40,331 - efi - DEBUG | JacobiJob::x0: [95.69939862 15.94256739]
+2021-07-02 14:44:40,331 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_j5dibdxr
+2021-07-02 14:44:40,331 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:44:40,337 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:44:40,337 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:44:40,342 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:44:40,342 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:44:40,343 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_hwovaaq3
+2021-07-02 14:44:40,343 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:44:40,343 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_4qbg1itp
+2021-07-02 14:49:10,765 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:49:10,765 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:49:10,765 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:49:10,765 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:49:10,766 - efi - INFO | Found new best optimization variables:
+          alpha =        95.6993986195 in [      -inf,        inf]
+             mu =        15.9425673919 in [      -inf,        inf]
+  cost: 0.05851938060691033
+  R2:    inf
+2021-07-02 14:49:10,766 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:49:10,766 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 14:49:11,446 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:49:11,446 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:49:11,446 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:49:11,447 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 14:49:11,447 - efi - DEBUG | ObjectiveFunc::x: [95.70896856 15.94256739]
+2021-07-02 14:49:11,448 - efi - DEBUG | ObjectiveFunc::x: [95.69939862 15.94416165]
+2021-07-02 14:49:11,448 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 14:49:11,448 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:49:11,449 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:49:11,449 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:49:11,449 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_tjhoqly6
+2021-07-02 14:49:11,449 - efi - DEBUG | JacobiJob::x0: [96.26136761 15.8362975 ]
+2021-07-02 14:49:11,450 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:49:11,455 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:49:11,459 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:49:11,460 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:49:11,460 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:49:11,460 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_dq837_at
+2021-07-02 14:49:11,461 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:49:11,461 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_7bb3rhgb
+2021-07-02 14:53:43,404 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:53:43,405 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:53:43,405 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:53:43,405 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:53:43,406 - efi - INFO | Discarding optimization variables:
+          alpha =        96.2613676074 in [      -inf,        inf]
+             mu =        15.8362975019 in [      -inf,        inf]
+  cost: 0.05852822706057777 (current 0.05851938060691033)
+  R2:   inf (current inf)
+2021-07-02 14:53:43,406 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:53:43,406 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:53:43,407 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:53:43,407 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:53:43,407 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_2tvln2jt
+2021-07-02 14:53:43,408 - efi - DEBUG | JacobiJob::x0: [95.8259388  15.91148882]
+2021-07-02 14:53:43,408 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:53:43,413 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:53:43,417 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:53:43,418 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:53:43,419 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:53:43,419 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:53:44,607 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_syvigkjy
+2021-07-02 14:53:47,688 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_gk4pw72f
+2021-07-02 14:58:18,666 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 14:58:18,666 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 14:58:18,667 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 14:58:18,667 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 14:58:18,668 - efi - INFO | Discarding optimization variables:
+          alpha =        95.8259387959 in [      -inf,        inf]
+             mu =        15.9114888244 in [      -inf,        inf]
+  cost: 0.058519530676415556 (current 0.05851938060691033)
+  R2:   inf (current inf)
+2021-07-02 14:58:18,668 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 14:58:18,668 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:58:18,668 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:58:18,669 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 14:58:18,669 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_jdoxj1hq
+2021-07-02 14:58:18,669 - efi - DEBUG | JacobiJob::x0: [95.72187289 15.93282237]
+2021-07-02 14:58:18,675 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 14:58:18,675 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 14:58:18,679 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 14:58:18,680 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 14:58:18,680 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 14:58:18,681 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 14:58:18,681 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_998zt__8
+2021-07-02 14:58:19,816 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_brdzo1iw
+2021-07-02 15:02:53,818 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:02:53,819 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:02:53,819 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:02:53,819 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:02:53,820 - efi - INFO | Found new best optimization variables:
+          alpha =        95.7218728911 in [      -inf,        inf]
+             mu =        15.9328223681 in [      -inf,        inf]
+  cost: 0.058519053446695606
+  R2:    inf
+2021-07-02 15:02:53,820 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:02:53,820 - efi - DEBUG | JacobiJob::eval() starting evaluation
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:02:53,820 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:02:53,821 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::initialized empty J
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::x: [95.73144508 15.93282237]
+2021-07-02 15:02:53,821 - efi - DEBUG | ObjectiveFunc::x: [95.72187289 15.93441565]
+2021-07-02 15:02:53,821 - efi - DEBUG | JacobiJob::finished eval
+2021-07-02 15:02:53,822 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:02:53,823 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:02:53,823 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:02:53,823 - efi - DEBUG | JacobiJob::x0: [95.71118255 15.93241998]
+2021-07-02 15:02:53,823 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_z0sla6cv
+2021-07-02 15:02:53,824 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:02:53,829 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:02:53,829 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:02:53,833 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:02:53,834 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:02:53,834 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_yyxswlkl
+2021-07-02 15:02:53,834 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:02:53,839 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_xj41gdr_
+2021-07-02 15:07:27,458 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:07:27,458 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:07:27,458 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:07:27,458 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:07:27,459 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7111825477 in [      -inf,        inf]
+             mu =        15.9324199819 in [      -inf,        inf]
+  cost: 0.05851913047693063 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:07:27,459 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:07:27,459 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:07:27,460 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:07:27,460 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:07:27,460 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_vt6dj62t
+2021-07-02 15:07:27,460 - efi - DEBUG | JacobiJob::x0: [95.71924384 15.93266041]
+2021-07-02 15:07:27,461 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:07:27,465 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:07:27,465 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:07:27,470 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:07:27,470 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:07:27,470 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_ea_fq9xx
+2021-07-02 15:07:27,471 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:07:29,375 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_zcblqh_d
+2021-07-02 15:12:01,369 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:12:01,369 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:12:01,369 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:12:01,369 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:12:01,370 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7192438419 in [      -inf,        inf]
+             mu =        15.9326604102 in [      -inf,        inf]
+  cost: 0.05851932371420206 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:12:01,370 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:12:01,370 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:12:01,371 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:12:01,371 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:12:01,371 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_8f5snfw0
+2021-07-02 15:12:01,371 - efi - DEBUG | JacobiJob::x0: [95.72121917 15.93277805]
+2021-07-02 15:12:01,372 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:12:01,376 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:12:01,376 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:12:01,381 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:12:01,381 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:12:01,381 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_uk9xqkbd
+2021-07-02 15:12:01,382 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:12:06,411 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_v4gafbno
+2021-07-02 15:16:34,769 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:16:34,769 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:16:34,769 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:16:34,769 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:16:34,770 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7212191730 in [      -inf,        inf]
+             mu =        15.9327780543 in [      -inf,        inf]
+  cost: 0.05851920359558243 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:16:34,770 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:16:34,770 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:16:34,771 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:16:34,771 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:16:34,771 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_j1lizlgp
+2021-07-02 15:16:34,771 - efi - DEBUG | JacobiJob::x0: [95.72170969 15.93281105]
+2021-07-02 15:16:34,776 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:16:34,776 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:16:34,780 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:16:34,781 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:16:34,781 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:16:34,781 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_di0uqm9b
+2021-07-02 15:16:34,781 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:16:40,123 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_fnnswrek
+2021-07-02 15:21:06,985 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:21:06,986 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:21:06,986 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:21:06,986 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:21:06,986 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7217096947 in [      -inf,        inf]
+             mu =        15.9328110523 in [      -inf,        inf]
+  cost: 0.05851927149894162 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:21:06,987 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:21:06,987 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:21:06,987 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:21:06,988 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:21:06,988 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_alqiw3wk
+2021-07-02 15:21:06,988 - efi - DEBUG | JacobiJob::x0: [95.72183211 15.93281952]
+2021-07-02 15:21:06,988 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:21:06,993 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:21:06,997 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:21:06,998 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:21:06,998 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:21:06,998 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_s95kbsi5
+2021-07-02 15:21:06,998 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:21:12,977 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_04ojh8_8
+2021-07-02 15:25:36,851 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:25:36,851 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:25:36,852 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:25:36,852 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:25:36,852 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7218321067 in [      -inf,        inf]
+             mu =        15.9328195244 in [      -inf,        inf]
+  cost: 0.05851907298285103 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:25:36,853 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:25:36,853 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:25:36,853 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:25:36,853 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:25:36,854 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_xe3wzav3
+2021-07-02 15:25:36,854 - efi - DEBUG | JacobiJob::x0: [95.7218627  15.93282166]
+2021-07-02 15:25:36,854 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:25:36,859 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:25:36,863 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:25:36,863 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:25:36,864 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:25:36,864 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:25:37,583 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_so5c07cj
+2021-07-02 15:25:43,471 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_zpy9wevj
+2021-07-02 15:30:07,121 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:30:07,121 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:30:07,121 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:30:07,121 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:30:07,122 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7218626959 in [      -inf,        inf]
+             mu =        15.9328216562 in [      -inf,        inf]
+  cost: 0.05851906195987025 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:30:07,122 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:30:07,123 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:30:07,123 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:30:07,123 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:30:07,123 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_hm19bdyx
+2021-07-02 15:30:07,123 - efi - DEBUG | JacobiJob::x0: [95.72187034 15.93282219]
+2021-07-02 15:30:07,124 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:30:07,128 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:30:07,133 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:30:07,133 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:30:07,134 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:30:07,134 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:30:08,503 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_d9ayq8d9
+2021-07-02 15:30:16,103 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_ssa_xkwn
+2021-07-02 15:34:39,645 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:34:39,645 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:34:39,645 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:34:39,645 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:34:39,646 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7218703423 in [      -inf,        inf]
+             mu =        15.9328221901 in [      -inf,        inf]
+  cost: 0.058519053446695606 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:34:39,646 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:34:39,646 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:34:39,647 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:34:39,647 - efi - DEBUG | ObjectiveFunc::jacobian_job()
+2021-07-02 15:34:39,647 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_a97kae95
+2021-07-02 15:34:39,647 - efi - DEBUG | JacobiJob::x0: [95.72187225 15.93282232]
+2021-07-02 15:34:39,648 - efi - DEBUG | JacobiJob::_initialize() finished calculating h
+2021-07-02 15:34:39,652 - efi - DEBUG | JacobiJob::_initialize() starting sim Job
+2021-07-02 15:34:39,656 - efi - DEBUG | ObjectiveFunc::eval_job()
+2021-07-02 15:34:39,657 - efi - DEBUG | SimJob::_run_all() submiting job 0
+2021-07-02 15:34:39,657 - efi - DEBUG | SimJob::_run_all() submiting job 1
+2021-07-02 15:34:39,658 - efi - DEBUG | SimJob::_run_all() found cached future
+2021-07-02 15:34:41,930 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_k1u1os8j
+2021-07-02 15:34:48,415 - efi - DEBUG | SimJob:_run() creating /calculate/iwtm66/graz/C06_c1/efi_cp_4zdx043f
+2021-07-02 15:39:14,360 - efi - DEBUG | ObjectiveFunc::calc_residui()
+2021-07-02 15:39:14,360 - efi - DEBUG | ObjectiveFunc::get_weighted_output()
+2021-07-02 15:39:14,360 - efi - DEBUG | ObjectiveFunc::scale_output()
+2021-07-02 15:39:14,361 - efi - DEBUG | ObjectiveFunc::calc_cost()
+2021-07-02 15:39:14,361 - efi - INFO | Discarding optimization variables:
+          alpha =        95.7218722539 in [      -inf,        inf]
+             mu =        15.9328223236 in [      -inf,        inf]
+  cost: 0.058519053446695606 (current 0.058519053446695606)
+  R2:   inf (current inf)
+2021-07-02 15:39:14,361 - efi - DEBUG | SimJob::eval() jobs finished
+2021-07-02 15:39:14,363 - efi - INFO | optimization result: active_mask: array([0., 0.])
+        cost: 0.05851905344669561
+         fun: array([ 0.        , -0.00396056, -0.01068863, -0.0214953 , -0.03530411,
+       -0.0517694 , -0.06746462, -0.08392816, -0.09687306, -0.10467082,
+       -0.10881762, -0.11039187, -0.10644927, -0.09848651, -0.085246  ,
+       -0.0664351 , -0.04231402, -0.01159027,  0.02678591,  0.07320758,
+        0.        ,  0.00581154,  0.01253612,  0.01646474,  0.01994465,
+        0.02166803,  0.02237501,  0.02156463,  0.01831752,  0.01280306,
+        0.00816212,  0.00073156, -0.00475566, -0.01137628, -0.01609413,
+       -0.02208404, -0.03300362, -0.04398142, -0.05771242, -0.07568611])
+        grad: array([2.99637932e-05, 2.99881700e-05])
+         jac: array([[ 0.00000000e+00,  0.00000000e+00],
+       [ 4.02334335e-06,  3.06173721e-04],
+       [ 2.14578312e-05,  6.60690660e-04],
+       [ 5.36445780e-05,  1.12800844e-03],
+       [ 1.07289156e-04,  1.61144063e-03],
+       [ 1.87756023e-04,  2.25601689e-03],
+       [ 2.81634035e-04,  2.90059314e-03],
+       [ 4.02334335e-04,  3.78688549e-03],
+       [ 5.49856925e-04,  4.67317784e-03],
+       [ 7.24201803e-04,  5.64004222e-03],
+       [ 9.38780115e-04,  6.76805066e-03],
+       [ 1.20700301e-03,  8.05720317e-03],
+       [ 1.47522590e-03,  8.86292349e-03],
+       [ 2.01167168e-03,  1.04743641e-02],
+       [ 2.54811746e-03,  1.28915251e-02],
+       [ 3.35278613e-03,  1.53086860e-02],
+       [ 4.29156624e-03,  1.77258470e-02],
+       [ 5.23034636e-03,  2.01430079e-02],
+       [ 6.70557225e-03,  2.33658892e-02],
+       [ 8.58313248e-03,  2.65887705e-02],
+       [ 0.00000000e+00,  0.00000000e+00],
+       [ 3.54172687e-06, -7.44734690e-04],
+       [-3.54172687e-06, -1.46819125e-03],
+       [-3.54172687e-05, -2.34059474e-03],
+       [-7.08345374e-05, -3.19172010e-03],
+       [-1.41669075e-04, -4.04284546e-03],
+       [-2.47920881e-04, -5.10675216e-03],
+       [-3.54172687e-04, -6.38344020e-03],
+       [-4.95841762e-04, -7.66012824e-03],
+       [-6.37510837e-04, -9.14959762e-03],
+       [-8.14597180e-04, -1.08518483e-02],
+       [-9.91683524e-04, -1.25540991e-02],
+       [-1.16876987e-03, -1.42563498e-02],
+       [-1.41669075e-03, -1.61713818e-02],
+       [-1.66461163e-03, -1.80864139e-02],
+       [-1.94794978e-03, -2.04270086e-02],
+       [-2.47920881e-03, -2.34059474e-02],
+       [-2.47920881e-03, -2.55337608e-02],
+       [-3.18755418e-03, -2.76615742e-02],
+       [-3.54172687e-03, -2.97893876e-02]])
+        nfev: 18
+        njev: 8
+  optimality: 2.9988169986346937e-05
+      status: 3
+           x: array([95.72187289, 15.93282237])
+2021-07-02 15:39:14,364 - efi - INFO | final optvars: OptVars(alpha=OptVarData(value=95.7218728910679, bounds=(-inf, inf)),
+	mu=OptVarData(value=15.93282236810277, bounds=(-inf, inf)))
+2021-07-02 15:39:14,364 - efi - Level EFILOG.MAIL | finished optimization of ../prm/trro_comp_ten/graz_C06_c1.prm

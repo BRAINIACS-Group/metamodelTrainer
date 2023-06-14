@@ -1,0 +1,157 @@
+# Listing of Parameters
+# ---------------------
+subsection experiment
+  set input directory = 
+  set output directory = 
+  set reset = false
+  set verbosity console = normal
+  set verbosity logfile = normal
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=3]
+    set column name displacement = displacement
+    set input files = 3_comp_ten_cyc_c2.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=9]
+    set column name displacement = displacement
+    set input files = 9_interm_mode3.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=11]
+    set column name angle = angle
+    set input files = 11_torsion_cyc_l1_c2.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=2]
+    set column name displacement = displacement
+    set input files = 2_comp_ten_cyc_c1.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=14]
+    set column name angle = angle
+    set input files = 14_torsion_cyc_l2_c1.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=5]
+    set column name displacement = displacement
+    set input files = 5_interm_mode2.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=10]
+    set column name angle = angle
+    set input files = 10_torsion_cyc_l1_c1.csv
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=17]
+    set column name angle = angle
+    set input files = 17_interm_mode5.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=8]
+    set column name displacement = displacement
+    set input files = 8_comp_ten_rel_l2.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=13]
+    set column name angle = angle
+    set input files = 13_interm_mode4.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=4]
+    set column name displacement = displacement
+    set input files = 4_comp_ten_cyc_c3.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=16]
+    set column name angle = angle
+    set input files = 16_torsion_cyc_l2_c3.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=1]
+    set column name displacement = displacement
+    set input files = 1_interm_mode1.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=7]
+    set column name displacement = displacement
+    set input files = 7_comp_ten_rel_l1.5.csv
+    set uniaxial = false
+  end
+
+  subsection sample
+
+    subsection nonlinear_solver_control
+      set absolute tolerance = 1e-10
+      set linear solver type = direct
+      set maximum number of iterations = 10
+      set relative tolerance = 1e-08
+    end
+
+    subsection finite element
+      set polynomial degree = 2
+    end
+
+    subsection quadrature
+      set quadrature points per space direction = auto
+      set quadrature type = gauss
+    end
+
+    subsection constitutive@[type=maxwell_wiechert,instance=1]
+
+      subsection constitutive@[type=modified_one_term_ogden,instance=1]
+        set alpha = -16.88855591620222
+        set bulk modulus = 12465.0519702520
+        set empirical coefficient = -2.
+        set mu = 1289.4881348536524
+      end
+
+      subsection constitutive@[type=maxwell_element,instance=1]
+        set deviatoric viscosity = 5255.270313835101
+
+        subsection constitutive@[type=modified_one_term_ogden,instance=1]
+          set alpha = -4.701654437000752
+          set bulk modulus = 4169.59394881267
+          set empirical coefficient = -2.
+          set mu = 431.33730504958675
+        end
+      end
+    end
+
+    subsection geometry@[type=rotation_sym_cylinder]
+      set height = 0.00369233203125
+      set radius = 4e-3
+      set relative maxium element size = 0.5
+    end
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=15]
+    set column name angle = angle
+    set input files = 15_torsion_cyc_l2_c2.csv
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=6]
+    set column name displacement = displacement
+    set input files = 6_comp_ten_rel_l1.csv
+    set uniaxial = false
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=12]
+    set column name angle = angle
+    set input files = 12_torsion_cyc_l1_c3.csv
+  end
+end
+
+subsection global
+  set input directory = ../../data/input/10.01.2022ALG_5_GEL_5_P2
+  set output directory = /data/iwtm662/efiOpt/test/out/sim_direct/efi_cp_e1qd5afc
+  set paraview output = false
+  set verbosity console = debug
+  set verbosity logfile = debug
+end
