@@ -140,11 +140,13 @@ class Model():
             'history': self.history
         }
         
+        with open(name[:-4]+'.txt','w') as f:
+            f.write(self.sum)
+
         with open(name, 'wb') as f:
             pickle.dump(data, f)
         
-        with open(name[:-4]+'.txt','w') as f:
-            f.write(self.sum)
+       
         
 
     

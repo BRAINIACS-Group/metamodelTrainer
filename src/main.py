@@ -20,7 +20,7 @@ save_path = Path(cwd,"models")
 R = [(-20,20),(100,2000),(-20,20),(100,2000),(0,10000)]
 
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
-k = 2
+k = 25
 S = LHCuSample(R,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
@@ -39,7 +39,7 @@ HP = HyperParameters(layers=[64,64],
 model = RecModel(X_T,Y_T,HP)
 
 #train model
-model.train(n_epochs=2, verbose=1)
+model.train(n_epochs=100, verbose=1)
 
 #save model
 model.save(Path(save_path,"model_"+str(uuid4())[:8]))
