@@ -22,7 +22,6 @@ def evaluate(model,X,Y):
     v /= np.max(v)
     v = 1 - v
     mpl.plot(v,r2)
-    mpl.show()
     mpl.xlabel("1 - Variance, normalized")
     mpl.ylabel("R^2")
     mpl.show()
