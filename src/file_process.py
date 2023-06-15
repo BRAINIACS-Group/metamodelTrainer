@@ -58,3 +58,4 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
     Y = ExData(Y.reshape(Y.n*Y.t,Y.f).reshape(Y.shape),p=Y.p) #Necessary but don't know why
     return X,Y
 
+#def to_file(X,inputs): #Takes the predicted results from the model and writes them to a folder following input structure

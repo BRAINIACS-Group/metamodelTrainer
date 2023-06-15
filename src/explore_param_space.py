@@ -74,19 +74,18 @@ class Sample(np.ndarray):
 ### Sampling Methods ###
 ########################
 
-def scale_to(X,R): #Scales a random sampling in [0,1] square to desired ranges
-    for i,r in enumerate(R):
-        v_min = r[0]
-        v_max = r[1]
-        X[:,i] *= (v_max-v_min)
-        X[:,i] += v_min
+def scale_to(X,R0,R1): #Scales a random sampling from R0 ranges to R1 ranges
+    for i in len(R1):
+        X[:,i] -= R0[i][0]
+        X[:,i] *= (R1[i][1]-R1[i][0])/(R0[i][1]-R0[i][0])
+        X[:,i] += R1[i][0]       
     return X
 
 def RandSample(R=[(0,1),(0,1)],k=100): #Samples k points in a n-dim space randomly
     Points = []
     for i in range(k):
         Points.append([random.random() for j in range(len(R))])
-    return Sample(scale_to(np.array(Points),R))
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
 
 
 def GridSample(R=[(0,1),(0,1)],p=5): #Samples a random point in each square of a n-dim grid with p subdivisions
@@ -94,7 +93,7 @@ def GridSample(R=[(0,1),(0,1)],p=5): #Samples a random point in each square of a
     Points = []
     for i in range(p**n):
         Points.append([random.random()/p + ((i%(p**(j+1)))//p**j)*1/p for j in range(n)])
-    return Sample(scale_to(np.array(Points),R))
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
 
 def LHCuSample(R=[(0,1),(0,1)],k=100): #Creates a Latin Hypercube from k equal divisions of the n-dim cube
     n = len(R)
@@ -105,14 +104,30 @@ def LHCuSample(R=[(0,1),(0,1)],k=100): #Creates a Latin Hypercube from k equal d
     Points = []
     for i in range(k):
         Points.append([(grid[i,j]+random.random())/k for j in range(n)])
-    return Sample(scale_to(np.array(Points),R))
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
 
 
 def PDskSample(R = [(0,1),(0,1)],k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
     n = len(R)
     engine = PoissonDisk(d=n, radius=0.61/np.sqrt(k*np.sqrt(3)/4), hypersphere='surface')
-    return Sample(scale_to(engine.random(k),R))
+    return Sample(scale_to(engine.random(k),[(0,1) for _ in range(len(R))],R))
 
+def distance(A,B,R): #Returns the normalized distance between two points (when scaled to a unit square)
+    A = scale_to(np.array([A]),R,[(0,1) for _ in range(len(R))])[0]
+    B = scale_to(np.array([B]),R,[(0,1) for _ in range(len(R))])[0]
+    return np.sqrt(np.sum((A-B)**2))
+
+def distance_to_sample(A,X,R): #Returns the minimum distance from a point to a set of points
+    d = [distance(A,X[i],R) for i in range(len(X))]
+    return min(d)
+
+def avg_distance(X,R): #Returns the average distance between all points of a sample
+    d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
+    return np.mean(d)
+
+def min_distance(X,R):
+    d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
+    return min(d)
 
 #########################
 ### ExData definition ###

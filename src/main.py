@@ -22,12 +22,15 @@ R = [(-20,20),(100,2000),(-20,20),(100,2000),(0,10000)]
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
 k = 25
 S = LHCuSample(R,k)
-
+'''
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
 res_path = label(S)
 
 #Load the results and format them for model training
 X_T,Y_T = load_FE(res_path)
+'''
+
+X_T,Y_T = load(data_path)
 
 #Define model HyperParameters
 HP = HyperParameters(layers=[64,64],
@@ -42,4 +45,10 @@ model = RecModel(X_T,Y_T,HP)
 model.train(n_epochs=100, verbose=1)
 
 #save model
-model.save(Path(save_path,"model_"+str(uuid4())[:8]))
+#model.save(Path(save_path,"model_"+str(uuid4())[:8]))
+model.save(Path(save_path,"model_base"))
+
+label_fn = lambda X: load(label(X))
+
+model_bis = improve(model,label_fn,R,k=10)
+model_bis.save(Path(save_path,"model_improved1"))
