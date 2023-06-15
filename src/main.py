@@ -48,7 +48,7 @@ model.train(n_epochs=100, verbose=1)
 #model.save(Path(save_path,"model_"+str(uuid4())[:8]))
 model.save(Path(save_path,"model_base"))
 '''
-model = load_model(Path(save_path,"model_base"))
+model = load_model(Path(save_path,"model_base.pkl"))
 
 
 label_fn = lambda X: load_FE(label(X))
