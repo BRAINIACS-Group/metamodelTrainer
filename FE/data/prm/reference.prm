@@ -77,7 +77,13 @@ subsection experiment
     set uniaxial                 = false
   end
 
- 
+  subsection testing_device@[type=tension_compression_testing_device,instance=2]
+    set column name displacement = displacement
+    set input files              = 2_comp_ten_cyc_c1.csv # default:
+    set uniaxial                 = false
+  end
+
+
 	
 	
 end
