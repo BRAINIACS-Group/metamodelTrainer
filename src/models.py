@@ -49,6 +49,64 @@ class HyperParameters(dict):
         if key not in self._keys:
             raise KeyError(f"Key '{key}' not found.")
         return super().__setitem__(key, value)
+    
+class Summary(dict):
+    def __init__(self,
+                method='FNN',
+                date=datetime.now(),
+                HP = HyperParameters(),
+                input_shape=(None,1),
+                output_shape=(None,1),
+                max_inter=None,
+                training_history=[],
+                add_info = ""):
+        self._keys = set(["method", "date","HP","input_shape","output_shape","max_inter","training_history","add_info"])
+        super().__setitem__("method",method)
+        super().__setitem__("date",date)
+        super().__setitem__("HP",HP)
+        super().__setitem__("input_shape",input_shape)
+        super().__setitem__("output_shape",output_shape)
+        super().__setitem__("max_inter",max_inter)
+        super().__setitem__("training_history",training_history)
+        super().__setitem__("add_info",add_info)
+
+    def to_string(self):
+        string = "\n"
+        if self['method'] == 'FNN': string += "Forward Neural Network"
+        elif self['method'] == 'RNN': string += "Recurrent Neural Network"
+        elif self['method'] == 'SW': string += "Recurrent Neural Network"
+        string += f" created on {self['date'].strftime('%d-%m-%Y %H:%M')}.\n\n"
+        string += "Architecture :\n"
+        string += f"Input shape : {str(self['input_shape'])}\n"
+        if self['method'] == 'FNN':
+            for i in range(len(self['HP']['layers'])):
+                string += f"Layer {str(2*i+1)} : Dense, {str(self['HP']['layers'][i])} cells, activation = relu\n"
+                string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
+            string += f"Output Layer : Dense, {str(output_shape)} neurons, activation = linear \n"
+        elif self['method'] == 'RNN':
+            for i in range(len(self['HP']['layers'])):
+                string += f"Layer {str(2*i+1)} : LSTM, {str(self['HP']['layers'][i])} cells, activation = tanh\n"
+                string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
+            string += f"Output Layer : LSTM, {str(self['output_shape'])} cells, activation = tanh \n"
+        elif self['method'] == 'SW':
+            for i in range(len(self['HP']['layers'])):
+                string += f"Layer {str(2*i+1)} : LSTM, {str(self['HP']['layers'][i])} cells, activation = tanh\n"
+                string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
+            string += f"Output Layer : LSTM, {str(self['output_shape'])} cells, activation = tanh \n"
+        string += "Call obj.model.summary() for more details on architecture (provided by keras)\n\n"
+        string += f"Optimizer : Adam (learning rate = 0.001)\n"
+        string += f"Loss measure : {self['HP']['loss']}\n\n"
+        string += f"Data is scaled before and after prediction using StandardScalers.\n"
+        if self['HP']['interpolation'] != None: 
+            string += f"Data is interpolated using {str(self['HP']['interpolation'])} timesteps between 0 and {str(self['max_inter'])} seconds.\n"
+        string += '\n'
+        for i in range(len(self["training_history"])):
+            string += f"Trained for {str(self['training_history'][i][0])} epochs on {str(self['training_history'][i][1])} samples. Call obj.history[{i}] to see training history.\n"
+        string += '\n'    
+        string += self['add_info']
+        return string
+
+
 
 #Interpolates new_time values from a given X, whose values are ordered by old_time
 def interpolate(X,new_time,old_time=None,tii=False):
@@ -94,7 +152,7 @@ class Model():
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
         history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(self.X_T.n/16),validation_split=0.1)
         self.history.append(history)
-        self.sum += f"Trained for {n_epochs} epochs on {self.X_T.n} samples. Call obj.history[{str(len(self.history)-1)}] to see training history.\n"
+        self.sum['training_history'].append(n_epochs,self.X_T.n)
         return history
 
     def predict(self,X,return_var=False):
@@ -123,7 +181,7 @@ class Model():
         self.Y_T = self.Y_T.append(Y_A)
 
     def summary(self):
-        print(self.sum)
+        print(self.sum.to_string())
 
     def save(self,name):
         if str(name)[-4:] != '.pkl':
@@ -141,7 +199,7 @@ class Model():
         }
         
         with open(name[:-4]+'.txt','w') as f:
-            f.write(self.sum)
+            f.write(self.sum.to_string())
 
         with open(name, 'wb') as f:
             pickle.dump(data, f)
@@ -196,17 +254,11 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
     preprocessY = (F_preY_fn,[scalerY])
     postprocessY = (F_postY_fn,[scalerY])
 
-    summary = f"Forward neural network created on {datetime.now().strftime('%d-%m-%Y %H:%M')}.\n\n"
-    summary += "Architecture :\n"
-    summary += f"Input shape : ({str(X_T.f)},)\n"
-    for i in range(len(HP['layers'])):
-        summary += f"Layer {str(2*i+1)} : LSTM, {str(HP['layers'][i])} cells, activation = tanh\n"
-        summary += f"Layer {str(2*i+2)} : Dropout, Rate = {str(HP['dropout_rate'])}\n"
-    summary += f"Output Layer : Dense, {Y_T.f} neurons, activation = linear \n"
-    summary += "Call obj.model.summary() for more details on architecture (provided by keras)\n\n"
-    summary += f"Optimizer : Adam (learning rate = 0.001)\n"
-    summary += f"Loss measure : {HP['loss']}\n\n"
-    summary += f"Data is scaled before and after prediction using StandardScalers.\n\n"
+    summary = Summary(method = 'FNN',
+                      date = datetime.now(),
+                      HP = HP,
+                      input_shape=(X_T.f,),
+                      output_shape = Y_T.f,)
 
     history = []
 
@@ -277,19 +329,12 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
         preprocessY = (R_preY_fn_I,[scalerY,new_time])
         postprocessY = (R_postY_fn_I,[scalerY,new_time])
 
-    summary = f"Recurrent neural network created on {datetime.now().strftime('%d-%m-%Y %H:%M')}.\n\n"
-    summary += "Architecture :\n"
-    summary += f"Input shape : (None, {str(X_T.f)})\n"
-    for i in range(len(HP['layers'])):
-        summary += f"Layer {str(2*i+1)} : LSTM, {str(HP['layers'][i])} cells, activation = tanh\n"
-        summary += f"Layer {str(2*i+2)} : Dropout, Rate = {str(HP['dropout_rate'])}\n"
-    summary += f"Output Layer : LSTM, {Y_T.f} cells, activation = tanh \n"
-    summary += "Call obj.model.summary() for more details on architecture (provided by keras)\n\n"
-    summary += f"Optimizer : Adam (learning rate = 0.001)\n"
-    summary += f"Loss measure : {HP['loss']}\n\n"
-    summary += f"Data is scaled before and after prediction using StandardScalers.\n"
-    if HP['interpolation'] != None: summary += f"Data is interpolated using {str(HP['interpolation'])} timesteps between 0 and {np.max(np.asarray(X_T)[0,:,X_T.p])} seconds.\n"
-    summary += '\n'
+    summary = Summary(method = 'RNN',
+                      date = datetime.now(),
+                      HP = HP,
+                      input_shape=(None,X_T.f),
+                      output_shape = Y_T.f,
+                      max_inter=np.max(np.asarray(X_T)[0,:,X_T.p]))
 
     history = []
 
