@@ -25,7 +25,7 @@ S = LHCuSample(R,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
 res_path = label(S)
-
+res_path =data_path
 #Load the results and format them for model training
 X_T,Y_T = load_FE(res_path)
 
