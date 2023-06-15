@@ -508,7 +508,7 @@ def load_mega(name):
 #Finally, using the original training pool as well as the new data points, it trains itself following the same training routine as the original
 
 def improve(model,label_fn,ranges,k=10,pool_size=None):
-    if pool_size == None: pool_size = 8#(k*50,500)
+    if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
@@ -520,12 +520,12 @@ def improve(model,label_fn,ranges,k=10,pool_size=None):
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
-    for _ in range(k):
+    for j in range(k):
         i = 0
-        while distance_to_sample(P[I[i]],P_T,ranges) < 0.5*min_distance(P_T,ranges): 
+        while distance_to_sample(P[I[i]],P_T,ranges) < min(1/X_T.n,0.5*min_distance(P_T,ranges)): 
             i += 1
             if i == len(I): 
-                i = 0
+                i = j
                 break
         P_T = P_T.append(P[I[i]])
     print("Start labeling")
@@ -559,14 +559,14 @@ def improve_random(model,label_fn,ranges,k=8,pool_size=None):
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
-    for _ in range(k):
+    for j in range(k):
         X = RandSample(ranges,1)
         i = 0
-        while distance_to_sample(X[0],P_T,ranges) < 0.5*min_distance(P_T,ranges): 
+        while distance_to_sample(X[0],P_T,ranges) < min(0.5/X_T.n,0.5*min_distance(P_T,ranges)): 
             X = RandSample(ranges,1)
             i += 1
-            if i == k:
-                i = 0
+            if i == 10*k:
+                i = j
                 break
         P_T = P_T.append(X)
     
