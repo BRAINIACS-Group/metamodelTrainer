@@ -71,23 +71,16 @@ subsection experiment
 
   end
 
-
-  
-  subsection testing_device@[type=tension_compression_testing_device,instance=8]
+  subsection testing_device@[type=tension_compression_testing_device,instance=1]
     set column name displacement = displacement
-    set input files              = 8_comp_ten_rel_l2.csv
+    set input files              = 1_interm_mode1.csv   # default:
     set uniaxial                 = false
   end
 
-  subsection testing_device@[type=tension_compression_testing_device,instance=9]
+  subsection testing_device@[type=tension_compression_testing_device,instance=2]
     set column name displacement = displacement
-    set input files              = 9_interm_mode3.csv           
+    set input files              = 2_comp_ten_cyc_c1.csv # default:
     set uniaxial                 = false
-  end
-
-  subsection testing_device@[type=rotational_rheometer,instance=10]
-    set column name angle = angle
-    set input files       = 10_torsion_cyc_l1_c1.csv # default:
   end
 
 	
