@@ -75,7 +75,7 @@ class Sample(np.ndarray):
 ########################
 
 def scale_to(X,R0,R1): #Scales a random sampling from R0 ranges to R1 ranges
-    for i in len(R1):
+    for i in range(len(R1)):
         X[:,i] -= R0[i][0]
         X[:,i] *= (R1[i][1]-R1[i][0])/(R0[i][1]-R0[i][0])
         X[:,i] += R1[i][0]       
