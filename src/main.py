@@ -30,7 +30,7 @@ res_path = label(S)
 X_T,Y_T = load_FE(res_path)
 '''
 
-X_T,Y_T = load(data_path)
+X_T,Y_T = load_FE(data_path)
 
 #Define model HyperParameters
 HP = HyperParameters(layers=[64,64],
