@@ -23,7 +23,7 @@ X_T, Y_T = load_FE(data_path,
 #Define hyper parameters
 HP = HyperParameters(layers=[64,64],
                      loss='mae',
-                     dropout_rate=0.5,
+                     dropout_rate=0,
                      interpolation=1000)
 
 #Build model
@@ -31,7 +31,7 @@ model = RecModel(X_T,Y_T,HP)
 model.summary()
 
 #Train model
-model.train(1000,verbose=1)
+model.train(5,verbose=1)
 
 
 #Save model

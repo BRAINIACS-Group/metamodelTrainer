@@ -9,11 +9,25 @@ cwd = Path(__file__).resolve().parents[1]
 data_path = Path(cwd,"data","LHCU_500")
 save_path = Path(cwd,"models")
 
-model = load(Path(save_path,"model_5f10e55d.pkl"))
+model = load(Path(save_path,"model_177daebb.pkl"))
 
-print(model.sum)
+model.summary()
+input()
 
 X,Y = load_FE(data_path)
+X,Y = ExData(X[:20,:2000,:],p=X.p), ExData(Y[:20,:2000,:],p = Y.p)
+
+def compare(model,X,Y):
+    Y_P = model.predict(X)
+    for i in range(len(X)):
+        mpl.plot(X[i,:,X.p],Y[i,:,0])
+        mpl.plot(X[i,:,X.p],Y_P[i,:,0])
+        mpl.show()
+        mpl.plot(X[i,:,X.p],Y[i,:,1])
+        mpl.plot(X[i,:,X.p],Y_P[i,:,1])
+        mpl.show()
+
+compare(model,X,Y)
 
 def evaluate(model,X,Y):
     Y_P,V = model.predict(X, return_var=True)

@@ -10,7 +10,6 @@ from keras.callbacks import EarlyStopping
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
-import multiprocessing
 
 class StandardScaler:
     def __init__(self,mu=0,std=1):
@@ -150,10 +149,7 @@ class Model():
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
         if return_var:
-            n_workers = 8
-            pool = multiprocessing.Pool(processes=n_workers)
-            predictions = np.array(pool.starmap(predict_aux, [(Xs,postY_fn,self.model,X,postY_arg) for _ in range(16)]))
-            #predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
+            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
             Y = np.mean(predictions,axis=0)
             V = np.var(predictions,axis=0)
             return ExData(Y,n=X.n), ExData(V,n=X.n)
@@ -200,10 +196,6 @@ class Model():
 
         with open(name, 'wb') as f:
             pickle.dump(data, f)
-        
-
-def predict_aux(Xs,postY_fn,model,X,postY_arg):
-    return postY_fn(model(Xs,training=True),X,*postY_arg)
 
     
 
