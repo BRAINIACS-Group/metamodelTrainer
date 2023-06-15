@@ -522,9 +522,13 @@ def improve(model,label_fn,ranges,k=10,pool_size=None):
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
     for _ in range(k):
         i = 0
-        while distance_to_sample(P[I[i]],P_T,ranges) < 0.75*min_distance(P_T,ranges): i += 1
+        while distance_to_sample(P[I[i]],P_T,ranges) < 0.5*min_distance(P_T,ranges): 
+            i += 1
+            if i == len(I): 
+                i = 0
+                break
         P_T = P_T.append(P[I[i]])
-    
+    print("Start labeling")
     Y_A = label_fn(P_T[X_T.n:])
     
     X_T = P_T.spread(inputs)
