@@ -37,7 +37,7 @@ HP = HyperParameters(layers=[64,64],
                      loss='mae',
                      dropout_rate=0.5,
                      interpolation=1000)
-
+'''
 #Build model
 model = RecModel(X_T,Y_T,HP)
 
@@ -47,8 +47,11 @@ model.train(n_epochs=100, verbose=1)
 #save model
 #model.save(Path(save_path,"model_"+str(uuid4())[:8]))
 model.save(Path(save_path,"model_base"))
+'''
+model = load_model(Path(save_path,"model_base"))
 
-label_fn = lambda X: load(label(X))
 
+label_fn = lambda X: load_FE(label(X))
+print("Start improvement !")
 model_bis = improve(model,label_fn,R,k=10)
 model_bis.save(Path(save_path,"model_improved1"))
