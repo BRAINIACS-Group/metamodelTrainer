@@ -20,12 +20,12 @@ save_path = Path(cwd,"models")
 R = [(-20,20),(100,2000),(-20,20),(100,2000),(0,10000)]
 
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
-k = 4
+k = 4 #24
 S = LHCuSample(R,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
-#res_path = label(S)
-res_path = data_path
+res_path = label(S)
+
 #Load the results and format them for model training
 X_T,Y_T = load_FE(res_path)
 
