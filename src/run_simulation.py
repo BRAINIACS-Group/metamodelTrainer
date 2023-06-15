@@ -44,7 +44,7 @@ def label(X):
         wd.mkdir()
 
     sim = FESimulation(prm,execPath=get_execPath(),
-        wd=wd,out_dir=wd,nworker=8,nthreads_per_proc=2)
+        wd=wd,out_dir=wd,nworker=4,nthreads_per_proc=2)
 
     optVars = [OptVars(
         alpha_inf = OptVarData(variables[i][0],  bounds=(-100,100)),

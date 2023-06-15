@@ -41,11 +41,11 @@ model = RecModel(X_T,Y_T,HP)
 #train model
 model.train(n_epochs=10, verbose=1)
 
-model.save(Path(save_path,"model_AL_base"))
+model.save(Path(save_path,"model_RL_base"))
 
 label_fn = lambda X: load_FE(label(X))
 
 for i in range(1):
-    model_bis = improve(model,label_fn,R,k=4)
-    model_bis.save(Path(save_path,f"model_AL_improved_{str(i).zfill(3)}"))
+    model_bis = improve_random(model,label_fn,R,k=4)
+    model_bis.save(Path(save_path,f"model_RL_improved_{str(i).zfill(3)}"))
     model = model_bis
