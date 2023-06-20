@@ -1,0 +1,13 @@
+TO-DO LIST:
+- Visualize the selected points from RL and AL
+- Test multiprocessing
+- Train final model
+- Compare results
+- Why so much training history ?
+- From & to file
+- Add summary & history to MM
+
+PRESENTATION:
+- Loss is model dependant, not sample dependant
+- Active learning vs Random learning
+- Results

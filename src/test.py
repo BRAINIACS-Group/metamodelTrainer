@@ -3,31 +3,39 @@ from models import *
 from file_process import *
 import matplotlib.pyplot as mpl
 from sklearn.metrics import r2_score
+import time
 
 #Path definition
 cwd = Path(__file__).resolve().parents[1]
-data_path = Path(cwd,"data","LHCU_500")
+data_path = Path(cwd,"data","LHCU_20")
 save_path = Path(cwd,"models")
 
-model = load(Path(save_path,"model_177daebb.pkl"))
 
-model.summary()
-input()
-
-X,Y = load_FE(data_path)
-X,Y = ExData(X[:20,:2000,:],p=X.p), ExData(Y[:20,:2000,:],p = Y.p)
-
-def compare(model,X,Y):
-    Y_P = model.predict(X)
-    for i in range(len(X)):
-        mpl.plot(X[i,:,X.p],Y[i,:,0])
-        mpl.plot(X[i,:,X.p],Y_P[i,:,0])
-        mpl.show()
-        mpl.plot(X[i,:,X.p],Y[i,:,1])
-        mpl.plot(X[i,:,X.p],Y_P[i,:,1])
-        mpl.show()
-
-compare(model,X,Y)
+def visualize_sample(name):
+    model = load_model(Path(save_path,name))
+    X_T = model.X_T
+    P,I = X_T.separate()
+    mpl.subplot(2,5,1)
+    mpl.scatter(P[:,0],P[:,1],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,2)
+    mpl.scatter(P[:,0],P[:,2],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,3)
+    mpl.scatter(P[:,0],P[:,3],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,4)
+    mpl.scatter(P[:,0],P[:,4],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,5)
+    mpl.scatter(P[:,1],P[:,2],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,6)
+    mpl.scatter(P[:,1],P[:,3],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,7)
+    mpl.scatter(P[:,1],P[:,4],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,8)
+    mpl.scatter(P[:,2],P[:,3],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,9)
+    mpl.scatter(P[:,2],P[:,4],c = [i for i in range(len(P))])
+    mpl.subplot(2,5,10)
+    mpl.scatter(P[:,3],P[:,4],c = [i for i in range(len(P))])
+    mpl.show()
 
 def evaluate(model,X,Y):
     Y_P,V = model.predict(X, return_var=True)
@@ -67,5 +75,42 @@ def evaluate(model,X,Y):
     fig.tight_layout()
 
     mpl.show()'''
+'''
+base = load_model(Path(save_path,"model_AL_improved_118"))
+X_T, Y_T = base.X_T, base.Y_T
+HP = base.sum.HP
+HP['dropout_rate'] = 0
+final = RecModel(X_T,Y_T,HP)
+final.train(1000,1)
+final.save(Path(save_path,"model_AL_final"))
 
-evaluate(model,X,Y)
+base = load_model(Path(save_path,"model_RL_improved_118"))
+X_T, Y_T = base.X_T, base.Y_T
+HP = base.sum.HP
+HP['dropout_rate'] = 0
+final = RecModel(X_T,Y_T,HP)
+final.train(1000,1)
+final.save(Path(save_path,"model_RL_final"))
+'''
+
+
+
+if __name__ == '__main__':
+    X_T,Y_T = load_FE(data_path)
+
+    #Define hyper parameters
+    HP = HyperParameters(layers=[64,64],
+                        loss='mae',
+                        dropout_rate=0,
+                        interpolation=1000)
+
+
+    model = load_model(Path(save_path,"Multi.pkl"))
+
+    t0 = time.time()
+    Y,V = model.predict(X_T,return_var=True,n_workers=4)
+    print(time.time()-t0)
+
+    print(V.shape)
+    input('Done!')
+

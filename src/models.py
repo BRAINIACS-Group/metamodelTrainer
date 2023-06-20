@@ -182,7 +182,7 @@ class Model():
     def summary(self):
         print(self.sum.to_string())
 
-    def new_save(self,name):
+    def save(self,name):
         if not(os.path.exists(name)): os.mkdir(name)
         self.model.save(Path(name,"model.h5"))
         data = {
@@ -199,25 +199,6 @@ class Model():
         with open(Path(name,"aux.pkl"), 'wb') as f:
             pickle.dump(data, f)
 
-    def save(self,name):
-        if str(name)[-4:] != '.pkl':
-            name = str(name) + '.pkl'
-
-        data = {
-            'model': self.model,
-            'X_T': self.X_T,
-            'Y_T': self.Y_T,
-            'preprocessX': self.preprocessX,
-            'preprocessY': self.preprocessY,
-            'postprocessY': self.postprocessY,
-            'summary': self.sum,
-        }
-        
-        with open(name[:-4]+'.txt','w') as f:
-            f.write(self.sum.to_string())
-
-        with open(name, 'wb') as f:
-            pickle.dump(data, f)
 
 #####################
 ####FORWARD MODEL####
@@ -427,6 +408,7 @@ class MegaModel():
         self.Y_T = Y_T.copy()
 
         self.HP = HP
+
         
         if method == 'FNN':
             self.models = [ForwardModel(self.X_T,self.Y_T,HP=HP) for i in range(n)]
@@ -436,6 +418,9 @@ class MegaModel():
 
         if method == 'SW':
             self.models = [SWModel(self.X_T,self.Y_T,HP=HP) for i in range(n)]
+
+        self.sum = self.models[0].sum
+        self.sum['method'] = str(n)+'M'+method
         
         
     def __len__(self):
@@ -455,6 +440,7 @@ class MegaModel():
                 L.append(history.history['loss'][-1])
                 if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {L[-1]}")
         if verbose >= 1: print(f"All models trained successfully. Average loss: {np.mean(L)}")
+        self.sum['training_history'].append((n_epochs,self.X_T.n))
 
     def predict(self,X,return_var=False,n_workers=1):
         if n_workers > 1:
@@ -482,6 +468,7 @@ class MegaModel():
 
     def save(self,name):
         os.mkdir(name)
+        
         for i in range(len(self)):
             self[i].save(Path(name,"Model_"+str(i).zfill(1+int(np.log10(len(self))))))
 
@@ -521,22 +508,6 @@ def load_single(name): #Loads a model from a given folder
                  ExData(data['X_T']),ExData(data['Y_T']),
                  data['preprocessX'],data['preprocessY'],data['postprocessY'],
                  data['summary'])
-
-
-def load_model(name):
-    if str(name)[-4:] == '.pkl':
-        return load_single(name)
-    else:
-        return load_mega(name)
-
-def load_single(name): #Loads a model from a given folder
-    with open(name,'rb') as f:
-        data = pickle.load(f)
-    return Model(data['model'],
-                 ExData(data['X_T']),ExData(data['Y_T']),
-                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
-                 data['summary'])  
-
 
 def load_mega(name):
     file_list = os.listdir(name)
