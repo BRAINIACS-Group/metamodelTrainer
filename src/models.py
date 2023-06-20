@@ -22,7 +22,6 @@ class StandardScaler:
     def fit(self,X):
         self.mu = np.mean(X,axis=0)
         self.std = np.std(X,axis=0)
-        if self.std == 0: self.std == 1
         return StandardScaler(self.mu,self.std)
 
     def transform(self,X):

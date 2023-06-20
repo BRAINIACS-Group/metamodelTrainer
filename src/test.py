@@ -75,10 +75,10 @@ def evaluate(model,X,Y):
     fig.tight_layout()
 
     mpl.show()'''
-'''
+
 base = load_model(Path(save_path,"model_AL_improved_118"))
 X_T, Y_T = base.X_T, base.Y_T
-HP = base.sum.HP
+HP = base.sum['HP']
 HP['dropout_rate'] = 0
 final = RecModel(X_T,Y_T,HP)
 final.train(1000,1)
@@ -86,15 +86,15 @@ final.save(Path(save_path,"model_AL_final"))
 
 base = load_model(Path(save_path,"model_RL_improved_118"))
 X_T, Y_T = base.X_T, base.Y_T
-HP = base.sum.HP
+HP = base.sum['HP']
 HP['dropout_rate'] = 0
 final = RecModel(X_T,Y_T,HP)
 final.train(1000,1)
 final.save(Path(save_path,"model_RL_final"))
+
+
+
 '''
-
-
-
 if __name__ == '__main__':
     X_T,Y_T = load_FE(data_path)
 
@@ -105,12 +105,12 @@ if __name__ == '__main__':
                         interpolation=1000)
 
 
-    model = load_model(Path(save_path,"Multi.pkl"))
+    model = load_model(Path(save_path,"model_AL_improved_118"))
 
     t0 = time.time()
-    Y,V = model.predict(X_T,return_var=True,n_workers=4)
+    Y,V = model.predict(X_T,return_var=True,n_workers=1)
     print(time.time()-t0)
 
     print(V.shape)
     input('Done!')
-
+'''
