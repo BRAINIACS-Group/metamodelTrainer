@@ -22,6 +22,7 @@ class StandardScaler:
     def fit(self,X):
         self.mu = np.mean(X,axis=0)
         self.std = np.std(X,axis=0)
+        if self.std == 0: self.std == 1
         return StandardScaler(self.mu,self.std)
 
     def transform(self,X):
@@ -93,7 +94,7 @@ class Summary(dict):
             string += f"Data is interpolated using {str(self['HP']['interpolation'])} timesteps between 0 and {str(self['max_inter'])} seconds.\n"
         string += '\n'
         for i in range(len(self["training_history"])):
-            string += f"Trained for {str(self['training_history'][i][0])} epochs on {str(self['training_history'][i][1])} samples. Call obj.history[{i}] to see training history.\n"
+            string += f"Trained for {str(self['training_history'][i][0])} epochs on {str(self['training_history'][i][1])} samples.\n"
         string += '\n'    
         string += self['add_info']
         return string
@@ -123,7 +124,7 @@ def interpolate(X,new_time,old_time=None,tii=False):
 #called before and after the prediction by the base model
 class Model(): 
     
-    def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history):
+    def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary):
         self.model = model
         self.X_T = X_T
         self.Y_T = Y_T
@@ -131,7 +132,6 @@ class Model():
         self.preprocessY = preprocessY
         self.postprocessY = postprocessY
         self.sum = summary
-        self.history = history
 
 
     def train(self,n_epochs=100,verbose=1):
@@ -143,7 +143,6 @@ class Model():
         Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
         history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(self.X_T.n/16),validation_split=0.1)
-        self.history.append(history)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
@@ -193,12 +192,11 @@ class Model():
                 'preprocessY': self.preprocessY,
                 'postprocessY': self.postprocessY,
                 'summary': self.sum,
-                'history': self.history
             }
-        with open(Path(name,'summary.txt','w')) as f:
+        with open(Path(name,'summary.txt'),'w') as f:
             f.write(self.sum.to_string())
 
-        with open(Path(name,"aux.pkl", 'wb')) as f:
+        with open(Path(name,"aux.pkl"), 'wb') as f:
             pickle.dump(data, f)
 
     def save(self,name):
@@ -213,7 +211,6 @@ class Model():
             'preprocessY': self.preprocessY,
             'postprocessY': self.postprocessY,
             'summary': self.sum,
-            'history': self.history
         }
         
         with open(name[:-4]+'.txt','w') as f:
@@ -273,9 +270,7 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
                       input_shape=(X_T.f,),
                       output_shape = Y_T.f,)
 
-    history = []
-
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history)
+    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
 
 #####################
@@ -349,9 +344,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
                       output_shape = Y_T.f,
                       max_inter=np.max(np.asarray(X_T)[0,:,X_T.p]))
 
-    history = []
-
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary,history)
+    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
 
 ####################
@@ -515,18 +508,32 @@ def M_predict_aux(model,X):
 ######################
 
 def load_model(name):
+    if os.path.exists(Path(name,"model.h5")):
+        return load_single(name)
+    else:
+        return load_mega(name)
+
+def load_single(name): #Loads a model from a given folder
+    model = klm(Path(name,"model.h5"))
+    with open(Path(name,'aux.pkl'),'rb') as f:
+        data = pickle.load(f)
+    return Model(model,
+                 ExData(data['X_T']),ExData(data['Y_T']),
+                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
+                 data['summary'])
+
+
+def load_model(name):
     if str(name)[-4:] == '.pkl':
         return load_single(name)
     else:
         return load_mega(name)
 
-def load_single(name): #Loads a model from a given pickle file
-    with open(name,'rb') as f:
+def load_single(name): #Loads a model from a given folder
+    model = klm(Path(name,"model.h5"))
+    with open(Path(name,'aux.pkl'),'rb') as f:
         data = pickle.load(f)
-    return Model(data['model'],
-                 ExData(data['X_T']),ExData(data['Y_T']),
-                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
-                 data['summary'],data['history'])
+
 
 def load_mega(name):
     file_list = os.listdir(name)
