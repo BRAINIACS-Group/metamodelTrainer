@@ -4,12 +4,15 @@ from explore_param_space import *
 from pathlib import Path
 from tensorflow import keras
 from keras.models import Sequential
+from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
 #from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
+
+import multiprocessing
 
 class StandardScaler:
     def __init__(self,mu=0,std=1):
@@ -144,12 +147,16 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False):
+    def predict(self,X,return_var=False,n_workers=1):
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
         if return_var:
-            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
+            if n_workers > 1:
+                pool = multiprocessing.Pool(processes=n_workers)
+                predictions = np.array(pool.starmap(predict_aux, [(Xs,postY_fn,self.model,X,postY_arg) for _ in range(16)]))
+            else:
+                predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
             Y = np.mean(predictions,axis=0)
             V = np.var(predictions,axis=0)
             return ExData(Y,n=X.n), ExData(V,n=X.n)
@@ -176,6 +183,24 @@ class Model():
     def summary(self):
         print(self.sum.to_string())
 
+    def new_save(self,name):
+        if not(os.path.exists(name)): os.mkdir(name)
+        self.model.save(Path(name,"model.h5"))
+        data = {
+                'X_T': self.X_T,
+                'Y_T': self.Y_T,
+                'preprocessX': self.preprocessX,
+                'preprocessY': self.preprocessY,
+                'postprocessY': self.postprocessY,
+                'summary': self.sum,
+                'history': self.history
+            }
+        with open(Path(name,'summary.txt','w')) as f:
+            f.write(self.sum.to_string())
+
+        with open(Path(name,"aux.pkl", 'wb')) as f:
+            pickle.dump(data, f)
+
     def save(self,name):
         if str(name)[-4:] != '.pkl':
             name = str(name) + '.pkl'
@@ -196,8 +221,6 @@ class Model():
 
         with open(name, 'wb') as f:
             pickle.dump(data, f)
-
-    
 
 #####################
 ####FORWARD MODEL####
@@ -428,16 +451,23 @@ class MegaModel():
     def __getitem__(self,i):
         return self.models[i]
 
-    def train(self,n_epochs=100,verbose=2):
-        for i in range(len(self)):
-            L = []
-            history = self[i].train(n_epochs,verbose=verbose-1)
-            L.append(history.history['loss'][-1])
-            if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {L[-1]}")
+    def train(self,n_epochs=100,verbose=2,n_workers=1):
+        if n_workers > 1:
+            pool = multiprocessing.Pool(processes=n_workers)
+            L = pool.starmap(train_aux, [(self[i],n_epochs,verbose,i) for i in range(len(self))])
+        else:
+            for i in range(len(self)):
+                L = []
+                history = self[i].train(n_epochs,verbose=verbose-1)
+                L.append(history.history['loss'][-1])
+                if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {L[-1]}")
         if verbose >= 1: print(f"All models trained successfully. Average loss: {np.mean(L)}")
 
-    def predict(self,X,return_var=False):
-        predictions = np.array([m.predict(X) for m in self.models])
+    def predict(self,X,return_var=False,n_workers=1):
+        if n_workers > 1:
+            pool = multiprocessing.Pool(processes=n_workers)
+            predictions = np.array(pool.starmap(M_predict_aux, [(self[i],X) for i in range(len(self))]))
+        else: predictions = np.array([m.predict(X) for m in self.models])
         Y = ExData(np.mean(predictions, axis = 0))
         V = np.var(predictions, axis = 0)
         if return_var: return Y,ExData(V)
@@ -462,14 +492,23 @@ class MegaModel():
         for i in range(len(self)):
             self[i].save(Path(name,"Model_"+str(i).zfill(1+int(np.log10(len(self))))))
 
-'''
-    def query():
 
-    def enrich():
+###########################################
+### Multiprocessing auxiliary functions ###
+###########################################
 
-    def active_learning():
-    
-'''
+def predict_aux(Xs,postY_fn,model,X,postY_arg):
+    return postY_fn(model(Xs,training=True),ExData(X),*postY_arg)
+
+def train_aux(model,n_epochs,verbose,i):
+    history = model.train(n_epochs,verbose=verbose-1)
+    if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {history.history['loss'][-1]}")
+    return history.history['loss'][-1]
+
+def M_predict_aux(model,X):
+    return model.predict(X)
+
+
 
 ######################
 ### Load functions ###
