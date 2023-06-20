@@ -530,9 +530,12 @@ def load_model(name):
         return load_mega(name)
 
 def load_single(name): #Loads a model from a given folder
-    model = klm(Path(name,"model.h5"))
-    with open(Path(name,'aux.pkl'),'rb') as f:
+    with open(name,'rb') as f:
         data = pickle.load(f)
+    return Model(data['model'],
+                 ExData(data['X_T']),ExData(data['Y_T']),
+                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
+                 data['summary'])  
 
 
 def load_mega(name):

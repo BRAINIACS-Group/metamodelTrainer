@@ -1,0 +1,20 @@
+
+Recurrent Neural Network created on 13-06-2023 19:47.
+
+Architecture :
+Input shape : (None, 8)
+Layer 1 : LSTM, 64 cells, activation = tanh
+Layer 2 : Dropout, Rate = 0
+Layer 3 : LSTM, 64 cells, activation = tanh
+Layer 4 : Dropout, Rate = 0
+Output Layer : LSTM, 2 cells, activation = tanh 
+Call obj.model.summary() for more details on architecture (provided by keras)
+
+Optimizer : Adam (learning rate = 0.001)
+Loss measure : mae
+
+Data is scaled before and after prediction using StandardScalers.
+Data is interpolated using 1000 timesteps between 0 and 1088.7393798828125 seconds.
+
+Trained for 100 epochs on 20 samples.
+
