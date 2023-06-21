@@ -7,7 +7,7 @@ import time
 
 #Path definition
 cwd = Path(__file__).resolve().parents[1]
-data_path = Path(cwd,"data","LHCU_20")
+data_path = Path(cwd,"data","LHCU_500")
 save_path = Path(cwd,"models")
 
 
@@ -37,12 +37,18 @@ def visualize_sample(name):
     mpl.scatter(P[:,3],P[:,4],c = [i for i in range(len(P))])
     mpl.show()
 
-def evaluate(model,X,Y):
-    Y_P,V = model.predict(X, return_var=True)
-    r2 = [r2_score(Y_P[i],Y[i]) for i in range(len(X))]
+def evaluate(model1,model2,X,Y):
+    Y_P1 = model1.predict(X, return_var=False)
+    Y_P2 = model2.predict(X, return_var=False)
+    r21 = np.array([r2_score(Y_P1[i],Y[i]) for i in range(len(X))])
+    r22 = np.array([r2_score(Y_P2[i],Y[i]) for i in range(len(X))])
+    r2 = r21/r22
+    print(np.mean(r2))
+    '''
     v = np.mean(V,axis=(1,2))
     v /= np.max(v)
     v = 1 - v
+    
     mpl.plot(v,r2)
     mpl.xlabel("1 - Variance, normalized")
     mpl.ylabel("R^2")
@@ -74,25 +80,23 @@ def evaluate(model,X,Y):
 
     fig.tight_layout()
 
-    mpl.show()'''
+    mpl.show()
 
-base = load_model(Path(save_path,"model_AL_improved_118"))
-X_T, Y_T = base.X_T, base.Y_T
-HP = base.sum['HP']
-HP['dropout_rate'] = 0
-final = RecModel(X_T,Y_T,HP)
-final.train(1000,1)
-final.save(Path(save_path,"model_AL_final"))
+def finalize(name):
+    base = load_model(Path(save_path,name))
+    X_T, Y_T = base.X_T, base.Y_T
+    HP = base.sum['HP']
+    HP['dropout_rate'] = 0
+    model = RecModel(X_T,Y_T,HP)
+    model.train(1000,1)
+    model.save(Path(save_path,name+"_final"))
 
-base = load_model(Path(save_path,"model_RL_improved_118"))
-X_T, Y_T = base.X_T, base.Y_T
-HP = base.sum['HP']
-HP['dropout_rate'] = 0
-final = RecModel(X_T,Y_T,HP)
-final.train(1000,1)
-final.save(Path(save_path,"model_RL_final"))
-
-
+finalize("model_AL_base")
+finalize("model_RL_base")
+finalize("model_AL_improved_018")
+finalize("model_RL_improved_018")
+finalize("model_AL_improved_043")
+finalize("model_RL_improved_043")
 
 '''
 if __name__ == '__main__':

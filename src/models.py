@@ -7,29 +7,12 @@ from keras.models import Sequential
 from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
-#from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
 
 import multiprocessing
-
-class StandardScaler:
-    def __init__(self,mu=0,std=1):
-        self.mu = mu
-        self.std = std
-
-    def fit(self,X):
-        self.mu = np.mean(X,axis=0)
-        self.std = np.std(X,axis=0)
-        return StandardScaler(self.mu,self.std)
-
-    def transform(self,X):
-        return (X - self.mu)/self.std
-    
-    def inverse_transform(self,X):
-        return (X*self.std) + self.mu
-
 
 #HyperParameters that will be used 
 class HyperParameters(dict):
