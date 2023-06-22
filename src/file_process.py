@@ -52,10 +52,24 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
     X,Y = import_csv(Path(data_dir,dir_list[0]),verbose=1,parameters=parameters,inputs=inputs,outputs=outputs)
     for i in range(1,len(dir_list)):
         X_A,Y_A = import_csv(Path(data_dir,dir_list[i]),inputs=inputs,outputs=outputs)
-        X = X.append(X_A)
-        Y = Y.append(Y_A)
-        if verbose == 1: print(f"{dir_list[i]} loaded.")
+        try: 
+            X = X.append(X_A)
+            Y = Y.append(Y_A)
+            if verbose == 1: print(f"{dir_list[i]} loaded.")
+        except:
+            print(dir_list[i] + " not loaded : mismatched shape.")
     Y = ExData(Y.reshape(Y.n*Y.t,Y.f).reshape(Y.shape),p=Y.p) #Necessary but don't know why
     return X,Y
 
-#def to_file(X,inputs): #Takes the predicted results from the model and writes them to a folder following input structure
+#Ask Jan : ParameterHandler might be very useful
+#Goal : Fully replace call to simulation ? Give a parameter file, read the useful parameters, testing devices, input files
+#Write output files
+
+def to_file(X,Y,input_dir,output_dir,input_col=['time','displacement','angle'], output_col=['force','torque']): #Takes the predicted results from the model and writes them to a folder following input structure
+    res_dfs = pd.DataFrame(np.hstack((X[i,:,X.p:],Y[i])),columns = input_col+output_col)
+    ldir = os.listdir(input_dir)
+    for file in os.listdir(input_dir):
+        print(file)
+        if file.endswith('.csv'):
+            df = pd.read_csv(Path(input_dir, file),dtype=np.float32)
+            columns = df.columns

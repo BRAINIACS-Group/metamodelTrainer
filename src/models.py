@@ -67,20 +67,23 @@ class Summary(dict):
         if self['method'] == 'FNN': string += "Forward Neural Network"
         elif self['method'] == 'RNN': string += "Recurrent Neural Network"
         elif self['method'] == 'SW': string += "Recurrent Neural Network"
+        elif self['method'][-4:] == 'MFNN' : string += f"Forward Neural Network Mega-Model ({self['method'][:-4]} models)"
+        elif self['method'][-4:] == 'MRNN' : string += f"Recurrent Neural Network Mega-Model ({self['method'][:-4]} models)"
+        elif self['method'][-3:] == 'MSW' : string += f"Recurrent Neural Network Mega-Model ({self['method'][:-3]} models)"
         string += f" created on {self['date'].strftime('%d-%m-%Y %H:%M')}.\n\n"
         string += "Architecture :\n"
         string += f"Input shape : {str(self['input_shape'])}\n"
-        if self['method'] == 'FNN':
+        if self['method'][-4:] == 'FNN':
             for i in range(len(self['HP']['layers'])):
                 string += f"Layer {str(2*i+1)} : Dense, {str(self['HP']['layers'][i])} cells, activation = relu\n"
                 string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
             string += f"Output Layer : Dense, {str(self['output_shape'])} neurons, activation = linear \n"
-        elif self['method'] == 'RNN':
+        elif self['method'][-4:] == 'RNN':
             for i in range(len(self['HP']['layers'])):
                 string += f"Layer {str(2*i+1)} : LSTM, {str(self['HP']['layers'][i])} cells, activation = tanh\n"
                 string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
             string += f"Output Layer : LSTM, {str(self['output_shape'])} cells, activation = tanh \n"
-        elif self['method'] == 'SW':
+        elif self['method'][-3:] == 'SW':
             for i in range(len(self['HP']['layers'])):
                 string += f"Layer {str(2*i+1)} : LSTM, {str(self['HP']['layers'][i])} cells, activation = tanh\n"
                 string += f"Layer {str(2*i+2)} : Dropout, Rate = {str(self['HP']['dropout_rate'])}\n"
@@ -460,13 +463,16 @@ class MegaModel():
         if method == 'mae': loss = np.mean(abs(Yp-Ys))
         print(f"Evaluation loss: {loss}")
         return loss
+    
+    def summary(self):
+        print(self.sum.to_string())
 
     def best_model(self,X,Y):
         L = [m.evaluate(X,Y) for m in self.models]
         return self[np.argmin(L)]
 
     def save(self,name):
-        os.mkdir(name)
+        if not os.path.exists(name): os.mkdir(name)
         
         for i in range(len(self)):
             self[i].save(Path(name,"Model_"+str(i).zfill(1+int(np.log10(len(self))))))
@@ -513,6 +519,7 @@ def load_mega(name):
     models = [load_single(Path(name,x)) for x in file_list]
     MM = MegaModel(models[0].X_T,models[0].Y_T)
     MM.models = models
+    MM.sum['method'] == str(len(MM))+'M'+MM.sum['method']
     return MM
 
 #######################

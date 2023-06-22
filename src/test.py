@@ -7,7 +7,7 @@ import time
 
 #Path definition
 cwd = Path(__file__).resolve().parents[1]
-data_path = Path(cwd,"data","LHCU_500")
+data_path = Path(cwd,"data","LHCU_20")
 save_path = Path(cwd,"models")
 
 
@@ -91,14 +91,13 @@ def finalize(name):
     model.train(1000,1)
     model.save(Path(save_path,name+"_final"))
 
-finalize("model_AL_base")
-finalize("model_RL_base")
-finalize("model_AL_improved_018")
-finalize("model_RL_improved_018")
-finalize("model_AL_improved_043")
-finalize("model_RL_improved_043")
+#finalize("model_AL_base")
+#finalize("model_RL_base")
+#finalize("model_AL_improved_018")
+#finalize("model_RL_improved_018")
+#finalize("model_AL_improved_043")
+#finalize("model_RL_improved_043")
 
-'''
 if __name__ == '__main__':
     X_T,Y_T = load_FE(data_path)
 
@@ -108,13 +107,24 @@ if __name__ == '__main__':
                         dropout_rate=0,
                         interpolation=1000)
 
+    model = MegaModel(X_T,Y_T,10,'RNN',HP)
+    model.train(10,1,n_workers=4)
+    model.save("MMtest")
+    model = load_model("MMtest")
+    Y = model.predict(X_T)
+    input(Y.shape)
 
-    model = load_model(Path(save_path,"model_AL_improved_118"))
+    #model = load_model(Path(save_path,"Multi"))
+    model = RecModel(X_T,Y_T,HP)
+    model.train(10,1)
+
+    model.save("test")
+    model = load_model("test")
 
     t0 = time.time()
-    Y,V = model.predict(X_T,return_var=True,n_workers=1)
+    Y,V = model.predict(X_T,return_var=True,n_workers=4)
     print(time.time()-t0)
 
     print(V.shape)
     input('Done!')
-'''
+
