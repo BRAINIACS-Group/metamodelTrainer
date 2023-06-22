@@ -21,8 +21,12 @@ CONCLUSIONS :
 - Final AL vs RL : not much difference -> Try at step 50 ? Earlier ? Compare step 50 to step 118 ?
 - Generate different initial grids w/ different methods, finalize, compare (doable today for tomorrow)
 
+
 THURSDAY : 
-- Copy all the _final models
+- (Done) Copy all the _final models 
 - Analyze (R2 ; find a way to compare)
-- Copy all method models
-- Analyze (R2 ; mustach box)
+- Copy all method models -> Monday
+- Analyze (R2 ; mustach box) -> Monday
+
+- Launch finalization of base, 003,008,013,018,...
+- Launch MM improvement loop (& finalizations ?)
