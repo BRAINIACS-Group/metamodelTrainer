@@ -24,8 +24,8 @@ k = 20
 S = LHCuSample(R,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
-#res_path = label(S)
-res_path = data_path
+res_path = label(S)
+
 #Load the results and format them for model training
 X_T,Y_T = load_FE(res_path)
 
@@ -40,15 +40,15 @@ HP = HyperParameters(layers=[64,64],
 model = MegaModel(X_T,Y_T,10,'RNN',HP)
 
 #train model
-model.train(n_epochs=10, verbose=1)
+model.train(n_epochs=100, verbose=1)
 
 model.save(Path(save_path,"megaModel_AL_base"))
 
 label_fn = lambda X: load_FE(label(X))
 
-for i in range(2):
+for i in range(20):
     model_bis = improve(model,label_fn,R,k=4)
-    model_bis.save(Path(save_path,f"model_AL_improved_{str(i).zfill(3)}"))
+    model_bis.save(Path(save_path,f"megaModel_AL_improved_{str(i).zfill(3)}"))
     model = model_bis
 
 X_T,Y_T = model_bis.X_T, model_bis.Y_T
