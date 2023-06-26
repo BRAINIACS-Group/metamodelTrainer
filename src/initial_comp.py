@@ -23,7 +23,7 @@ X_T,Y_T = load_FE(label(PDskSample(R,64)))
 model = RecModel(X_T,Y_T,HP)
 model.train(1000,1)
 model.save(Path(save_path,"model_poisson64"))
-
+'''
 #Random method
 X_T,Y_T = load_FE(label(RandSample(R,64)))
 model = RecModel(X_T,Y_T,HP)
@@ -35,9 +35,11 @@ X_T,Y_T = load_FE(label(LHCuSample(R,64)))
 model = RecModel(X_T,Y_T,HP)
 model.train(1000,1)
 model.save(Path(save_path,"model_lhcu64"))
-
+'''
 #Grid method
-X_T,Y_T = load_FE(label(GridSample(R,8)))
+P = GridSample(R,2).append(GridSample(R,2))
+print(len(P))
+X_T,Y_T = load_FE(label(P))
 model = RecModel(X_T,Y_T,HP)
 model.train(1000,1)
 model.save(Path(save_path,"model_grid64"))
