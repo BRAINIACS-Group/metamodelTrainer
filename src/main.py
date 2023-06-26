@@ -46,7 +46,7 @@ model.save(Path(save_path,"megaModel_AL_base"))
 
 label_fn = lambda X: load_FE(label(X))
 
-for i in range(20):
+for i in range(40):
     model_bis = improve(model,label_fn,R,k=4)
     model_bis.save(Path(save_path,f"megaModel_AL_improved_{str(i).zfill(3)}"))
     model = model_bis
