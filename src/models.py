@@ -415,7 +415,7 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
 #is the average of all predicted results
 
 class MegaModel():
-    def __init__(self,X_T,Y_T,n=10,method='FNN',HP=HyperParameters()):
+    def __init__(self,X_T,Y_T,n=10,method='RNN',HP=HyperParameters()):
         if not(method in ['FNN', 'RNN', 'SW']):
             raise NotImplementedError("Please select 'FNN', 'RNN' or 'SW' as method.")
 
@@ -498,6 +498,8 @@ class MegaModel():
 ### Multiprocessing auxiliary functions ###
 ###########################################
 
+### DOES NOT WORK !
+
 def predict_aux(Xs,postY_fn,model,X,postY_arg):
     return postY_fn(model(Xs,training=True),ExData(X),*postY_arg)
 
@@ -549,14 +551,14 @@ def load_mega(name):
 #It then copies the architecture of the original model as a blank slate
 #Finally, using the original training pool as well as the new data points, it trains itself following the same training routine as the original
 
-def improve(model,label_fn,ranges,k=10,pool_size=None):
+def improve(model,label_fn,PSpace,k=10,pool_size=None):
     if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = LHCuSample(ranges,pool_size)
+    P = LHCuSample(PSpace,pool_size)
     P_T,inputs = X_T.separate()
     X = P.spread(inputs)
     Y,V = model.predict(X,return_var=True)
@@ -564,7 +566,7 @@ def improve(model,label_fn,ranges,k=10,pool_size=None):
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
     for j in range(k):
         i = 0
-        while distance_to_sample(P[I[i]],P_T,ranges) < min(1/X_T.n,0.5*min_distance(P_T,ranges)): 
+        while distance_to_sample(P[I[i]],P_T,PSpace) < min(1/X_T.n,0.5*min_distance(P_T,PSpace)): 
             i += 1
             if i == len(I): 
                 i = j
@@ -589,24 +591,24 @@ def improve(model,label_fn,ranges,k=10,pool_size=None):
     
     return new_model
 
-def improve_random(model,label_fn,ranges,k=8,pool_size=None):
+def improve_random(model,label_fn,PSpace,k=8,pool_size=None):
     if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = LHCuSample(ranges,pool_size)
+    P = LHCuSample(PSpace,pool_size)
     P_T,inputs = X_T.separate()
     X = P.spread(inputs)
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
     for j in range(k):
-        X = RandSample(ranges,1)
+        X = RandSample(PSpace,1)
         i = 0
-        while distance_to_sample(X[0],P_T,ranges) < min(0.5/X_T.n,0.5*min_distance(P_T,ranges)): 
-            X = RandSample(ranges,1)
+        while distance_to_sample(X[0],P_T,PSpace) < min(0.5/X_T.n,0.5*min_distance(P_T,PSpace)): 
+            X = RandSample(PSpace,1)
             i += 1
             if i == 10*k:
                 i = j
