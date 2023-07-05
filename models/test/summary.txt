@@ -1,0 +1,20 @@
+
+Forward Neural Network created on 05-07-2023 13:18.
+
+Architecture :
+Input shape : (8,)
+Layer 1 : Dense, 64 cells, activation = relu
+Layer 2 : Dropout, Rate = 0
+Layer 3 : Dense, 64 cells, activation = relu
+Layer 4 : Dropout, Rate = 0
+Output Layer : Dense, 2 neurons, activation = linear 
+Call obj.model.summary() for more details on architecture (provided by keras)
+
+Optimizer : Adam (learning rate = 0.001)
+Loss measure : mae
+
+Data is scaled before and after prediction using StandardScalers.
+Data is interpolated using 1000 timesteps between 0 and None seconds.
+
+Trained for 5 epochs on 20 samples.
+

@@ -92,7 +92,7 @@ class Summary(dict):
         string += f"Optimizer : Adam (learning rate = 0.001)\n"
         string += f"Loss measure : {self['HP']['loss']}\n\n"
         string += f"Data is scaled before and after prediction using StandardScalers.\n"
-        if self['HP']['interpolation'] != None: 
+        if self['HP']['interpolation'] != None and self['method'][-3:] == 'RNN': 
             string += f"Data is interpolated using {str(self['HP']['interpolation'])} timesteps between 0 and {str(self['max_inter'])} seconds.\n"
         string += '\n'
         for i in range(len(self["training_history"])):
@@ -187,6 +187,8 @@ class Model():
     def save(self,name):
         if not(os.path.exists(name)): os.mkdir(name)
         self.model.save(Path(name,"model.h5"))
+        self.X_T.reform()
+        self.Y_T.reform()
         data = {
                 'X_T': self.X_T,
                 'Y_T': self.Y_T,

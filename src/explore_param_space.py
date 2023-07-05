@@ -31,7 +31,7 @@ as well as a columns list, which names the axis of the coordinates.
 class Sample(np.ndarray):
     def __new__(cls, A=[[]],columns = None): #Creates a Sample object from an array-type object
         obj = np.asarray(A).view(cls)
-        if np.all(columns) == None:
+        if columns == None:
             columns = ["dim_"+str(i).zfill(len(str(obj.shape[-1]))) for i in range(obj.shape[-1])]
         obj.columns = columns
         return obj
@@ -195,18 +195,12 @@ class ExData(Sample):
             else : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[:obj.t]) == 1)
         obj.p = p
 
-        if np.all(columns) == None:
+        if columns == None:
             columns = ["dim_"+str(i).zfill(len(str(p))) for i in range(p)]+["input_"+str(i).zfill(len(str(obj.f-p))) for i in range(obj.f-p)]
 
         obj.columns = columns
 
         return obj
-
-    def __getitem__(self,i):
-        view = super().__getitem__(self,i)
-        if view.ndim <= 2: n = 1
-        else: n = len(view)
-        return ExData(view,p = self.p, n = n, columns = self.columns)
 
     def flatten(self): #Goes into 2D shape (used in Forward Neural Networks)
         if len(self.shape) == 3:
