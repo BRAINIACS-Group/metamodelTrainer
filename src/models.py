@@ -49,15 +49,19 @@ class Summary(dict):
                 HP = HyperParameters(),
                 input_shape=(None,1),
                 output_shape=(None,1),
+                input_col = None,
+                output_col = None,
                 max_inter=None,
                 training_history=[],
                 add_info = ""):
-        self._keys = set(["method", "date","HP","input_shape","output_shape","max_inter","training_history","add_info"])
+        self._keys = set(["method", "date","HP","input_shape","output_shape","input_col","output_col","max_inter","training_history","add_info"])
         super().__setitem__("method",method)
         super().__setitem__("date",date)
         super().__setitem__("HP",HP)
         super().__setitem__("input_shape",input_shape)
         super().__setitem__("output_shape",output_shape)
+        super().__setitem__("input_col",input_col)
+        super().__setitem__("output_col",output_col)
         super().__setitem__("max_inter",max_inter)
         super().__setitem__("training_history",training_history)
         super().__setitem__("add_info",add_info)
@@ -71,6 +75,8 @@ class Summary(dict):
         elif self['method'][-4:] == 'MRNN' : string += f"Recurrent Neural Network Mega-Model ({self['method'][:-4]} models)"
         elif self['method'][-3:] == 'MSW' : string += f"Recurrent Neural Network Mega-Model ({self['method'][:-3]} models)"
         string += f" created on {self['date'].strftime('%d-%m-%Y %H:%M')}.\n\n"
+        string += f"Input columns : {', '.join(self['input_col'])}\n"
+        string += f"Output columns : {', '.join(self['output_col'])}\n"
         string += "Architecture :\n"
         string += f"Input shape : {str(self['input_shape'])}\n"
         if self['method'][-4:] == 'FNN':
@@ -94,6 +100,8 @@ class Summary(dict):
         string += f"Data is scaled before and after prediction using StandardScalers.\n"
         if self['HP']['interpolation'] != None and self['method'][-3:] == 'RNN': 
             string += f"Data is interpolated using {str(self['HP']['interpolation'])} timesteps between 0 and {str(self['max_inter'])} seconds.\n"
+        if self['method'][-2:] == 'SW':
+            string += f"Data is processed into sliding windows of width {self['HP']['window_size']}.\n"
         string += '\n'
         for i in range(len(self["training_history"])):
             string += f"Trained for {str(self['training_history'][i][0])} epochs on {str(self['training_history'][i][1])} samples.\n"
@@ -144,7 +152,7 @@ class Model():
         Xs = preX_fn(self.X_T,*preX_arg)
         Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
-        history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(self.X_T)/16),validation_split=0.1)
+        history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(Xs)/16),validation_split=0.1)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
@@ -207,8 +215,6 @@ class Model():
 #####################
 ####FORWARD MODEL####
 #####################
-
-#WORK IN PROGRESS !!!
 
 #Used for Hyperelastic data : one input = one output
 
@@ -341,11 +347,11 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
 #A recurrent model, which preprocess the data using a sliding window method
 
 def W_preX_fn(X,scalerX,size):
-    W = X.sliding_window(size,strip=10,padded=True)
+    W = X.sliding_window(size,strip=2,padded=True)
     return W.scale(scalerX)
 
 def W_preY_fn(Y,X,scalerY):
-    W = Y.sliding_window(1,strip=10,padded=False)
+    W = Y.sliding_window(1,strip=2,padded=False)
     return W.scale(scalerY)
 
 def W_postY_fn(Y,X,scalerY):
@@ -386,7 +392,13 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
     preprocessY = (W_preY_fn,[scalerY])
     postprocessY = (W_postY_fn,[scalerY])
 
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY)
+    summary = Summary(method = 'SW',
+                      date = datetime.now(),
+                      HP = HP,
+                      input_shape=(None,X_T.f),
+                      output_shape = Y_T.f)
+
+    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
 
 ###################

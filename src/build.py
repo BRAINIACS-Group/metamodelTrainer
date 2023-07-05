@@ -27,7 +27,7 @@ HP = HyperParameters(layers=[64,64],
                      interpolation=1000)
 
 #Build model
-model = ForwardModel(X_T,Y_T,HP)
+model = SWModel(X_T,Y_T,HP)
 model.summary()
 
 #Train model
