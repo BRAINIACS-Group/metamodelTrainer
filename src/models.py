@@ -115,9 +115,9 @@ class Summary(dict):
 def interpolate(X,new_time,old_time=None,tii=False):
     res = []
     for i in range(X.n):
-        P,curve = ExData(X[i],p=X.p,n=1).separate()
+        P,curve = ExData(X[i],p=X.p,n=1,columns=X.columns).separate()
         if np.all(old_time) == None:
-            time = curve[:,0]
+            time = curve[:,X.columns.index('time')-X.p]
         elif old_time.ndim != 2: time = old_time
         else: time = np.asarray(old_time)[i]
         if tii: curve = curve[:,1:]
@@ -126,7 +126,7 @@ def interpolate(X,new_time,old_time=None,tii=False):
             res.append(P.spread(fn(new_time))[0])
         else:
             res.append(P.spread(fn(new_time[i]))[0])
-    return ExData(res,n=X.n,p=X.p)
+    return ExData(res,n=X.n,p=X.p,columns=X.columns)
         
 
 #Generic model ; only serves as a SuperClass
@@ -157,6 +157,8 @@ class Model():
         return history
 
     def predict(self,X,return_var=False,n_workers=1):
+        if X.columns != self.sum['input_col']:
+            raise ValueError(f"Input columns do not match training columns. Expected {str(self['sum']['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
@@ -168,9 +170,9 @@ class Model():
                 predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
             Y = np.mean(predictions,axis=0)
             V = np.var(predictions,axis=0)
-            return ExData(Y,n=X.n), ExData(V,n=X.n)
+            return ExData(Y,n=X.n,columns=self.sum['output_col']), ExData(V,n=X.n,columns = self.sum['output_col'])
         else:
-            return postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg)
+            return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),columns = self.sum['output_col'])
 
     def evaluate(self,X,Y,verbose=1):
         if verbose == 1: verbose = 2 
@@ -259,7 +261,9 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
                       date = datetime.now(),
                       HP = HP,
                       input_shape=(X_T.f,),
-                      output_shape = Y_T.f,)
+                      output_shape = Y_T.f,
+                      input_col = X_T.columns,
+                      output_col = Y_T.columns)
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
@@ -333,7 +337,9 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
                       HP = HP,
                       input_shape=(None,X_T.f),
                       output_shape = Y_T.f,
-                      max_inter=np.max(np.asarray(X_T)[0,:,X_T.p]))
+                      max_inter=np.max(np.asarray(X_T)[0,:,X_T.p]),
+                      input_col = X_T.columns,
+                      output_col = Y_T.columns)
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
@@ -355,6 +361,8 @@ def W_preY_fn(Y,X,scalerY):
     return W.scale(scalerY)
 
 def W_postY_fn(Y,X,scalerY):
+    print(Y.shape)
+    Y = ExData(Y)
     return ExData(Y.scale_back(scalerY),n=X.n)
 
 
@@ -396,7 +404,9 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
                       date = datetime.now(),
                       HP = HP,
                       input_shape=(None,X_T.f),
-                      output_shape = Y_T.f)
+                      output_shape = Y_T.f,
+                      input_col = X_T.columns,
+                      output_col = Y_T.columns)
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
@@ -459,9 +469,9 @@ class MegaModel():
             pool = multiprocessing.Pool(processes=n_workers)
             predictions = np.array(pool.starmap(M_predict_aux, [(self[i],X) for i in range(len(self))]))
         else: predictions = np.array([m.predict(X) for m in self.models])
-        Y = ExData(np.mean(predictions, axis = 0))
+        Y = ExData(np.mean(predictions, axis = 0),columns=self.sum['output_col'])
         V = np.var(predictions, axis = 0)
-        if return_var: return Y,ExData(V)
+        if return_var: return Y,ExData(V,columns=self.sum['output_col'])
         else: return Y
 
     def evaluate(self,X,Y):
