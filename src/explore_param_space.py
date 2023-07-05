@@ -116,14 +116,14 @@ def RandSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)), k = 100): 
     Points = []
     for i in range(k):
         Points.append([random.random() for j in range(len(PSpace))])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 def GridSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),p=5): #Samples a random point in each square of a n-dim grid with p subdivisions
     n = len(PSpace)
     Points = []
     for i in range(p**n):
         Points.append([random.random()/p + ((i%(p**(j+1)))//p**j)*1/p for j in range(n)])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 def LHCuSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Creates a Latin Hypercube from k equal divisions of the n-dim cube
     n = len(PSpace)
@@ -134,13 +134,18 @@ def LHCuSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Cr
     Points = []
     for i in range(k):
         Points.append([(grid[i,j]+random.random())/k for j in range(n)])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 ## TO IMPROVE
-def PDskSample(R = [(0,1),(0,1)],k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
-    n = len(R)
-    engine = PoissonDisk(d=n, radius=0.61/np.sqrt(k*np.sqrt(3)/4), hypersphere='surface')
-    return Sample(scale_to(engine.random(k),[(0,1) for _ in range(len(R))],R))
+def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
+    n = 0
+    r = np.sqrt(len(PSpace))
+    while n < k:
+        engine = PoissonDisk(d=len(PSpace), radius=r, hypersphere='surface')
+        Points = engine.random(k)
+        n = len(Points)
+        r *= 0.9
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 def distance(A,B,PSpace): #Returns the normalized distance between two points (when scaled to a unit square)
     R = PSpace.values()

@@ -324,7 +324,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
 
     else:
         n = HP['interpolation']
-        new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.p]),n)
+        new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),n)
         preprocessX = (R_preX_fn_I,[scalerX,new_time])
         preprocessY = (R_preY_fn_I,[scalerY,new_time])
         postprocessY = (R_postY_fn_I,[scalerY,new_time])
@@ -334,7 +334,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
                       HP = HP,
                       input_shape=(None,X_T.f),
                       output_shape = Y_T.f,
-                      max_inter=np.max(np.asarray(X_T)[0,:,X_T.p]),
+                      max_inter=np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),
                       input_col = X_T.columns,
                       output_col = Y_T.columns)
 

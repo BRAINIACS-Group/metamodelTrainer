@@ -49,6 +49,7 @@ def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosi
 def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']):
     dir_list = [x for x in os.listdir(data_dir) if os.path.exists(Path(data_dir,x,"parameter_file.json"))]
     X,Y = import_csv(Path(data_dir,dir_list[0]),verbose=1,parameters=parameters,inputs=inputs,outputs=outputs)
+    if verbose == 1: print(f"{dir_list[0]} loaded.")
     for i in range(1,len(dir_list)):
         X_A,Y_A = import_csv(Path(data_dir,dir_list[i]),inputs=inputs,outputs=outputs)
         try: 
