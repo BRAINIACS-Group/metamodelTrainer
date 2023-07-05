@@ -192,9 +192,8 @@ Sometimes, it is necessary to have all data (from all parameter sets) in a singl
 Other times, a 3D array is needed, to separate the different samples/parameter sets (for Recurrent Neural Networks)
 Those two functions can switch from one to the other
 
-IMPORTANT NOTE : 
-When slicing an ExData, since it is a subclass of np.ndarray, custom attributes are often lost (a problem which I haven't solved)
-
+The .separate() method acts as inverse to the Sample.spread() : it returns a Sample containing all parameter sets, as well as
+the variable inputs in columns (time, displacement, etc)
 '''
 
 class ExData(Sample):

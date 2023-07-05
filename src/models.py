@@ -7,7 +7,6 @@ from keras.models import Sequential
 from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
