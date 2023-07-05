@@ -17,11 +17,18 @@ save_path = Path(cwd,"models")
 
 #Define parameter space boundaries
 #Same order as OptVars in run_simulation.py
-R = [(-20,20),(100,2000),(-20,20),(100,2000),(0,10000)]
+
+PSpace = ParameterSpace(
+    alpha_inf = (-20,20),
+    mu_inf    = (100,2000),
+    alpha_1   = (-20,20),
+    mu_1      = (100,2000),
+    eta_1     = (0,10000)
+)
 
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
 k = 20
-S = LHCuSample(R,k)
+S = LHCuSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
 res_path = label(S)
@@ -47,7 +54,7 @@ model.save(Path(save_path,"megaModel_AL_base"))
 label_fn = lambda X: load_FE(label(X))
 
 for i in range(40):
-    model_bis = improve(model,label_fn,R,k=4)
+    model_bis = improve(model,label_fn,PSpace,k=4)
     model_bis.save(Path(save_path,f"megaModel_AL_improved_{str(i).zfill(3)}"))
     model = model_bis
 
