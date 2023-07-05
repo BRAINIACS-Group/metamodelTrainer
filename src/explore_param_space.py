@@ -1,25 +1,43 @@
+
 #Builds the Sample and ExData classes, that are to be handled by the models
-#The Sample class is used to sample the parameter space : several initialization functions (sample method) are given
+#The Sample class is used to sample the parameter space : several initialization functions (sample methods) are given
 #The ExData is used to handle experimental data from FE files
 
 import matplotlib.pyplot as mpl
 import numpy as np
 import random
 from scipy.stats.qmc import PoissonDisk
+import pickle
 
 ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
+
+class ParameterSpace(dict):
+    def __init__(self,**kwargs):
+        for k,range in kwargs.items():
+            self[k] = range
+
 
 #########################
 ### Sample Definition ###
 #########################
 
+'''
+A Sample is, in essence, a 2D array containing coordinates within the parameter space.
+It is only a custom object for practicity's sake when coding, adding a few functions here and there,
+as well as a columns list, which names the axis of the coordinates.
+'''
+
+
 class Sample(np.ndarray):
-    def __new__(cls, A=[[]]): #Creates a Sample object from an array-type object
+    def __new__(cls, A=[[]],columns = None): #Creates a Sample object from an array-type object
         obj = np.asarray(A).view(cls)
+        if np.all(columns) == None:
+            columns = ["dim_"+str(i).zfill(len(str(obj.shape[-1]))) for i in range(obj.shape[-1])]
+        obj.columns = columns
         return obj
 
     def append(self,X): #Appends a Sample to another (returns the results)
-        return Sample(np.vstack((self,X)))  #Not sure if working
+        return Sample(np.vstack((self,X)),self.columns)  #Not sure if working
 
     def plot(self,name = "Sample"): #Scatter plots the first two axis
         mpl.scatter(self[:,0], self[:,1], label = name)
@@ -30,7 +48,7 @@ class Sample(np.ndarray):
         mpl.show()
 
     def copy(self): #Creates a deepcopy
-        return Sample(np.copy(self))
+        return Sample(np.copy(self),self.columns)
 
     def map(self,f): #Apply a function to each sampled point
         res = np.apply_along_axis(lambda x:f(*x),1,self)
@@ -44,14 +62,28 @@ class Sample(np.ndarray):
     def scale(self,scaler): #Uses a sklearn.preprocessing Scaler to scale itself
         return scaler.transform(self)
 
-    def save(self,name): #Save the array in an npy file
-        np.save(name,self)
+    def save(self,name): #Save the Sample in an pickle file
+        data = {
+            'type' : "Sample",
+            'array' : np.asarray(self),
+            'columns' : self.columns
+        }
+        if str(name)[-4:] != '.pkl':
+            name = str(name) + '.pkl'
+        with open(name, 'wb') as f:
+            pickle.dump(data, f)
 
-    #Given some input data, creates a 3D ExData object containing, for each parameter set, a 2D array with:
-    #- The material parameters being repeated as many times as there are lines in input_data
-    #- The input_data
-    #Note : input_data is supposed to be in column shape
-    def spread(self,input_data = ref_input): 
+
+    def spread(self,input_data = ref_input, input_columns = None): 
+
+        #Given some input data, creates a 3D ExData object containing, for each parameter set, a 2D array with:
+        #- The material parameters being repeated as many times as there are lines in input_data
+        #- The input_data
+        #Note : input_data is supposed to be in column shape
+
+        if np.all(input_columns) == None:
+            input_columns = ["input_"+str(i).zfill(len(str(input_data.shape[-1]))) for i in range(input_data.shape[-1])]
+
         if input_data.ndim == 2:
             n, t = len(self),len(input_data)
             p = self.shape[1]
@@ -61,7 +93,7 @@ class Sample(np.ndarray):
 
             f = X.shape[1]
             
-            return ExData(X.reshape(n,t,f),p)
+            return ExData(X.reshape(n,t,f),p=p,columns=self.columns+input_columns)
         else:
             m, t, k = input_data.shape
             n, p = self.shape
@@ -81,22 +113,21 @@ def scale_to(X,R0,R1): #Scales a random sampling from R0 ranges to R1 ranges
         X[:,i] += R1[i][0]       
     return X
 
-def RandSample(R=[(0,1),(0,1)],k=100): #Samples k points in a n-dim space randomly
+def RandSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)), k = 100): #Samples k points in a n-dim space randomly
     Points = []
     for i in range(k):
-        Points.append([random.random() for j in range(len(R))])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
+        Points.append([random.random() for j in range(len(PSpace))])
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
 
-
-def GridSample(R=[(0,1),(0,1)],p=5): #Samples a random point in each square of a n-dim grid with p subdivisions
-    n = len(R)
+def GridSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),p=5): #Samples a random point in each square of a n-dim grid with p subdivisions
+    n = len(PSpace)
     Points = []
     for i in range(p**n):
         Points.append([random.random()/p + ((i%(p**(j+1)))//p**j)*1/p for j in range(n)])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
 
-def LHCuSample(R=[(0,1),(0,1)],k=100): #Creates a Latin Hypercube from k equal divisions of the n-dim cube
-    n = len(R)
+def LHCuSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Creates a Latin Hypercube from k equal divisions of the n-dim cube
+    n = len(PSpace)
     grid = np.empty((k,n))
     for i in range(n):
         grid[:,i] = np.random.permutation(k)
@@ -104,28 +135,32 @@ def LHCuSample(R=[(0,1),(0,1)],k=100): #Creates a Latin Hypercube from k equal d
     Points = []
     for i in range(k):
         Points.append([(grid[i,j]+random.random())/k for j in range(n)])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(R))],R))
+    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],PSpace.values()),columns = PSpace.keys())
 
-
+## TO IMPROVE
 def PDskSample(R = [(0,1),(0,1)],k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
     n = len(R)
     engine = PoissonDisk(d=n, radius=0.61/np.sqrt(k*np.sqrt(3)/4), hypersphere='surface')
     return Sample(scale_to(engine.random(k),[(0,1) for _ in range(len(R))],R))
 
-def distance(A,B,R): #Returns the normalized distance between two points (when scaled to a unit square)
+def distance(A,B,PSpace): #Returns the normalized distance between two points (when scaled to a unit square)
+    R = PSpace.values()
     A = scale_to(np.array([A]),R,[(0,1) for _ in range(len(R))])[0]
     B = scale_to(np.array([B]),R,[(0,1) for _ in range(len(R))])[0]
     return np.sqrt(np.sum((A-B)**2))
 
-def distance_to_sample(A,X,R): #Returns the minimum distance from a point to a set of points
+def distance_to_sample(A,X,PSpace): #Returns the minimum distance from a point to a set of points
+    R = PSpace.values()
     d = [distance(A,X[i],R) for i in range(len(X))]
     return min(d)
 
-def avg_distance(X,R): #Returns the average distance between all points of a sample
+def avg_distance(X,PSpace): #Returns the average distance between all points of a sample
+    R = PSpace.values()
     d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
     return np.mean(d)
 
-def min_distance(X,R):
+def min_distance(X,PSpace):
+    R = PSpace.values()
     d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
     return min(d)
 
@@ -138,9 +173,10 @@ def min_distance(X,R):
 # self.t : the number of time-steps per simulation
 # self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
 # self.p : among those features, how many are actually material parameters
+# self.columns : name of the columns
 
 class ExData(Sample):
-    def __new__(cls,X=np.array([ref_input]),p=None,n=None): #Creates a new one from an array
+    def __new__(cls,X=np.array([ref_input]),p=None,n=None,columns=None): #Creates a new one from an array
         X = np.asarray(X)
         obj = X.view(cls)
         if len(X.shape) == 3:
@@ -158,8 +194,20 @@ class ExData(Sample):
             if len(X.shape) == 3: p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[0]) == 1)
             else : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[:obj.t]) == 1)
         obj.p = p
+
+        if np.all(columns) == None:
+            columns = ["dim_"+str(i).zfill(len(str(p))) for i in range(p)]+["input_"+str(i).zfill(len(str(obj.f-p))) for i in range(obj.f-p)]
+
+        obj.columns = columns
+
         return obj
-        
+
+    def __getitem__(self,i):
+        view = super().__getitem__(self,i)
+        if view.ndim <= 2: n = 1
+        else: n = len(view)
+        return ExData(view,p = self.p, n = n, columns = self.columns)
+
     def flatten(self): #Goes into 2D shape (used in Forward Neural Networks)
         if len(self.shape) == 3:
             self.shape = (self.n*self.t,self.f)
@@ -172,7 +220,7 @@ class ExData(Sample):
     def separate(self): #Returns the Sample and input curve it supposedly originated from
         self.reform()
         S = np.asarray(self[0,:,self.p:]).reshape(self.t,self.f-self.p)
-        P = Sample(self[:,0,:self.p].reshape(self.n,self.p))
+        P = Sample(self[:,0,:self.p].reshape(self.n,self.p),columns = self.columns[:self.p])
         return P,S
 
     def plot(self,name='Sample'): #Plot the first two values of the original Sample
@@ -191,12 +239,22 @@ class ExData(Sample):
         return ExData(np.array(res))
 
     def append(self,X): #Returns the appended array
+        if self.ndim != X.ndim: X.reform()
+        if self.ndim != X.ndim: X.flatten()
         A = Sample.append(self,X)
-        return ExData(A,self.p,self.n+X.n)
+        return ExData(A,p=self.p,n=self.n+X.n,columns=self.columns)
 
     def save(self,name): #Save to a .npy file
-        self.reform()
-        np.save(name,self)
+        data = {
+            'type' : "ExData",
+            'array' : np.asarray(self),
+            'columns' : self.columns,
+            'ntfp' : (self.n,self.t,self.f,self.p)
+        }
+        if str(name)[-4:] != '.pkl':
+            name = str(name) + '.pkl'
+        with open(name, 'wb') as f:
+            pickle.dump(data, f)
 
     def scale(self,scaler): #Given a sklearn.preprocessing Scaler, scales intself
         n = len(self.shape)
@@ -213,7 +271,7 @@ class ExData(Sample):
         return res.reshape(self.shape)
 
     def copy(self): #Creates a deepcopy
-        return ExData(np.copy(self),self.p,self.n)
+        return ExData(np.copy(self),p=self.p,n=self.n,columns=self.columns)
 
 
     #Creates sliding windows of the given size
@@ -229,15 +287,14 @@ class ExData(Sample):
             for j in range(i%strip,len(X)-size+1,strip):
                 windows.append(X[j:j+size,:])
 
-        return ExData(np.array(windows),self.p).copy()
+        return ExData(np.array(windows),p=self.p,columns=self.columns).copy()
                 
 
 def load_data(name): #Loads either a Sample or ExData
-    X = np.load(name)
-    if X.ndim == 3:
-        n,t,f = X.shape
-        p = f - np.count_nonzero(X[0,0,:]-X[0,1,:])
-        return ExData(X,p,n)
+    data = pickle.load(name)
+    if data['type'] == "Sample":
+        return Sample(data['array'],data['columns'])
     else:
-        return Sample(X)
+        n,t,f,p = data['ntfp']
+        return ExData(data['array'],p=p,n=n,columns=data['columns'])
    

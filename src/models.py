@@ -144,7 +144,7 @@ class Model():
         Xs = preX_fn(self.X_T,*preX_arg)
         Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
-        history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(self.X_T.n/16),validation_split=0.1)
+        history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(self.X_T)/16),validation_split=0.1)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
@@ -356,13 +356,6 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
     Y_T.reform()
 
     size = HP['window_size']
-    '''
-    WX = X_T.sliding_window(size,strip=10,padded=True)
-    WY = Y_T.sliding_window(size,strip=10,padded=True)
-
-    #self.X_T = ExData(np.concatenate((WX,WY),axis=2),X_T.p)
-    X_T = WX
-    Y_T = Y_T.sliding_window(1,strip=10,padded=False)'''
 
     #Test if shapes match
 
