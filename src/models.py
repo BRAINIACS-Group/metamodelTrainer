@@ -7,7 +7,7 @@ from keras.models import Sequential
 from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
-#from sklearn.preprocessing import StandardScaler, MinMaxScaler
+from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
@@ -20,15 +20,15 @@ class StandardScaler:
         self.std = std
 
     def fit(self,X):
-        self.mu = np.mean(X,axis=0)
-        self.std = np.std(X,axis=0)
+        self.mu = np.mean(np.asarray(X),axis=0)
+        self.std = np.std(np.asarray(X),axis=0)
         return StandardScaler(self.mu,self.std)
 
     def transform(self,X):
-        return (X - self.mu)/self.std
+        return (np.asarray(X) - self.mu)/self.std
     
     def inverse_transform(self,X):
-        return (X*self.std) + self.mu
+        return (np.asarray(X)*self.std) + self.mu
 
 
 #HyperParameters that will be used 
@@ -275,8 +275,9 @@ def R_postY_fn_I(Y,X,scalerY,nt): return R_postY_fn(interpolate(ExData(Y,n=X.n),
 #Interpolates new_time values from a given X, whose values are ordered by old_time
 def interpolate(X,new_time,old_time=None):
     res = []
+    X.reform()
     for i in range(X.n):
-        P,curve = ExData(X[i],p=X.p,n=1,columns=X.columns).separate()
+        P,curve = X[i].separate()
         if np.all(old_time) == None:
             time = curve[:,X.columns.index('time')-X.p]
         elif old_time.ndim != 2: time = old_time

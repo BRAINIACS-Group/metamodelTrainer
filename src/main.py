@@ -28,7 +28,7 @@ PSpace = ParameterSpace(
 
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
 k = 20
-S = LHCuSample(PSpace,k)
+S = PDskSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
 res_path = label(S)

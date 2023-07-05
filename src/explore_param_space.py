@@ -11,7 +11,12 @@ import pickle
 
 ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
 
+
 class ParameterSpace(dict):
+    '''
+    A parameter space object is a dictionary, with keys corresponding to names of axis (= parameters) 
+    and values the corresponding range to explore
+    '''
     def __init__(self,**kwargs):
         for k,range in kwargs.items():
             self[k] = range
@@ -25,6 +30,7 @@ class ParameterSpace(dict):
 A Sample is, in essence, a 2D array containing coordinates within the parameter space.
 It is only a custom object for practicity's sake when coding, adding a few functions here and there,
 as well as a columns list, which names the axis of the coordinates.
+Since it is a subclass of np.ndarray, all of the usual functions work
 '''
 
 
@@ -36,8 +42,8 @@ class Sample(np.ndarray):
         obj.columns = columns
         return obj
 
-    def append(self,X): #Appends a Sample to another (returns the results)
-        return Sample(np.vstack((self,X)),self.columns)  #Not sure if working
+    def append(self,X): #Appends a Sample to another (unlike lists, returns the results)
+        return Sample(np.vstack((self,X)),self.columns) 
 
     def plot(self,name = "Sample"): #Scatter plots the first two axis
         mpl.scatter(self[:,0], self[:,1], label = name)
@@ -105,7 +111,7 @@ class Sample(np.ndarray):
 ### Sampling Methods ###
 ########################
 
-def scale_to(X,R0,R1): #Scales a random sampling from R0 ranges to R1 ranges
+def scale_to(X,R0,R1): #Scales a given sampling from R0 ranges to R1 ranges
     for i in range(len(R1)):
         X[:,i] -= R0[i][0]
         X[:,i] *= (R1[i][1]-R1[i][0])/(R0[i][1]-R0[i][0])
@@ -136,8 +142,8 @@ def LHCuSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Cr
         Points.append([(grid[i,j]+random.random())/k for j in range(n)])
     return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
-## TO IMPROVE
-def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Uses the PoissonDisk method to sample k points (total number not guaranteed)
+
+def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Uses the PoissonDisk method to sample k points with maximum coverage
     n = 0
     r = np.sqrt(len(PSpace))
     while n < k:
@@ -163,7 +169,7 @@ def avg_distance(X,PSpace): #Returns the average distance between all points of 
     d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
     return np.mean(d)
 
-def min_distance(X,PSpace):
+def min_distance(X,PSpace): #Returns the minimal distance between two points of a sample
     R = PSpace.values()
     d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
     return min(d)
@@ -172,12 +178,24 @@ def min_distance(X,PSpace):
 ### ExData definition ###
 #########################
 
-#The ExData object is basically a numpy array, enriched with some extra information:
-# self.n : the number of experimental simulations it is supposed to contain
-# self.t : the number of time-steps per simulation
-# self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
-# self.p : among those features, how many are actually material parameters
-# self.columns : name of the columns
+'''
+The ExData object is basically a numpy array, enriched with some extra information:
+- self.n : the number of experimental simulations it is supposed to contain
+- self.t : the number of time-steps per simulation
+- self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
+- self.p : among those features, how many are actually material parameters
+- self.columns : name of the columns
+
+One important aspect is the use of obj.flatten() and obj.reform(), which give two representations of the data
+Sometimes, it is necessary to have all data (from all parameter sets) in a single 2D array, which can be obtained using flatten
+(this applies to Feed-Forward Network, as well as scaling using scalers)
+Other times, a 3D array is needed, to separate the different samples/parameter sets (for Recurrent Neural Networks)
+Those two functions can switch from one to the other
+
+IMPORTANT NOTE : 
+When slicing an ExData, since it is a subclass of np.ndarray, custom attributes are often lost (a problem which I haven't solved)
+
+'''
 
 class ExData(Sample):
     def __new__(cls,X=np.array([ref_input]),p=None,n=None,columns=None): #Creates a new one from an array
@@ -205,6 +223,26 @@ class ExData(Sample):
         obj.columns = columns
 
         return obj
+    
+    def __array_finalize__(self, obj):
+        if not(obj is None) and self.ndim > 0:
+            if not(hasattr(self,'n')):
+                if self.ndim == 3:
+                    self.n,self.t,self.f = self.shape
+                elif self.ndim == 2:
+                    self.n,self.t,self.f = 1,self.shape[0],self.shape[1]
+                else:
+                    self.n,self.t,self.f = 1,1,self.shape[0]
+            if not(hasattr(self,'p')):
+                try:
+                    if self.ndim == 3: p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=np.asarray(self)[0]) == 1)
+                    elif self.ndim == 2 : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=np.asarray(self)[:self.t]) == 1)
+                    else: p = 0
+                except: p = 0
+                self.p = p
+            if not (hasattr(self,'columns')) and type(obj) != np.ndarray:
+                self.columns = obj.columns
+
 
     def flatten(self): #Goes into 2D shape (used in Forward Neural Networks)
         if len(self.shape) == 3:

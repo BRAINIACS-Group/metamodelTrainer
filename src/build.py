@@ -17,9 +17,9 @@ save_path = Path(cwd,"models")
 #Load the training data
 X_T, Y_T = load_FE(data_path,
                    parameters = ['alpha','mu','deviatoric_20viscosity'],
-                   inputs = ['time','displacement','angle'],
+                   inputs = ['displacement','angle','time'],
                    outputs = ['force','torque'])
-print(X_T.columns,Y_T.columns)
+
 #Define hyper parameters
 HP = HyperParameters(layers=[64,64],
                      loss='mae',
@@ -27,7 +27,7 @@ HP = HyperParameters(layers=[64,64],
                      interpolation=1000)
 
 #Build model
-model = ForwardModel(X_T,Y_T,HP)
+model = RecModel(X_T,Y_T,HP)
 model.summary()
 
 #Train model
@@ -38,6 +38,6 @@ model.train(5,verbose=1)
 name = "test"
 model.save(Path(save_path,name))
 model = load_model(Path(save_path,name))
-Y_P =model.predict(X_T)
+Y_P =model.predict(X_T[0])
 Y_P.reform()
-print(np.mean(abs(Y_P-Y_T)))
+print(np.mean(abs(Y_P-Y_T[0])))
