@@ -108,25 +108,6 @@ class Summary(dict):
         string += '\n'    
         string += self['add_info']
         return string
-
-
-
-#Interpolates new_time values from a given X, whose values are ordered by old_time
-def interpolate(X,new_time,old_time=None,tii=False):
-    res = []
-    for i in range(X.n):
-        P,curve = ExData(X[i],p=X.p,n=1,columns=X.columns).separate()
-        if np.all(old_time) == None:
-            time = curve[:,X.columns.index('time')-X.p]
-        elif old_time.ndim != 2: time = old_time
-        else: time = np.asarray(old_time)[i]
-        if tii: curve = curve[:,1:]
-        fn = spi.CubicSpline(time,curve)
-        if new_time.ndim != 3:
-            res.append(P.spread(fn(new_time))[0])
-        else:
-            res.append(P.spread(fn(new_time[i]))[0])
-    return ExData(res,n=X.n,p=X.p,columns=X.columns)
         
 
 #Generic model ; only serves as a SuperClass
@@ -172,7 +153,7 @@ class Model():
             V = np.var(predictions,axis=0)
             return ExData(Y,n=X.n,columns=self.sum['output_col']), ExData(V,n=X.n,columns = self.sum['output_col'])
         else:
-            return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),columns = self.sum['output_col'])
+            return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),n=X.n,columns = self.sum['output_col'])
 
     def evaluate(self,X,Y,verbose=1):
         if verbose == 1: verbose = 2 
@@ -287,9 +268,25 @@ def R_postY_fn(Y,X,scalerY):
     return ExData(Y.scale_back(scalerY),n=X.n)
 
 def R_preX_fn_I(X,scalerX,nt): return R_preX_fn(interpolate(X,nt),scalerX)
-def R_preY_fn_I(Y,X,scalerY,nt): return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.p]),X,scalerY)
-def R_postY_fn_I(Y,X,scalerY,nt): return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.p],old_time=nt),X,scalerY)
+def R_preY_fn_I(Y,X,scalerY,nt): return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.columns.index('time')]),X,scalerY)
+def R_postY_fn_I(Y,X,scalerY,nt): return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.columns.index('time')],old_time=nt),X,scalerY)
 
+
+#Interpolates new_time values from a given X, whose values are ordered by old_time
+def interpolate(X,new_time,old_time=None):
+    res = []
+    for i in range(X.n):
+        P,curve = ExData(X[i],p=X.p,n=1,columns=X.columns).separate()
+        if np.all(old_time) == None:
+            time = curve[:,X.columns.index('time')-X.p]
+        elif old_time.ndim != 2: time = old_time
+        else: time = np.asarray(old_time)[i]
+        fn = spi.CubicSpline(time,curve)
+        if new_time.ndim != 3:
+            res.append(P.spread(fn(new_time),input_columns=X.columns[X.p:])[0])
+        else:
+            res.append(P.spread(fn(new_time[i]),input_columns=X.columns[X.p:])[0])
+    return ExData(res,n=X.n,p=X.p,columns=X.columns)
 
 def RecModel(X_T,Y_T,HP = HyperParameters()):
 
@@ -353,16 +350,15 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
 #A recurrent model, which preprocess the data using a sliding window method
 
 def W_preX_fn(X,scalerX,size):
-    W = X.sliding_window(size,strip=2,padded=True)
+    W = X.sliding_window(size,padded=True)
     return W.scale(scalerX)
 
 def W_preY_fn(Y,X,scalerY):
-    W = Y.sliding_window(1,strip=2,padded=False)
+    W = Y.sliding_window(1,padded=False)
     return W.scale(scalerY)
 
 def W_postY_fn(Y,X,scalerY):
-    print(Y.shape)
-    Y = ExData(Y)
+    Y = ExData(Y,n=X.n)
     return ExData(Y.scale_back(scalerY),n=X.n)
 
 

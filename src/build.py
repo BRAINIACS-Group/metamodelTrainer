@@ -19,7 +19,7 @@ X_T, Y_T = load_FE(data_path,
                    parameters = ['alpha','mu','deviatoric_20viscosity'],
                    inputs = ['time','displacement','angle'],
                    outputs = ['force','torque'])
-print(X_T.columns)
+print(X_T.columns,Y_T.columns)
 #Define hyper parameters
 HP = HyperParameters(layers=[64,64],
                      loss='mae',
@@ -27,7 +27,7 @@ HP = HyperParameters(layers=[64,64],
                      interpolation=1000)
 
 #Build model
-model = SWModel(X_T,Y_T,HP)
+model = ForwardModel(X_T,Y_T,HP)
 model.summary()
 
 #Train model

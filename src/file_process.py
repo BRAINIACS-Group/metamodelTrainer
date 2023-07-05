@@ -12,26 +12,25 @@ def read_pfile(pfile, names=['alpha','mu','deviatoric_20viscosity'],verbose=0):
     with open(pfile,'r') as f:
         data = f.read()
     values = []
+    columns = []
     for p in names:
         p_regex = f'"{p}"'+': {\n\s+"value": "(-?\d+\.\d+)",'
         p_values = re.findall(p_regex,data)
         if verbose == 1: print(f"{len(p_values)} value(s) found for {p}")
         values += p_values
+        columns += [p+'_'+str(i) for i in range(len(p_values))]
     if verbose == 1: print(f"{len(values)} material parameters found in total.")
-    return [float(x) for x in values]
+    return [float(x) for x in values],columns
 
 
 #Reads and formats the data from a single simulation, given a path to its directory
 #Separates into inputs (material parameters and given input columns) and outputs
 def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']): #ONLY COMP_TEN for now
     file_list = []
-    mat_p = read_pfile(Path(data_dir,"parameter_file.json"),names=parameters,verbose=verbose)
+    mat_p, names = read_pfile(Path(data_dir,"parameter_file.json"),names=parameters,verbose=verbose)
     default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
-    names = []
-    for i in range(len(mat_p)):
-        name = f'mat_p_{str(i)}'
-        names.append(name)
-        default[name] = mat_p[i]
+    for i,x in enumerate(names):
+        default[x] = mat_p[i]
     columns = names + ['time', 'displacement', 'force', 'angle', 'torque']
     dataset = pd.DataFrame(columns=columns)
     #Get data
@@ -41,9 +40,9 @@ def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosi
             df = pd.DataFrame({**default, **df},dtype=np.float32)
             dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
     #Convert into usable Sample
-    P = Sample(np.array([mat_p]))
-    X = P.spread(np.array(dataset[inputs]).reshape(len(dataset),len(inputs)))
-    Y = ExData(np.array(dataset[outputs]).reshape(1,len(dataset),len(outputs)),p=0)
+    P = Sample(np.array([mat_p]),columns=names)
+    X = P.spread(np.array(dataset[inputs]).reshape(len(dataset),len(inputs)),input_columns=inputs)
+    Y = ExData(np.array(dataset[outputs]).reshape(1,len(dataset),len(outputs)),p=0,columns=outputs)
     return X,Y
 
 #Loads up all simulation results from a given folder
@@ -58,7 +57,8 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
             if verbose == 1: print(f"{dir_list[i]} loaded.")
         except:
             print(dir_list[i] + " not loaded : mismatched shape.")
-    Y = ExData(Y.reshape(Y.n*Y.t,Y.f).reshape(Y.shape),p=Y.p) #Necessary but don't know why
+    X = ExData(X.reshape(X.n*X.t,X.f).reshape(X.shape),p=X.p,columns=X.columns)
+    Y = ExData(Y.reshape(Y.n*Y.t,Y.f).reshape(Y.shape),p=Y.p,columns=Y.columns) #Necessary but don't know why
     return X,Y
 
 #Ask Jan : ParameterHandler might be very useful

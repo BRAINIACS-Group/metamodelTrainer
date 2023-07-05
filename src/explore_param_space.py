@@ -81,7 +81,7 @@ class Sample(np.ndarray):
         #- The input_data
         #Note : input_data is supposed to be in column shape
 
-        if np.all(input_columns) == None:
+        if input_columns == None:
             input_columns = ["input_"+str(i).zfill(len(str(input_data.shape[-1]))) for i in range(input_data.shape[-1])]
 
         if input_data.ndim == 2:
@@ -92,12 +92,11 @@ class Sample(np.ndarray):
             else: X = np.hstack((np.repeat(self,t,axis=0), np.tile(input_data,(n,1))))        
 
             f = X.shape[1]
-            
             return ExData(X.reshape(n,t,f),p=p,columns=self.columns+input_columns)
         else:
             m, t, k = input_data.shape
             n, p = self.shape
-            X = self[0].reshape((1,-1)).spread(input_data[0])
+            X = Sample(self[0].reshape((1,-1)),self.columns).spread(input_data[0])
             for i in range(1,n):
                 X = X.append(self[i].reshape((1,-1)).spread(input_data[i%k]))
             return X
