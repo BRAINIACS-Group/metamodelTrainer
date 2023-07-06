@@ -25,9 +25,9 @@ PSpace = ParameterSpace(
     mu_1      = (100,2000),
     eta_1     = (0,10000)
 )
-print(PSpace.keys(),PSpace.values())
+
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
-k = 4
+k = 16
 S = PDskSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
@@ -49,13 +49,13 @@ model = RecModel(X_T,Y_T,HP)
 #model = MegaModel(X_T,Y_T,10,'RNN',HP)
 
 #train model
-model.train(n_epochs=10, verbose=1)
+model.train(n_epochs=100, verbose=1)
 
 model.save(Path(save_path,"model_test_base"))
 
 #label_fn = lambda X: load_FE(label(X))
 
-for i in range(4):
+for i in range(48):
     model_bis = improve(model,label,PSpace,k=4)
     model_bis.save(Path(save_path,f"model_test_improved_{str(i).zfill(3)}"))
     model = model_bis

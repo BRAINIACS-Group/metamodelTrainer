@@ -65,7 +65,7 @@ def label(X): #A really inelegant way to get the material parameters in the corr
 
 
 def run_sim(X):
-    prm_file = Path('../FE/data/prm/reference_short.prm')
+    prm_file = Path('../FE/data/prm/reference.prm')
     prm = ParameterHandler.from_file(prm_file)
     
     variables = X  
@@ -76,7 +76,7 @@ def run_sim(X):
         wd.mkdir()
 
     sim = FESimulation(prm,execPath=get_execPath(),
-        wd=wd,out_dir=wd,nworker=4,nthreads_per_proc=4)
+        wd=wd,out_dir=wd,nworker=8,nthreads_per_proc=2)
 
     optVars = [OptVars(
         alpha_inf = OptVarData(variables[i][variables.columns.index('alpha_inf')],  bounds=(-100,100)),

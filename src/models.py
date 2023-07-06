@@ -665,11 +665,9 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
-    print(P_T.columns)
     HP = model.sum['HP']
 
     P = PDskSample(PSpace,pool_size)
-    print(P.columns)
     
     X = P.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)
@@ -684,8 +682,7 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
                 break
         P_T = P_T.append(P[I[i]])
     print("Start labeling")
-    print(P_T.columns)
-    print(P_T[X_T.n:].columns)
+    
     X_A, Y_A = label_fn(P_T[X_T.n:])
     
     X_T = X_T.append(X_A)
