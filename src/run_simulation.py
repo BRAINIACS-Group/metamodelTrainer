@@ -41,6 +41,7 @@ def label(X): #A really inelegant way to get the material parameters in the corr
     path = run_sim(X)
     X_res, Y_res = load_FE(path)
     P,S = X_res[0].separate()
+    print(P.shape)
     inputs = X_res.columns[X_res.p:]
     comp = np.sum(X - P,axis = 1)
     k = 0
