@@ -37,7 +37,7 @@ def get_execPath():
         return None
     return os.environ['VLAB_EXEC']
 
-def label(X):
+def label(X): #A really inelegant way to get the material parameters in the correct order for the model
     path = run_sim(X)
     X_res, Y_res = load_FE(path)
     P,S = X_res[0].separate()
@@ -47,7 +47,7 @@ def label(X):
     for j in range(len(comp)):
         if abs(comp[j]) < abs(comp[k]):
             k = j
-    X_cor = X[k].spread(S,input_columns=inputs)
+    X_cor = P[k].spread(S,input_columns=inputs)
     Y_cor = Y_res[k]
 
     for i in range(1,len(X_res)):
