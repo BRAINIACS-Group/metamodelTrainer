@@ -17,6 +17,11 @@ from uuid import uuid4
 
 #3rd party imports
 import matplotlib.pyplot as plt
+import numpy as np
+
+#Carl imports
+from file_process import load_FE
+from explore_param_space import Sample, ExData
 
 #EFI imports
 from efiopt.simulation import FESimulation
@@ -33,6 +38,33 @@ def get_execPath():
     return os.environ['VLAB_EXEC']
 
 def label(X):
+    path = run_sim(X)
+    X_res, Y_res = load_FE(path)
+    P,S = X_res[0].separate()
+    inputs = X_res.columns[X_res.p:]
+    comp = np.sum(X - P,axis = 1)
+    k = 0
+    for j in range(len(comp)):
+        if abs(comp[j]) < abs(comp[k]):
+            k = j
+    X_cor = X[k].spread(S,input_columns=inputs)
+    Y_cor = Y_res[k]
+
+    for i in range(1,len(X_res)):
+        P,S = X_res[i].separate()
+        inputs = X_res.columns[X_res.p:]
+        comp = np.sum(X - P,axis = 1)
+        k = 0
+        for j in range(len(comp)):
+            if abs(comp[j]) < abs(comp[k]):
+                k = j
+        X_cor = X_cor.append(X[k].spread(S,input_columns=inputs))
+        Y_cor = Y_cor.append(Y_res[k])
+
+    return X_cor, Y_cor
+
+
+def run_sim(X):
     prm_file = Path('../FE/data/prm/reference.prm')
     prm = ParameterHandler.from_file(prm_file)
     
@@ -44,14 +76,14 @@ def label(X):
         wd.mkdir()
 
     sim = FESimulation(prm,execPath=get_execPath(),
-        wd=wd,out_dir=wd,nworker=4,nthreads_per_proc=2)
+        wd=wd,out_dir=wd,nworker=4,nthreads_per_proc=4)
 
     optVars = [OptVars(
-        alpha_inf = OptVarData(variables[i][0],  bounds=(-100,100)),
-        mu_inf    = OptVarData(variables[i][1],bounds=(0,math.inf)),
-        alpha_1   = OptVarData(variables[i][2],  bounds=(-100,100)),
-        mu_1      = OptVarData(variables[i][3],    bounds=(0,math.inf)),
-        eta_1     = OptVarData(variables[i][4],   bounds=(0,math.inf))
+        alpha_inf = OptVarData(variables[i][variables.columns.index('alpha_inf')],  bounds=(-100,100)),
+        mu_inf    = OptVarData(variables[i][variables.columns.index('mu_inf')],bounds=(0,math.inf)),
+        alpha_1   = OptVarData(variables[i][variables.columns.index('alpha_1')],  bounds=(-100,100)),
+        mu_1      = OptVarData(variables[i][variables.columns.index('mu_1')],    bounds=(0,math.inf)),
+        eta_1     = OptVarData(variables[i][variables.columns.index('eta_1')],   bounds=(0,math.inf))
     ) for i in range(len(variables))]
     
     #create job (should name that better)

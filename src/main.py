@@ -32,9 +32,11 @@ S = PDskSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
 #res_path = label(S)
-res_path = Path(cwd,"FE","out","6bda37d2")
+#res_path = Path(cwd,"FE","out","6bda37d2")
 #Load the results and format them for model training
-X_T,Y_T = load_FE(res_path)
+#X_T,Y_T = load_FE(res_path)
+
+X_T, Y_T = label(S)
 
 #Define model HyperParameters
 HP = HyperParameters(layers=[64,64],
@@ -51,10 +53,10 @@ model.train(n_epochs=10, verbose=1)
 
 model.save(Path(save_path,"model_test_base"))
 
-label_fn = lambda X: load_FE(label(X))
+#label_fn = lambda X: load_FE(label(X))
 
 for i in range(4):
-    model_bis = improve(model,label_fn,PSpace,k=4)
+    model_bis = improve(model,label,PSpace,k=4)
     model_bis.save(Path(save_path,f"model_test_improved_{str(i).zfill(3)}"))
     model = model_bis
 

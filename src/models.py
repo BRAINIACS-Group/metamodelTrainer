@@ -667,8 +667,8 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = LHCuSample(PSpace,pool_size,columns = P_T.columns)
-
+    P = PDskSample(PSpace,pool_size)
+    
     X = P.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
