@@ -154,24 +154,24 @@ def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Us
     return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 def distance(A,B,PSpace): #Returns the normalized distance between two points (when scaled to a unit square)
-    R = PSpace.values()
+    R = list(PSpace.values())
     A = scale_to(np.array([A]),R,[(0,1) for _ in range(len(R))])[0]
     B = scale_to(np.array([B]),R,[(0,1) for _ in range(len(R))])[0]
     return np.sqrt(np.sum((A-B)**2))
 
 def distance_to_sample(A,X,PSpace): #Returns the minimum distance from a point to a set of points
-    R = PSpace.values()
-    d = [distance(A,X[i],R) for i in range(len(X))]
+    R = list(PSpace.values())
+    d = [distance(A,X[i],PSpace) for i in range(len(X))]
     return min(d)
 
 def avg_distance(X,PSpace): #Returns the average distance between all points of a sample
-    R = PSpace.values()
-    d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
+    R = list(PSpace.values())
+    d = [distance(X[i],X[j],PSpace) for j in range(len(X)) for i in range(len(X)) if i != j]
     return np.mean(d)
 
 def min_distance(X,PSpace): #Returns the minimal distance between two points of a sample
-    R = PSpace.values()
-    d = [distance(X[i],X[j],R) for j in range(len(X)) for i in range(len(X)) if i != j]
+    R = list(PSpace.values())
+    d = [distance(X[i],X[j],PSpace) for j in range(len(X)) for i in range(len(X)) if i != j]
     return min(d)
 
 #########################
