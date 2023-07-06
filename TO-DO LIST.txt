@@ -30,3 +30,6 @@ THURSDAY :
 
 - Launch finalization of base, 003,008,013,018,...
 - Launch MM improvement loop (& finalizations ?)
+
+
+check improve loop

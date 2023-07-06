@@ -14,6 +14,12 @@ from datetime import datetime
 import multiprocessing
 
 class StandardScaler:
+
+    '''
+    This was meant to emulate the sklearn.preprocessing StandardScaler, because sklearn wasn't installed on the clusters.
+    I decided to keep it, as coding custom objects makes the whole pipeline more robust (I think).
+    '''
+
     def __init__(self,mu=0,std=1):
         self.mu = mu
         self.std = std
@@ -29,10 +35,18 @@ class StandardScaler:
     def inverse_transform(self,X):
         return (np.asarray(X)*self.std) + self.mu
 
-
-#HyperParameters that will be used 
 class HyperParameters(dict):
     
+    '''
+    The HyperParameters object is just a dictionary with the correct keys to adjust a few hyperparameters of the model :
+    - 'layers' : a list of integers, corresponding to the number of neurons per layer
+    - 'loss' : the loss indicator (either 'mae' or 'mse', usually)
+    - 'dropout_rate' : Each hidden layer is followed by a dropout layer. Set to 0 if you want to ignore it ; or a value between 0 and 1 to activate it
+    - 'window_size' : Only used for SWModel (sliding windows), define the size of the window (how many timesteps you look back)
+    - 'interpolation' : Only used for RecModel (recurrent network), define how many equally spaced timesteps you want to interpolate
+                        from the original protocol
+    '''
+
     def __init__(self,layers=[64,64,64],loss='mae',dropout_rate=0,window_size=100,interpolation=None):
         self._keys = set(["layers", "loss","dropout_rate","window_size","interpolation"])
         super().__setitem__("layers",layers)
@@ -42,6 +56,22 @@ class HyperParameters(dict):
         super().__setitem__("interpolation",interpolation)
     
 class Summary(dict):
+
+    '''
+    A Summary object is not something you should interact with. It serves to keep all (most) relevant information, including :
+    - 'method' : The type of Network (feed-forward, recurrent, sliding window, megamodel...)
+    - 'date' : date and time of creation
+    - 'HP' : HyperParameters use at creation (see above)
+    - 'input_shape' : the shape the input should be put in (Note : None = Any)
+    - 'output_shape' : the shape the output will be in
+    - 'input_col' : names and order of the input columns
+    - 'output_col' : names and order of the output columns
+    - 'max_inter' : only when interpolation is used, the maximum time for interpolation (results not guaranteed beyond)
+    - 'training_history' : list of (e,n) tuples, indicating that the model was trained for e epochs on n samples
+
+    Use model.summary() to print a formatted string containing all the info
+    '''
+
     def __init__(self,
                 method='FNN',
                 date=datetime.now(),
@@ -108,12 +138,40 @@ class Summary(dict):
         string += self['add_info']
         return string
         
+#########################
+####    MODELS !    #####
+#########################
 
-#Generic model ; only serves as a SuperClass
-#A Model contains the actual model, its training set X_T & Y_T, and preprocessing/postprocessing functions
-#called before and after the prediction by the base model
+
 class Model(): 
     
+    '''
+    Compared to a keras model, this class comes with a few additional info/objects that make the whole thing more user-friendly :
+    - 'model' : the actual keras model
+    - 'X_T', 'Y_T' : training dataset of the model. Useful for analysis purposes when building, not sure if you will need them
+    - 'preprocessX', 'preprocessY', 'postprocessY' : pre- and postprocessing functions ; necessary to get the correct results from the model
+                                                     They come as tuples, containing the actual function and the additional arguments
+                                                     that need to be passed (scalers, etc)
+    - 'sum' : Summary object
+
+    Note : predictions work on ExData objects, not any array, so make sure that the input are converted
+
+    -> Build a model using Forward/Rec/SWModel(X_T,Y_T,HP) : training data and HyperParameters
+
+    -> Use model.train(n_epochs) to train it for a certain number of epochs
+
+    -> Use model.predict(X) to predict results from an ExData input. Add 'return_var = True' if you want to get the uncertainty of the model (only if HP['dropout_rate'] != 0)
+
+    -> Use model.save(path) to save it to the given path. See below for more detailed explanations
+
+    -> Use model.comment(str) to add whatever comment you want at the end of the summary
+
+    -> Use model.enrich(X,Y) to append new training data to the existing one (don't think this will be useful)
+
+    -> Use model.summary() to print out the summary.
+
+    '''
+
     def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary):
         self.model = model
         self.X_T = X_T
@@ -175,6 +233,15 @@ class Model():
         print(self.sum.to_string())
 
     def save(self,name):
+
+        '''
+        Saving a model uses the native keras save method to save the contained model to a 'model.h5' file ; it will save all 
+        additional information (training set, processing functions, summary) to a 'aux.pkl' file using pickle, and write out
+        the summary string to a 'summary.txt' file. All three are contained within the specified destination folder.
+
+        Use model = load_model(path) to load it back
+        '''
+
         if not(os.path.exists(name)): os.mkdir(name)
         self.model.save(Path(name,"model.h5"))
         self.X_T.reform()
@@ -198,7 +265,9 @@ class Model():
 ####FORWARD MODEL####
 #####################
 
-#Used for Hyperelastic data : one input = one output
+#Used for Hyperelastic data : one input = one output. Is very fast
+
+#Pre/post processing functions:
 
 def F_preX_fn(X,scalerX):
         X.flatten()
@@ -211,6 +280,7 @@ def F_preY_fn(Y,X,scalerY):
 def F_postY_fn(Y,X,scalerY):
         return ExData(scalerY.inverse_transform(Y),n=X.n)
 
+# Model creation
 
 def ForwardModel(X_T,Y_T,HP = HyperParameters()):
     X_T.flatten()
@@ -243,7 +313,8 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
                       input_shape=(X_T.f,),
                       output_shape = Y_T.f,
                       input_col = X_T.columns,
-                      output_col = Y_T.columns)
+                      output_col = Y_T.columns,
+                      training_history=[])
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
 
@@ -253,6 +324,8 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
 #####################
 
 #Used for Viscoelastic data : output depends on history (LSTM model)
+
+#Pre/post processing functions :
 
 def R_preX_fn(X,scalerX):
     X.reform()
@@ -287,6 +360,8 @@ def interpolate(X,new_time,old_time=None):
         else:
             res.append(P.spread(fn(new_time[i]),input_columns=X.columns[X.p:])[0])
     return ExData(res,n=X.n,p=X.p,columns=X.columns)
+
+#Model creation :
 
 def RecModel(X_T,Y_T,HP = HyperParameters()):
 
@@ -335,6 +410,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
                       input_shape=(None,X_T.f),
                       output_shape = Y_T.f,
                       max_inter=np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),
+                      training_history=[],
                       input_col = X_T.columns,
                       output_col = Y_T.columns)
 
@@ -345,9 +421,10 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
 ###SLIDING WINDOW###
 ####################
 
-#WORK IN PROGRESS !!!
-
 #A recurrent model, which preprocess the data using a sliding window method
+#Note : DO NOT USE, the results are quite disappointing
+
+#Pre/post processing functions : 
 
 def W_preX_fn(X,scalerX,size):
     W = X.sliding_window(size,padded=True)
@@ -361,6 +438,7 @@ def W_postY_fn(Y,X,scalerY):
     Y = ExData(Y,n=X.n)
     return ExData(Y.scale_back(scalerY),n=X.n)
 
+#Model Creation:
 
 def SWModel(X_T,Y_T,HP = HyperParameters()):
 
@@ -402,6 +480,7 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
                       input_shape=(None,X_T.f),
                       output_shape = Y_T.f,
                       input_col = X_T.columns,
+                      training_history=[],
                       output_col = Y_T.columns)
 
     return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
@@ -411,10 +490,18 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
 ####MEGA MODELS####
 ###################
 
-#Several models are built using the given method and hyperparameters, trained consecutively ; predicted result
-#is the average of all predicted results
-
 class MegaModel():
+
+    '''
+    A "MegaModel" (unofficial name) is a collection of several models as described above, which are trained/used collectively
+    to allow a measure of uncertainty (through variance). They are all created equal, the difference will stem from the training
+    routines they each go through
+
+    A MegaModel can be used in the same way as a regular Model, with the exception of its creation :
+    -> use MegaModel(X_T,Y_T,n,method,HP) with X_T,Y_T the training set, n the number of models, method the type of models
+    (either 'FNN' for Feed-Forward, 'RNN' for Recurrent, 'SW' for Sliding-Window) ; and HP the HyperParameters
+    '''
+
     def __init__(self,X_T,Y_T,n=10,method='RNN',HP=HyperParameters()):
         if not(method in ['FNN', 'RNN', 'SW']):
             raise NotImplementedError("Please select 'FNN', 'RNN' or 'SW' as method.")
@@ -488,6 +575,11 @@ class MegaModel():
         return self[np.argmin(L)]
 
     def save(self,name):
+
+        '''
+        Saving a MegaModel is similar to saving a regular Model : it creates the destination folder, then saves each model within
+        '''
+
         if not os.path.exists(name): os.mkdir(name)
         
         for i in range(len(self)):
@@ -499,6 +591,7 @@ class MegaModel():
 ###########################################
 
 ### DOES NOT WORK !
+#Failed attempt at multiprocessing
 
 def predict_aux(Xs,postY_fn,model,X,postY_arg):
     return postY_fn(model(Xs,training=True),ExData(X),*postY_arg)
@@ -516,6 +609,8 @@ def M_predict_aux(model,X):
 ######################
 ### Load functions ###
 ######################
+
+#load_model(path) will (supposedly) detect whether the destination folder contains a MegaModel or a regular Model, and load it accordingly
 
 def load_model(name):
     if os.path.exists(Path(name,"model.h5")):
@@ -544,12 +639,26 @@ def load_mega(name):
 ### Active learning ###
 #######################
 
-#improve is supposed to generate a new and improved version of the model given as input
-#It starts by generating a large pool of points for which the model predicts the label and returns its uncertainty
-#It then selects k points from the pool where the uncertainty is high
-#Using label_fn, it labels them
-#It then copies the architecture of the original model as a blank slate
-#Finally, using the original training pool as well as the new data points, it trains itself following the same training routine as the original
+'''
+The crux of the active learning routine resides in the following improve function. The goal is to generate
+a new and improved version of a given model. It takes 5 inputs :
+ - 'model' : the base model, that needs to be improved
+ - 'label_fn' : the labeling function. It should take a Sample object as inputs (array of parameter sets)
+                and return TWO ExData objects, X and Y, containing the corresponding inputs and outputs
+                to be used for the model 
+ - 'PSpace' : a ParameterSpace object, which will inform where to sample the new points
+ - 'k' : the number of new points to be sampled
+ - 'pool_size' : size of the pool of randomly generated points from which the new ones are selected (not necessary)
+
+The way it works is :
+ 1. Generate 'pool_size' points using one of the sampling methods (PoissonDisk is the best it seems)
+ 2. Evaluate the uncertainty of the given model on those new points (using the return_var parameter in predict)
+ 3. Rank them from most uncertain to least uncertain
+ 4. Select the top 'k' most uncertain points that are not too close to the existing training points
+ 5. Get the actual targets for them using 'label_fn'
+ 6. Using the new, larger training set, train a new model by copying the HyperParameters of the previous one, and its training history
+ 7. Return the new, trained model
+'''
 
 def improve(model,label_fn,PSpace,k=10,pool_size=None):
     if pool_size == None: pool_size = min(k*50,500)
@@ -587,9 +696,12 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
 
     #new_model.comment("This model was generated by an active improvement function.")
 
-    new_model.train(100,1)
+    for x in model.sum['training_history']:
+        new_model.train(x[0],1)
     
     return new_model
+
+'''improve_random does the same thing, but adds random points'''
 
 def improve_random(model,label_fn,PSpace,k=8,pool_size=None):
     if pool_size == None: pool_size = min(k*50,500)
@@ -601,9 +713,7 @@ def improve_random(model,label_fn,PSpace,k=8,pool_size=None):
     P = LHCuSample(PSpace,pool_size)
     P_T,inputs = X_T.separate()
     X = P.spread(inputs)
-    Y,V = model.predict(X,return_var=True)
-    V = np.mean(V,axis=(1,2))
-    I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
+    Y = model.predict(X,return_var=False)
     for j in range(k):
         X = RandSample(PSpace,1)
         i = 0

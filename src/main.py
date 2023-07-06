@@ -25,9 +25,9 @@ PSpace = ParameterSpace(
     mu_1      = (100,2000),
     eta_1     = (0,10000)
 )
-
+print(PSpace.keys(),PSpace.values())
 #Create an initial sampling of the parameter space (k points, Latin Hypercube method)
-k = 20
+k = 4
 S = PDskSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
@@ -39,23 +39,23 @@ X_T,Y_T = load_FE(res_path)
 #Define model HyperParameters
 HP = HyperParameters(layers=[64,64],
                      loss='mae',
-                     dropout_rate=0,
+                     dropout_rate=0.5,
                      interpolation=1000)
 
 #Build model
-#model = RecModel(X_T,Y_T,HP)
-model = MegaModel(X_T,Y_T,10,'RNN',HP)
+model = RecModel(X_T,Y_T,HP)
+#model = MegaModel(X_T,Y_T,10,'RNN',HP)
 
 #train model
-model.train(n_epochs=100, verbose=1)
+model.train(n_epochs=10, verbose=1)
 
-model.save(Path(save_path,"megaModel_AL_base"))
+model.save(Path(save_path,"model_test_base"))
 
 label_fn = lambda X: load_FE(label(X))
 
-for i in range(40):
+for i in range(4):
     model_bis = improve(model,label_fn,PSpace,k=4)
-    model_bis.save(Path(save_path,f"megaModel_AL_improved_{str(i).zfill(3)}"))
+    model_bis.save(Path(save_path,f"model_test_improved_{str(i).zfill(3)}"))
     model = model_bis
 
 X_T,Y_T = model_bis.X_T, model_bis.Y_T
@@ -65,6 +65,6 @@ HPf = HyperParameters(layers=[64,64],
                      dropout_rate=0,
                      interpolation=1000)
 
-final = MegaModel(X_T,Y_T,10,'RNN',HPf)
-final.train(1000,1)
-final.save(Path(save_path,"megaModel_AL_Final"))
+final = RecModel(X_T,Y_T,HPf)
+final.train(100,1)
+final.save(Path(save_path,"model_test_final"))

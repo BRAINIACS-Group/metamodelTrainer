@@ -223,7 +223,7 @@ class ExData(Sample):
 
         return obj
     
-    def __array_finalize__(self, obj):
+    def __array_finalize__(self, obj): #Makes slicing compatible
         if not(obj is None) and self.ndim > 0:
             if not(hasattr(self,'n')):
                 if self.ndim == 3:
@@ -308,11 +308,10 @@ class ExData(Sample):
     def copy(self): #Creates a deepcopy
         return ExData(np.copy(self),p=self.p,n=self.n,columns=self.columns)
 
-
+    def sliding_window(self,size,strip=1,padded=False): 
     #Creates sliding windows of the given size
     #strip indicates if consecutive windows need to skip timesteps, and diagonally sample all simulations
     #padded indicates if the first windows should be padded with zeros
-    def sliding_window(self,size,strip=1,padded=False): 
         windows = []
         for i in range(0,self.n):
             if padded:
