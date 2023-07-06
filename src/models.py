@@ -196,7 +196,7 @@ class Model():
 
     def predict(self,X,return_var=False,n_workers=1):
         if X.columns != self.sum['input_col']:
-            raise ValueError(f"Input columns do not match training columns. Expected {str(self['sum']['input_col'])}, got {str(X.columns)} instead.")
+            raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
@@ -667,9 +667,9 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = LHCuSample(PSpace,pool_size)
-    P_T,inputs = X_T.separate()
-    X = P.spread(inputs)
+    P = LHCuSample(PSpace,pool_size,columns = P_T.columns)
+
+    X = P.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order

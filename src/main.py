@@ -31,8 +31,8 @@ k = 4
 S = PDskSample(PSpace,k)
 
 #Label them by running simulations, and keep in a variable the folder in which the results are saved
-res_path = label(S)
-
+#res_path = label(S)
+res_path = Path(cwd,"FE","out","6bda37d2")
 #Load the results and format them for model training
 X_T,Y_T = load_FE(res_path)
 
