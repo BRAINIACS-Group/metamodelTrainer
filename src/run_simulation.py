@@ -65,7 +65,7 @@ def label(X): #A really inelegant way to get the material parameters in the corr
 
 
 def run_sim(X):
-    prm_file = Path('../FE/data/prm/reference.prm')
+    prm_file = Path('../FE/data/prm/reference_short.prm')
     prm = ParameterHandler.from_file(prm_file)
     
     variables = X  
