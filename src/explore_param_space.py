@@ -42,6 +42,10 @@ class Sample(np.ndarray):
         obj.columns = columns
         return obj
 
+    def __array_finalize__(self, obj): #Makes slicing compatible
+        if not (hasattr(self,'columns')) and type(obj) != np.ndarray:
+            self.columns = obj.columns
+
     def append(self,X): #Appends a Sample to another (unlike lists, returns the results)
         return Sample(np.vstack((self,X)),self.columns) 
 
