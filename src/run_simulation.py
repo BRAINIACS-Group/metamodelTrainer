@@ -47,7 +47,7 @@ def label(X): #A really inelegant way to get the material parameters in the corr
     for j in range(len(comp)):
         if abs(comp[j]) < abs(comp[k]):
             k = j
-    X_cor = np.array([X[k]]).spread(S,input_columns=inputs)
+    X_cor = Sample([X[k]],columns=X.columns).spread(S,input_columns=inputs)
     Y_cor = Y_res[k]
 
     for i in range(1,len(X_res)):
@@ -58,7 +58,7 @@ def label(X): #A really inelegant way to get the material parameters in the corr
         for j in range(len(comp)):
             if abs(comp[j]) < abs(comp[k]):
                 k = j
-        X_cor = X_cor.append(np.array([X[k]]).spread(S,input_columns=inputs))
+        X_cor = X_cor.append(Sample([X[k]],columns=X.columns).spread(S,input_columns=inputs))
         Y_cor = Y_cor.append(Y_res[k])
 
     return X_cor, Y_cor
