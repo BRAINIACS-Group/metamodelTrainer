@@ -325,7 +325,8 @@ class ExData(Sample):
                 
 
 def load_data(name): #Loads either a Sample or ExData
-    data = pickle.load(name)
+    with open(name,'rb') as f:
+        data = pickle.load(f)
     if data['type'] == "Sample":
         return Sample(data['array'],data['columns'])
     else:
