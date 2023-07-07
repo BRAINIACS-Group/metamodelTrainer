@@ -1,4 +1,5 @@
-#These functions are built to read and format FE data to be used by the models
+
+#This file contains all the functions I used to interact with .csv files
 
 import os
 import re
@@ -6,6 +7,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from explore_param_space import *
+from uuid import uuid4
 
 #Finds the value of the specified parameters in the parameter file
 def read_pfile(pfile, names=['alpha','mu','deviatoric_20viscosity'],verbose=0): 
@@ -66,11 +68,24 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
 #Goal : Fully replace call to simulation ? Give a parameter file, read the useful parameters, testing devices, input files
 #Write output files
 
-def to_file(X,Y,input_dir,output_dir,input_col=['time','displacement','angle'], output_col=['force','torque']): #Takes the predicted results from the model and writes them to a folder following input structure
-    res_dfs = pd.DataFrame(np.hstack((X[i,:,X.p:],Y[i])),columns = input_col+output_col)
-    ldir = os.listdir(input_dir)
-    for file in os.listdir(input_dir):
-        print(file)
-        if file.endswith('.csv'):
+def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),output_dir = str(uuid4())[:8]): #Takes the predicted results from the model and writes them to a folder following input structure
+    
+    if not os.path.exists(output_dir): os.mkdir(output_dir)
+
+    if X.n == 1:
+
+        X.flatten()
+        Y.flatten()
+        res_df = pd.DataFrame(np.hstack((X[:,X.p:],Y)),columns = X.columns[X.p:]+Y.columns)
+        ldir = sorted([x for x in os.listdir(input_dir) if x.endswith('.csv')], key=lambda x: int(x.split('_')[0]))
+        i = 0
+        for file in ldir:
             df = pd.read_csv(Path(input_dir, file),dtype=np.float32)
-            columns = df.columns
+            n = len(df)
+            res_df[i:i+n].to_csv(Path(output_dir,file),index=False)
+            i += n
+    else:
+        for i in range(X.n):
+            res_to_file(X[i],Y[i],input_dir,Path(output_dir,str(uuid4())[:8]))
+
+        

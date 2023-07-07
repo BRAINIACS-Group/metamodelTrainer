@@ -243,7 +243,7 @@ class ExData(Sample):
                     else: p = 0
                 except: p = 0
                 self.p = p
-            if not (hasattr(self,'columns')) and type(obj) != np.ndarray:
+            if not (hasattr(self,'columns')) and type(obj) != np.ndarray and hasattr(obj,'columns'):
                 self.columns = obj.columns
 
 

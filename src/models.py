@@ -30,10 +30,10 @@ class StandardScaler:
         return StandardScaler(self.mu,self.std)
 
     def transform(self,X):
-        return (np.asarray(X) - self.mu)/self.std
+        return (np.array(X) - self.mu)/self.std
     
     def inverse_transform(self,X):
-        return (np.asarray(X)*self.std) + self.mu
+        return (np.array(X)*self.std) + self.mu
 
 class HyperParameters(dict):
     
@@ -682,7 +682,7 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
                 break
         P_T = P_T.append(P[I[i]])
     print("Start labeling")
-    
+
     X_A, Y_A = label_fn(P_T[X_T.n:])
     
     X_T = X_T.append(X_A)
