@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from explore_param_space import *
+from file_process import *
 from pathlib import Path
 from tensorflow import keras
 from keras.models import Sequential
@@ -10,6 +11,7 @@ from keras.callbacks import EarlyStopping
 import pickle
 import scipy.interpolate as spi
 from datetime import datetime
+import pandas as pd
 
 import multiprocessing
 
@@ -162,6 +164,10 @@ class Model():
 
     -> Use model.predict(X) to predict results from an ExData input. Add 'return_var = True' if you want to get the uncertainty of the model (only if HP['dropout_rate'] != 0)
 
+    -> Use model.run(X,input_dir) to emulate a FE simulation by giving a set of material parameters X and a directory from which to get input displacement and torque
+      Returns the path to the output directory
+
+
     -> Use model.save(path) to save it to the given path. See below for more detailed explanations
 
     -> Use model.comment(str) to add whatever comment you want at the end of the summary
@@ -211,6 +217,27 @@ class Model():
             return ExData(Y,n=X.n,columns=self.sum['output_col']), ExData(V,n=X.n,columns = self.sum['output_col'])
         else:
             return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),n=X.n,columns = self.sum['output_col'])
+
+    def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+                output_dir = str(uuid4())[:8],
+                parameter_file = Path('../FE/data/prm/reference.prm')):
+    columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
+    dataset = pd.DataFrame(columns=columns)
+    default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
+    #Get data
+    for file in os.listdir(data_dir):
+        if file.endswith('.csv'):
+            df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+            df = pd.DataFrame({**default, **df},dtype=np.float32)
+            dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+    #Convert into usable ExData
+    P = S
+    X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
+    Y = self.predict(X)
+    res_to_file(X,Y,input_dir,output_dir,parameter_file)
+    return output_dir
+
+
 
     def evaluate(self,X,Y,verbose=1):
         if verbose == 1: verbose = 2 
@@ -557,6 +584,25 @@ class MegaModel():
         if return_var: return Y,ExData(V,columns=self.sum['output_col'])
         else: return Y
 
+        def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+                output_dir = str(uuid4())[:8],
+                parameter_file = Path('../FE/data/prm/reference.prm')):
+    columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
+    dataset = pd.DataFrame(columns=columns)
+    default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
+    #Get data
+    for file in os.listdir(data_dir):
+        if file.endswith('.csv'):
+            df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+            df = pd.DataFrame({**default, **df},dtype=np.float32)
+            dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+    #Convert into usable ExData
+    P = S
+    X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
+    Y = self.predict(X)
+    res_to_file(X,Y,input_dir,output_dir,parameter_file)
+    return output_dir
+
     def evaluate(self,X,Y):
         scalerY = self[0].scalerY
         Yp = self.predict(X).scale(scalerY)
@@ -744,4 +790,3 @@ def improve_random(model,label_fn,PSpace,k=8,pool_size=None):
     
     return new_model
 
-    

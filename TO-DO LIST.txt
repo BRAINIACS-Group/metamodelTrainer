@@ -1,35 +1,3 @@
-TO-DO LIST:
-- (PC) Visualize the selected points from RL and AL
-- (PC/Cluster) Test multiprocessing
-- (Done) Train final model
---> Finalize base, step 18 (100), step 43 (200) : res thursday
-- (PC) Compare results
-- (PC ?) Why so much training history ? 
-- (PC) From & to file
-- (PC) Add summary & history to MM
-- (Cluster) MM improvement loop
-
-PRESENTATION:
-- Loss is model dependant, not sample dependant
-- Active learning vs Random learning
-- Results
-
-Appeler Orange
-
-
-CONCLUSIONS : 
-- Final AL vs RL : not much difference -> Try at step 50 ? Earlier ? Compare step 50 to step 118 ?
-- Generate different initial grids w/ different methods, finalize, compare (doable today for tomorrow)
-
-
-THURSDAY : 
-- (Done) Copy all the _final models 
-- Analyze (R2 ; find a way to compare)
-- Copy all method models -> Monday
-- Analyze (R2 ; mustach box) -> Monday
-
-- Launch finalization of base, 003,008,013,018,...
-- Launch MM improvement loop (& finalizations ?)
-
-
-check improve loop
+CODE model.run(S)
+Launch finalization of MM ?
+Prepare Jan meeting
