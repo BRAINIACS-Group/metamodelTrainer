@@ -221,21 +221,21 @@ class Model():
     def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = str(uuid4())[:8],
                 parameter_file = Path('../FE/data/prm/reference.prm')):
-    columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
-    dataset = pd.DataFrame(columns=columns)
-    default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
-    #Get data
-    for file in os.listdir(data_dir):
-        if file.endswith('.csv'):
-            df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
-            df = pd.DataFrame({**default, **df},dtype=np.float32)
-            dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
-    #Convert into usable ExData
-    P = S
-    X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
-    Y = self.predict(X)
-    res_to_file(X,Y,input_dir,output_dir,parameter_file)
-    return output_dir
+        columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
+        dataset = pd.DataFrame(columns=columns)
+        default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
+        #Get data
+        for file in os.listdir(data_dir):
+            if file.endswith('.csv'):
+                df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+                df = pd.DataFrame({**default, **df},dtype=np.float32)
+                dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+        #Convert into usable ExData
+        P = S
+        X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
+        Y = self.predict(X)
+        res_to_file(X,Y,input_dir,output_dir,parameter_file)
+        return output_dir
 
 
 
@@ -584,24 +584,24 @@ class MegaModel():
         if return_var: return Y,ExData(V,columns=self.sum['output_col'])
         else: return Y
 
-        def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+    def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = str(uuid4())[:8],
                 parameter_file = Path('../FE/data/prm/reference.prm')):
-    columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
-    dataset = pd.DataFrame(columns=columns)
-    default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
-    #Get data
-    for file in os.listdir(data_dir):
-        if file.endswith('.csv'):
-            df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
-            df = pd.DataFrame({**default, **df},dtype=np.float32)
-            dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
-    #Convert into usable ExData
-    P = S
-    X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
-    Y = self.predict(X)
-    res_to_file(X,Y,input_dir,output_dir,parameter_file)
-    return output_dir
+        columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
+        dataset = pd.DataFrame(columns=columns)
+        default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
+        #Get data
+        for file in os.listdir(data_dir):
+            if file.endswith('.csv'):
+                df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+                df = pd.DataFrame({**default, **df},dtype=np.float32)
+                dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+        #Convert into usable ExData
+        P = S
+        X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
+        Y = self.predict(X)
+        res_to_file(X,Y,input_dir,output_dir,parameter_file)
+        return output_dir
 
     def evaluate(self,X,Y):
         scalerY = self[0].scalerY
