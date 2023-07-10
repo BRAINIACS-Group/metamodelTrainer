@@ -93,7 +93,8 @@ def finalize(name):
 #X,Y = load_FE(data_path)
 
 names = ["model_test_final"]+["model_test_improved_"+str(i*5).zfill(3) for i in range(10)]
-
+base = load_model(Path(save_path,names[0]))
+print(base.X_T.columns)
 for n in names:
     finalize(n)
 
