@@ -92,7 +92,7 @@ def finalize(name):
 
 #X,Y = load_FE(data_path)
 
-names = ["model_AL_improved_"+str(i*5+3).zfill(3) for i in range(23)]
+names = ["model_test_final"]+["model_test_improved_"+str(i*5).zfill(3) for i in range(10)]
 
 for n in names:
     finalize(n)
