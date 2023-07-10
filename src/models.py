@@ -225,9 +225,9 @@ class Model():
         dataset = pd.DataFrame(columns=columns)
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
         #Get data
-        for file in os.listdir(data_dir):
+        for file in os.listdir(input_dir):
             if file.endswith('.csv'):
-                df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+                df = pd.read_csv(Path(input_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
                 df = pd.DataFrame({**default, **df},dtype=np.float32)
                 dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
         #Convert into usable ExData
@@ -584,9 +584,7 @@ class MegaModel():
         if return_var: return Y,ExData(V,columns=self.sum['output_col'])
         else: return Y
 
-    def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
-                output_dir = str(uuid4())[:8],
-                parameter_file = Path('../FE/data/prm/reference.prm')):
+    def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),output_dir = str(uuid4())[:8], parameter_file = Path('../FE/data/prm/reference.prm')):
         columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
         dataset = pd.DataFrame(columns=columns)
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
@@ -669,7 +667,7 @@ def load_single(name): #Loads a model from a given folder
     with open(Path(name,'aux.pkl'),'rb') as f:
         data = pickle.load(f)
     return Model(model,
-                 ExData(data['X_T']),ExData(data['Y_T']),
+                 ExData(data['X_T'],columns = data['summary']['input_col']),ExData(data['Y_T'],columns = data['summary']['output_col']),
                  data['preprocessX'],data['preprocessY'],data['postprocessY'],
                  data['summary'])
 
