@@ -40,27 +40,27 @@ def get_execPath():
 def label(X): #A really inelegant way to get the material parameters in the correct order for the model
     path = run_sim(X)
     X_res, Y_res = load_FE(path)
-    P,S = X_res[0].separate()
+    P,S = X_res.separate()
     inputs = X_res.columns[X_res.p:]
-    comp = np.sum(X - P,axis = 1)
+    comp = np.sum(P - X[0],axis = 1)
     k = 0
     for j in range(len(comp)):
         if abs(comp[j]) < abs(comp[k]):
             k = j
-    X_cor = Sample([X[k]],columns=X.columns).spread(S,input_columns=inputs)
+    X_cor = Sample([P[k]],columns=X.columns).spread(S,input_columns=inputs)
     Y_cor = Y_res[k]
 
-    for i in range(1,len(X_res)):
-        P,S = X_res[i].separate()
+    for i in range(1,len(X)):
         inputs = X_res.columns[X_res.p:]
-        comp = np.sum(X - P,axis = 1)
+        comp = np.sum(P - X[i],axis = 1)
         k = 0
         for j in range(len(comp)):
             if abs(comp[j]) < abs(comp[k]):
                 k = j
-        X_cor = X_cor.append(Sample([X[k]],columns=X.columns).spread(S,input_columns=inputs))
+        X_cor = X_cor.append(Sample([P[k]],columns=X.columns).spread(S,input_columns=inputs))
         Y_cor = Y_cor.append(Y_res[k])
-
+    X_cor.reform()
+    Y_cor.reform()
     return X_cor, Y_cor
 
 

@@ -110,7 +110,7 @@ def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','d
             res_df[i:i+n].to_csv(Path(output_dir,file),index=False)
             i += n
         with open(Path(output_dir,"material_parameters.txt"),"w") as f:
-            for i in range(p):
+            for i in range(X.p):
                 f.write(f"{X.columns[i]} = {str(X[0,i])}\n")
             f.write("\nAdditional information about geometry, etc can be found in .prm file. \nHowever, these are the correct material parameters.")
         shutil.copy(parameter_file,output_dir)
