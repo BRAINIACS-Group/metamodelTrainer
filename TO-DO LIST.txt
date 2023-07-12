@@ -1,3 +1,0 @@
-CODE model.run(S)
-Launch finalization of MM ?
-Prepare Jan meeting
