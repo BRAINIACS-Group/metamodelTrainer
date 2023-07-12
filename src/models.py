@@ -167,6 +167,8 @@ class Model():
     -> Use model.run(X,input_dir) to emulate a FE simulation by giving a set of material parameters X and a directory from which to get input displacement and torque
       Returns the path to the output directory
 
+    -> Use model.drop() to remove the training dataset that is usually saved with the model. Only do this on trained models,
+    but it can save a lot of data space.
 
     -> Use model.save(path) to save it to the given path. See below for more detailed explanations
 
@@ -265,6 +267,12 @@ class Model():
 
     def summary(self):
         print(self.sum.to_string())
+
+    def drop(self):
+        self.X_T.reform()
+        self.Y_T.reform()
+        self.X_T = self.X_T[0]
+        self.Y_T = self.Y_T[0]
 
     def save(self,name):
 
@@ -626,6 +634,12 @@ class MegaModel():
     def best_model(self,X,Y):
         L = [m.evaluate(X,Y) for m in self.models]
         return self[np.argmin(L)]
+
+    def drop(self):
+        self.X_T.reform()
+        self.Y_T.reform()
+        self.X_T = self.X_T[0]
+        self.Y_T = self.Y_T[0]
 
     def save(self,name):
 
