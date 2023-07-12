@@ -85,7 +85,7 @@ def finalize(name):
     base = load_model(Path(save_path,name))
     X_T, Y_T = base.X_T, base.Y_T
     HP = base.sum['HP']
-    HP['dropout_rate'] = 0
+    HP['dropout_rate'] = 0.5
     model = RecModel(X_T,Y_T,HP)
     model.train(1000,1)
     model.save(Path(save_path,name+"_final"))
