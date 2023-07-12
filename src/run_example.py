@@ -39,7 +39,7 @@ NOTE : A sample should be a 2D array, so if you only want to test a single param
 (n,1) and not (n,).
 '''
 
-S = Sample([[5,200,-5,100,1000]],columns = ['alpha_inf','mu_inf','alpha_1','mu_1','viscosity'])
+S = Sample([[5,200,-5,100,1000]],columns = ['alpha_inf','mu_inf','alpha_1','mu_1','eta_1'])
 
 '''
 STEP 3 : Predict results.
@@ -61,4 +61,5 @@ given as input :
 '''
 
 path = model.run(S)
+print(path)
 
