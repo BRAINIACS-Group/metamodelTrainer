@@ -78,8 +78,8 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
 
 
 def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
-                output_dir = str(uuid4())[:8],
-                parameter_file = Path('../FE/data/prm/reference.prm')
+                output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
+                parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')
                 ): #Takes the predicted results from the model and writes them to a folder following input structure
     
     '''
@@ -109,11 +109,23 @@ def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','d
             n = len(df)
             res_df[i:i+n].to_csv(Path(output_dir,file),index=False)
             i += n
-        with open(Path(output_dir,"material_parameters.txt"),"w") as f:
-            for i in range(X.p):
-                f.write(f"{X.columns[i]} = {str(X[0,i])}\n")
-            f.write("\nAdditional information about geometry, etc can be found in .prm file. \nHowever, these are the correct material parameters.")
-        shutil.copy(parameter_file,output_dir)
+        with open(parameter_file,'r') as f:
+            pref = f.read()
+        
+        variables = {}
+        for i in range(len(X.columns)):
+            variables[X.columns[i]] = X[0,i]
+        variables['simulation_output_directory'] = output_dir
+
+        def evaluate_expression(match):
+            expression = match.group(1)
+            return str(eval(expression, variables))
+
+        pstring = re.sub(r'{([^{}]+)}', evaluate_expression, pref)
+
+        with open(Path(output_dir,"parameter_file.prm"),'w') as f:
+            f.write(pstring)
+
     else:
         for i in range(X.n):
             res_to_file(X[i],Y[i],input_dir,Path(output_dir,str(uuid4())[:8]))
