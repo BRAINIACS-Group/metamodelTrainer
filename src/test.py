@@ -98,33 +98,46 @@ def finalize(name):
 #finalize("model_AL_improved_043")
 #finalize("model_RL_improved_043")
 
-if __name__ == '__main__':
-    X_T,Y_T = load_FE(data_path)
 
-    #Define hyper parameters
-    HP = HyperParameters(layers=[64,64],
-                        loss='mae',
-                        dropout_rate=0,
-                        interpolation=1000)
+def label(X): #A really inelegant way to get the material parameters in the correct order for the model
+    path = data_path
+    X_res, Y_res = load_FE(path)
+    P,S = X_res.separate()
+    inputs = X_res.columns[X_res.p:]
+    comp = np.sum(P - X[0],axis = 1)
+    k = 0
+    for j in range(len(comp)):
+        if abs(comp[j]) < abs(comp[k]):
+            k = j
+    X_cor = Sample([P[k]],columns=X.columns).spread(S,input_columns=inputs)
+    Y_cor = Y_res[k]
 
-    model = MegaModel(X_T,Y_T,10,'RNN',HP)
-    model.train(10,1,n_workers=4)
-    model.save("MMtest")
-    model = load_model("MMtest")
-    Y = model.predict(X_T)
-    input(Y.shape)
+    for i in range(1,len(X)):
+        inputs = X_res.columns[X_res.p:]
+        comp = np.sum(P - X[i],axis = 1)
+        k = 0
+        for j in range(len(comp)):
+            if abs(comp[j]) < abs(comp[k]):
+                k = j
+        X_cor = X_cor.append(Sample([P[k]],columns=X.columns).spread(S,input_columns=inputs))
+        Y_cor = Y_cor.append(Y_res[k])
+    X_cor.reform()
+    Y_cor.reform()
+    return X_cor, Y_cor
 
-    #model = load_model(Path(save_path,"Multi"))
-    model = RecModel(X_T,Y_T,HP)
-    model.train(10,1)
+model = load_model(Path(save_path,"ogden_final"))
+model.drop()
+model.save(Path(save_path,"model_final"))
+input('Done !')
 
-    model.save("test")
-    model = load_model("test")
+X,Y = load_FE(data_path)
+P,I = X.separate()
+P_up = Sample(np.hstack((P[:,1].reshape(len(P),1),P[:,3].reshape(len(P),1),P[:,0].reshape(len(P),1),P[:,2].reshape(len(P),1),P[:,4].reshape(len(P),1))),columns=['alpha_inf','mu_inf','alpha_1','mu_1','eta_1'])
+X_new,Y_new = label(P_up)
+print(np.max(Y_new - Y))
 
-    t0 = time.time()
-    Y,V = model.predict(X_T,return_var=True,n_workers=4)
-    print(time.time()-t0)
-
-    print(V.shape)
-    input('Done!')
-
+perm = np.random.permutation(len(P_up))
+P2 = Sample(P_up[perm],columns = P_up.columns)
+X_new2,Y_new2 = label(P2)
+Y2 = Y[perm]
+print(np.max(Y_new2 - Y2))
