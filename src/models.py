@@ -216,8 +216,8 @@ class Model():
             return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),n=X.n,columns = self.sum['output_col'])
 
     def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
-                output_dir = Path('../out',str(uuid4())[:8]),
-                parameter_file = Path('../FE/data/prm/reference.prm')):
+                output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
+                parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')):
         columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
         dataset = pd.DataFrame(columns=columns)
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
