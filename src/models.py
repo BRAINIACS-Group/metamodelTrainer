@@ -13,7 +13,6 @@ import scipy.interpolate as spi
 from datetime import datetime
 import pandas as pd
 
-import multiprocessing
 
 class StandardScaler:
 
@@ -202,18 +201,14 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False,n_workers=1):
+    def predict(self,X,return_var=False):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
         if return_var:
-            if n_workers > 1:
-                pool = multiprocessing.Pool(processes=n_workers)
-                predictions = np.array(pool.starmap(predict_aux, [(Xs,postY_fn,self.model,X,postY_arg) for _ in range(16)]))
-            else:
-                predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
+            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
             Y = np.mean(predictions,axis=0)
             V = np.var(predictions,axis=0)
             return ExData(Y,n=X.n,columns=self.sum['output_col']), ExData(V,n=X.n,columns = self.sum['output_col'])
@@ -573,27 +568,17 @@ class MegaModel():
     def __getitem__(self,i):
         return self.models[i]
 
-    def train(self,n_epochs=100,verbose=2,n_workers=1):
-        if n_workers > 1:
-            pool = multiprocessing.Pool(processes=n_workers)
-            print('check 0')
-            L = pool.starmap(train_aux, [(self[i],n_epochs,verbose,i) for i in range(len(self))])
-            pool.close()
-            pool.join()
-        else:
-            for i in range(len(self)):
-                L = []
-                history = self[i].train(n_epochs,verbose=verbose-1)
-                L.append(history.history['loss'][-1])
-                if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {L[-1]}")
+    def train(self,n_epochs=100,verbose=2):
+        for i in range(len(self)):
+            L = []
+            history = self[i].train(n_epochs,verbose=verbose-1)
+            L.append(history.history['loss'][-1])
+            if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {L[-1]}")
         if verbose >= 1: print(f"All models trained successfully. Average loss: {np.mean(L)}")
         self.sum['training_history'].append((n_epochs,self.X_T.n))
 
-    def predict(self,X,return_var=False,n_workers=1):
-        if n_workers > 1:
-            pool = multiprocessing.Pool(processes=n_workers)
-            predictions = np.array(pool.starmap(M_predict_aux, [(self[i],X) for i in range(len(self))]))
-        else: predictions = np.array([m.predict(X) for m in self.models])
+    def predict(self,X,return_var=False):
+        predictions = np.array([m.predict(X) for m in self.models])
         Y = ExData(np.mean(predictions, axis = 0),columns=self.sum['output_col'])
         V = np.var(predictions, axis = 0)
         if return_var: return Y,ExData(V,columns=self.sum['output_col'])
@@ -651,26 +636,6 @@ class MegaModel():
         
         for i in range(len(self)):
             self[i].save(Path(name,"Model_"+str(i).zfill(1+int(np.log10(len(self))))))
-
-
-###########################################
-### Multiprocessing auxiliary functions ###
-###########################################
-
-### DOES NOT WORK !
-#Failed attempt at multiprocessing
-
-def predict_aux(Xs,postY_fn,model,X,postY_arg):
-    return postY_fn(model(Xs,training=True),ExData(X),*postY_arg)
-
-def train_aux(model,n_epochs,verbose,i):
-    history = model.train(n_epochs,verbose=verbose-1)
-    if verbose >= 1: print(f"Model {i+1} trained successfully. Training loss: {history.history['loss'][-1]}")
-    return history.history['loss'][-1]
-
-def M_predict_aux(model,X):
-    return model.predict(X)
-
 
 
 ######################
