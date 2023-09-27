@@ -671,26 +671,24 @@ def load_mega(name):
 ### Active learning ###
 #######################
 
-'''
-The crux of the active learning routine resides in the following improve function. The goal is to generate
-a new and improved version of a given model. It takes 5 inputs :
- - 'model' : the base model, that needs to be improved
- - 'label_fn' : the labeling function. It should take a Sample object as inputs (array of parameter sets)
-                and return TWO ExData objects, X and Y, containing the corresponding inputs and outputs
-                to be used for the model 
- - 'PSpace' : a ParameterSpace object, which will inform where to sample the new points
- - 'k' : the number of new points to be sampled
- - 'pool_size' : size of the pool of randomly generated points from which the new ones are selected (not necessary)
+# The crux of the active learning routine resides in the following improve function. The goal is to generate
+# a new and improved version of a given model. It takes 5 inputs :
+#  - 'model' : the base model, that needs to be improved
+#  - 'label_fn' : the labeling function. It should take a Sample object as inputs (array of parameter sets)
+#                 and return TWO ExData objects, X and Y, containing the corresponding inputs and outputs
+#                 to be used for the model 
+#  - 'PSpace' : a ParameterSpace object, which will inform where to sample the new points
+#  - 'k' : the number of new points to be sampled
+#  - 'pool_size' : size of the pool of randomly generated points from which the new ones are selected (not necessary)
 
-The way it works is :
- 1. Generate 'pool_size' points using one of the sampling methods (PoissonDisk is the best it seems)
- 2. Evaluate the uncertainty of the given model on those new points (using the return_var parameter in predict)
- 3. Rank them from most uncertain to least uncertain
- 4. Select the top 'k' most uncertain points that are not too close to the existing training points
- 5. Get the actual targets for them using 'label_fn'
- 6. Using the new, larger training set, train a new model by copying the HyperParameters of the previous one, and its training history
- 7. Return the new, trained model
-'''
+# The way it works is :
+#  1. Generate 'pool_size' points using one of the sampling methods (PoissonDisk is the best it seems)
+#  2. Evaluate the uncertainty of the given model on those new points (using the return_var parameter in predict)
+#  3. Rank them from most uncertain to least uncertain
+#  4. Select the top 'k' most uncertain points that are not too close to the existing training points
+#  5. Get the actual targets for them using 'label_fn'
+#  6. Using the new, larger training set, train a new model by copying the HyperParameters of the previous one, and its training history
+#  7. Return the new, trained model
 
 def improve(model,label_fn,PSpace,k=10,pool_size=None):
     if pool_size == None: pool_size = min(k*50,500)
