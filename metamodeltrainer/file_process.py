@@ -1,16 +1,26 @@
 
 #This file contains all the functions I used to interact with .csv files
 
+#STL imports
 import os
 import shutil
 import re
-import numpy as np
-import pandas as pd
 from pathlib import Path
-from explore_param_space import *
 from uuid import uuid4
 
-def read_pfile(pfile, parameters=['alpha','mu','deviatoric_20viscosity'],verbose=0): 
+#3rd party imports
+import numpy as np
+import pandas as pd
+
+#pyVlab imports
+from pyVlab import ParameterHandler
+from pyVlab.geometry import Geometry,Cylinder
+
+#local imports
+from .explore_param_space import *
+from .utility import convert_to_force_disp,convert_to_stress
+
+def read_paramfile(pfile, parameters=['alpha','mu','deviatoric_20viscosity'],verbose=0): 
     
     # Uses regular expressions to find the specified parameters, and return them (with semi-appropriate names)
     # Jan might have a better function...? 
@@ -36,7 +46,7 @@ def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosi
     #Separates into inputs (material parameters and given input columns) and outputs
     
     file_list = []
-    mat_p, names = read_pfile(Path(data_dir,"parameter_file.json"),parameters=parameters,verbose=verbose)
+    mat_p, names = read_paramfile(Path(data_dir,"parameter_file.json"),parameters=parameters,verbose=verbose)
     default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
     for i,x in enumerate(names):
         default[x] = mat_p[i]
@@ -77,7 +87,7 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
 
 
 
-def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+def res_to_file(X,Y,G,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')
                 ): #Takes the predicted results from the model and writes them to a folder following input structure
@@ -102,6 +112,16 @@ def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','d
         X.flatten()
         Y.flatten()
         res_df = pd.DataFrame(np.hstack((X[:,X.p:],Y)),columns = X.columns[X.p:]+Y.columns)
+        
+        prm = ParameterHandler.from_file(parameter_file)
+        geom_prm = Geometry.from_prm(prm,
+            'simulation/experiment/sample/geometry')
+        res_df_stress = convert_to_stress(res_df,
+            geom=Cylinder(radius=4e-3,height=0.00369233203125))
+        res_df        = convert_to_force_disp(res_df_stress,
+        geom=geom_prm)
+        
+        
         ldir = sorted([x for x in os.listdir(input_dir) if x.endswith('.csv')], key=lambda x: int(x.split('_')[0]))
         i = 0
         for file in ldir:

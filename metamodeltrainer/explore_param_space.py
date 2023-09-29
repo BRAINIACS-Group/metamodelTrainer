@@ -1,16 +1,18 @@
+'''Builds the Sample and ExData classes, that are to be handled by the models
+The Sample class is used to sample the parameter space : several initialization functions (sample methods) are given
+The ExData is used to handle experimental data from FE files
+'''
 
-#Builds the Sample and ExData classes, that are to be handled by the models
-#The Sample class is used to sample the parameter space : several initialization functions (sample methods) are given
-#The ExData is used to handle experimental data from FE files
-
-import matplotlib.pyplot as mpl
-import numpy as np
+#STL imports
 import random
-from scipy.stats.qmc import PoissonDisk
 import pickle
 
-ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
+#3rd party imports
+import matplotlib.pyplot as mpl
+import numpy as np
+from scipy.stats.qmc import PoissonDisk
 
+ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
 
 class ParameterSpace(dict):
     '''
@@ -182,26 +184,28 @@ def min_distance(X,PSpace): #Returns the minimal distance between two points of 
 ### ExData definition ###
 #########################
 
-'''
-The ExData object is basically a numpy array, enriched with some extra information:
-- self.n : the number of experimental simulations it is supposed to contain
-- self.t : the number of time-steps per simulation
-- self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
-- self.p : among those features, how many are actually material parameters
-- self.columns : name of the columns
-
-One important aspect is the use of obj.flatten() and obj.reform(), which give two representations of the data
-Sometimes, it is necessary to have all data (from all parameter sets) in a single 2D array, which can be obtained using flatten
-(this applies to Feed-Forward Network, as well as scaling using scalers)
-Other times, a 3D array is needed, to separate the different samples/parameter sets (for Recurrent Neural Networks)
-Those two functions can switch from one to the other
-
-The .separate() method acts as inverse to the Sample.spread() : it returns a Sample containing all parameter sets, as well as
-the variable inputs in columns (time, displacement, etc)
-'''
-
 class ExData(Sample):
-    def __new__(cls,X=np.array([ref_input]),p=None,n=None,columns=None): #Creates a new one from an array
+    '''
+    The ExData object is basically a numpy array, enriched with some extra information:
+    - self.n : the number of experimental simulations it is supposed to contain
+    - self.t : the number of time-steps per simulation
+    - self.f : the number of features per time-step (typically, material parameters and simulation input data, or simulation output data)
+    - self.p : among those features, how many are actually material parameters
+    - self.columns : name of the columns
+
+    One important aspect is the use of obj.flatten() and obj.reform(), which give two representations of the data
+    Sometimes, it is necessary to have all data (from all parameter sets) in a single 2D array, which can be obtained using flatten
+    (this applies to Feed-Forward Network, as well as scaling using scalers)
+    Other times, a 3D array is needed, to separate the different samples/parameter sets (for Recurrent Neural Networks)
+    Those two functions can switch from one to the other
+
+    The .separate() method acts as inverse to the Sample.spread() : it returns a Sample containing all parameter sets, as well as
+    the variable inputs in columns (time, displacement, etc)
+    '''
+
+    def __new__(cls,X=np.array([ref_input]),p=None,n=None,columns=None):
+        '''Creates a new one from an array
+        '''
         X = np.asarray(X)
         obj = X.view(cls)
         if len(X.shape) == 3:

@@ -1,17 +1,27 @@
-import os
-import numpy as np
-from explore_param_space import *
-from file_process import *
+#STL imports
+import os,sys,pickle
 from pathlib import Path
+from datetime import datetime
+
+#3rd party imports
+import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 from keras.models import Sequential
 from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
 from keras.callbacks import EarlyStopping
-import pickle
 import scipy.interpolate as spi
-from datetime import datetime
 import pandas as pd
+
+#vlab imports
+from pyVlab import ParameterHandler, TestingDevice
+from pyVlab.geometry import Geometry,Cylinder
+
+#local imports
+from metamodeltrainer.utility import convert_to_stress,convert_to_force_disp
+from metamodeltrainer.explore_param_space import *
+from metamodeltrainer.file_process import *
 
 
 class StandardScaler:
@@ -144,6 +154,8 @@ class Summary(dict):
 #########################
 
 
+
+
 class Model(): 
     
     '''
@@ -201,38 +213,99 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False):
+    def predict(self,X,return_var=False,return_grad:bool=True):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
         if return_var:
-            predictions = np.array([postY_fn(self.model(Xs,training=True),X,*postY_arg) for _ in range(16)])
-            Y = np.mean(predictions,axis=0)
-            V = np.var(predictions,axis=0)
-            return ExData(Y,n=X.n,columns=self.sum['output_col']), ExData(V,n=X.n,columns = self.sum['output_col'])
+            #raise NotImplementedError('implement gradient for each model call and average')
+            
+            predictions = []
+            for _ in range(16):
+                pred = self.model(Xs,training=True)
+                pred_post = postY_fn(pred,X,*postY_arg)
+                predictions.append(pred_post)
+            
+            Y = np.mean(np.array(predictions),axis=0)
+            V = np.var(np.array(predictions),axis=0)
+            
+            return (ExData(Y,n=X.n,columns=self.sum['output_col']),
+                ExData(V,n=X.n,columns = self.sum['output_col']))
         else:
-            return ExData(postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),n=X.n,columns = self.sum['output_col'])
+            if return_grad:
+                
+                #these are the material parameters
+               
+                model_params    = tf.Variable(np.reshape(Xs[0,0,:X.p],(1,1,X.p)))
+                #model_input = tf.Variable(Xs)
 
+                grad = None
+                with tf.GradientTape() as tape:
+                    
+                    tape.watch(model_params)
+                    model_sim_input = Xs[:,:,X.p:]
+                    params_repeat = tf.repeat(model_params,Xs.shape[1],1)
+                    model_input = tf.concat(
+                    [model_sim_input,params_repeat],
+                    2)
+                    Y = self.model(model_input,training=False)
+
+                #grad = tape.gradient(Y,model_params)
+                jac = tape.jacobian(Y,model_params)
+                print(jac)
+                assert X.n == 1, 'make this also work for n>1?'
+                correction_factor = postY_arg[0].std / preX_arg[0].std
+                grad *= correction_factor
+
+                grad_df = pd.DataFrame()
+                Y_post = postY_fn(Y,X,*postY_arg)
+
+                return (ExData(Y_post,n=X.n,columns = self.sum['output_col']),
+                    grad_df)
+            else:
+                raise NotImplementedError()
+
+    
     def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')):
+        
         columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
         dataset = pd.DataFrame(columns=columns)
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
-        #Get data
+        #Get datacode
         for file in os.listdir(input_dir):
             if file.endswith('.csv'):
-                df = pd.read_csv(Path(input_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
+                df = pd.read_csv(Path(input_dir, file),dtype=np.float32)\
+                    .rename(columns = str.strip)
                 df = pd.DataFrame({**default, **df},dtype=np.float32)
-                dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+                dataset = pd.concat((dataset, df), ignore_index=True)\
+                    .sort_values(by=["time"])
+       
+        #as the model was trained on force, displacement, torque and angle we
+        #need to trick a bit by first converting the data to engineering stress
+        #and then back to force, displacement etc. for the trained geometry
+        
+        prm = ParameterHandler.from_file(parameter_file)
+        geom = Geometry.from_prm(prm,
+            'simulation/experiment/sample/geometry')
+        dataset_stress = convert_to_stress(dataset,geom=geom)
+        dataset        = convert_to_force_disp(dataset_stress,
+            geom=Cylinder(radius=4e-3,height=0.00369233203125))
+
         #Convert into usable ExData
         P = S
-        X = P.spread(np.array(dataset[self.sum['input_col'][self.X_T.p:]]).reshape(len(dataset),len(self.sum['input_col'][self.X_T.p:])),input_columns=self.sum['input_col'][self.X_T.p:])
-        Y = self.predict(X)
-        res_to_file(X,Y,input_dir,output_dir,parameter_file)
-        return output_dir
+        X = P.spread(np.array(
+                dataset[self.sum['input_col'][self.X_T.p:]])\
+                .reshape(len(dataset),
+                    len(self.sum['input_col'][self.X_T.p:])),
+                    input_columns=self.sum['input_col'][self.X_T.p:])
+        
+        Y,G = self.predict(X)
+        res_to_file(X,Y,G,input_dir,output_dir,parameter_file)
+        return G
 
     def finalize(self,n_epochs = 1000):
         X_T, Y_T, HP = self.X_T, self.Y_T, self.sum['HP']
@@ -376,9 +449,14 @@ def R_postY_fn(Y,X,scalerY):
     Y = ExData(Y)
     return ExData(Y.scale_back(scalerY),n=X.n)
 
-def R_preX_fn_I(X,scalerX,nt): return R_preX_fn(interpolate(X,nt),scalerX)
-def R_preY_fn_I(Y,X,scalerY,nt): return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.columns.index('time')]),X,scalerY)
-def R_postY_fn_I(Y,X,scalerY,nt): return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.columns.index('time')],old_time=nt),X,scalerY)
+def R_preX_fn_I(X,scalerX,nt):
+    return R_preX_fn(interpolate(X,nt),scalerX)
+
+def R_preY_fn_I(Y,X,scalerY,nt):
+    return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.columns.index('time')]),X,scalerY)
+
+def R_postY_fn_I(Y,X,scalerY,nt):
+    return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.columns.index('time')],old_time=nt),X,scalerY)
 
 
 #Interpolates new_time values from a given X, whose values are ordered by old_time
@@ -652,6 +730,9 @@ def load_model(name):
 
 def load_single(name): #Loads a model from a given folder
     model = klm(Path(name,"model.h5"))
+
+
+    sys.path.append(str(Path(__file__).parent))
     with open(Path(name,'aux.pkl'),'rb') as f:
         data = pickle.load(f)
     return Model(model,
@@ -691,6 +772,7 @@ def load_mega(name):
 #  7. Return the new, trained model
 
 def improve(model,label_fn,PSpace,k=10,pool_size=None):
+    
     if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
