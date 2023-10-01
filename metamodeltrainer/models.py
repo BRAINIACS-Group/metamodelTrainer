@@ -227,7 +227,9 @@ class Model():
             for n in range(jac.shape[0]):
                 time = X[n,:,X.columns.index('time')]
                 fn = spi.CubicSpline(new_time,jac[n,:,:,:],axis=0)
-                interp_results.append(fn(time))
+                jac_interp = fn(time)
+                jac_interp = jac_interp[np.newaxis,...]
+                interp_results.append(jac_interp)
             return np.concatenate(interp_results)
 
         JacData = namedtuple('JacData',['jac','output_cols','param_cols'])
@@ -255,7 +257,7 @@ class Model():
                 #model_input = tf.Variable(Xs)
 
 
-                grad = None
+                jac = None
                 with tf.GradientTape() as tape:
                     
                     tape.watch(model_params)
