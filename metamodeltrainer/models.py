@@ -224,7 +224,7 @@ class Model():
         def interp_jac(jac:tf.Tensor)->np.ndarray:
             new_time = postY_arg[1]
             interp_results = []
-            for n in jac.shape[0]:
+            for n in range(jac.shape[0]):
                 time = X[n,:,X.columns.index('time')]
                 fn = spi.CubicSpline(new_time,jac[n,:,:,:],axis=0)
                 interp_results.append(fn(time))
