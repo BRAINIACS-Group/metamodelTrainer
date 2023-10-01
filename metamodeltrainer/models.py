@@ -2,6 +2,7 @@
 import os,sys,pickle
 from pathlib import Path
 from datetime import datetime
+from collections import namedtuple
 
 #3rd party imports
 import numpy as np
@@ -219,6 +220,18 @@ class Model():
         preX_fn, preX_arg = self.preprocessX
         postY_fn, postY_arg = self.postprocessY
         Xs = preX_fn(X,*preX_arg)
+        
+        def interp_jac(jac:tf.Tensor)->np.ndarray:
+            new_time = postY_arg[1]
+            interp_results = []
+            for n in jac.shape[0]:
+                time = X[n,:,X.columns.index('time')]
+                fn = spi.CubicSpline(new_time,jac[n,:,:,:],axis=0)
+                interp_results.append(fn(time))
+            return np.concatenate(interp_results)
+
+        JacData = namedtuple('JacData',['jac','output_cols','param_cols'])
+
         if return_var:
             #raise NotImplementedError('implement gradient for each model call and average')
             
@@ -241,6 +254,7 @@ class Model():
                 model_params    = tf.Variable(np.reshape(Xs[0,0,:X.p],(1,1,X.p)))
                 #model_input = tf.Variable(Xs)
 
+
                 grad = None
                 with tf.GradientTape() as tape:
                     
@@ -252,18 +266,24 @@ class Model():
                     2)
                     Y = self.model(model_input,training=False)
 
-                #grad = tape.gradient(Y,model_params)
-                jac = tape.jacobian(Y,model_params)
-                print(jac)
-                assert X.n == 1, 'make this also work for n>1?'
-                correction_factor = postY_arg[0].std / preX_arg[0].std
-                grad *= correction_factor
+                correction_factor = np.outer(postY_arg[0].std,
+                                             np.reciprocal(preX_arg[0].std[:X.p]))
 
-                grad_df = pd.DataFrame()
+                #grad = tape.gradient(Y,model_params)
+                jac = tape.jacobian(Y,model_params).numpy()
+                jac = np.reshape(jac,[Y.shape[0],Y.shape[1],Y.shape[2],X.p])
+                #print(jac)
+                assert X.n == 1, 'make this also work for n>1?'
+                
+                jac_post = jac * correction_factor
+                jac_post = interp_jac(jac_post)
+                jac_data = JacData(jac_post,self.sum['output_col'],
+                    self.sum['input_col'][:X.p])
+                
                 Y_post = postY_fn(Y,X,*postY_arg)
 
                 return (ExData(Y_post,n=X.n,columns = self.sum['output_col']),
-                    grad_df)
+                    jac_data)
             else:
                 raise NotImplementedError()
 
