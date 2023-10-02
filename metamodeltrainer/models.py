@@ -214,7 +214,7 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False,return_jac:bool=True):
+    def predict(self,X,return_var=False,return_jac:bool=False):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
