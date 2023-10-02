@@ -224,12 +224,14 @@ class Model():
         def interp_jac(jac:tf.Tensor)->np.ndarray:
             new_time = postY_arg[1]
             interp_results = []
+            print('jac shape:',jac.shape)
             for n in range(jac.shape[0]):
                 time = X[n,:,X.columns.index('time')]
                 fn = spi.CubicSpline(new_time,jac[n,:,:,:],axis=0)
                 jac_interp = fn(time)
                 jac_interp = jac_interp[np.newaxis,...]
                 interp_results.append(jac_interp)
+            print('interp_results:',interp_results)
             return np.concatenate(interp_results)
 
         JacData = namedtuple('JacData',['jac','output_cols','param_cols'])
