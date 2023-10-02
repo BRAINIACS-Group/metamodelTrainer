@@ -214,7 +214,7 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False,return_grad:bool=True):
+    def predict(self,X,return_var=False,return_jac:bool=True):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         preX_fn, preX_arg = self.preprocessX
@@ -249,7 +249,7 @@ class Model():
             return (ExData(Y,n=X.n,columns=self.sum['output_col']),
                 ExData(V,n=X.n,columns = self.sum['output_col']))
         else:
-            if return_grad:
+            if return_jac:
                 
                 #these are the material parameters
                
@@ -287,12 +287,16 @@ class Model():
                 return (ExData(Y_post,n=X.n,columns = self.sum['output_col']),
                     jac_data)
             else:
-                raise NotImplementedError()
+                return ExData(
+                    postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),
+                    n=X.n,columns = self.sum['output_col'])
+
 
     
     def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
-                parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')):
+                parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm'),
+                return_jac:bool=False):
         
         columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
         dataset = pd.DataFrame(columns=columns)
@@ -324,9 +328,12 @@ class Model():
                 .reshape(len(dataset),
                     len(self.sum['input_col'][self.X_T.p:])),
                     input_columns=self.sum['input_col'][self.X_T.p:])
-        
-        Y,G = self.predict(X)
-        res_to_file(X,Y,G,input_dir,output_dir,parameter_file)
+        G=None
+        if return_jac:
+            Y,G = self.predict(X,return_jac=return_jac)
+        else:
+            Y = self.predict(X,return_jac=return_jac)
+        res_to_file(X,Y,input_dir,output_dir,parameter_file)
         return G
 
     def finalize(self,n_epochs = 1000):

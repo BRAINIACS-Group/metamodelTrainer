@@ -87,7 +87,7 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
 
 
 
-def res_to_file(X,Y,G,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')
                 ): #Takes the predicted results from the model and writes them to a folder following input structure
