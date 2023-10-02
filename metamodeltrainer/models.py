@@ -232,8 +232,9 @@ class Model():
                 jac_interp = jac_interp[np.newaxis,...]
                 interp_results.append(jac_interp)
             print('interp_results:',interp_results)
-            return np.concatenate(interp_results)
-
+            interp_results = np.concatenate(interp_results)
+            print('interp_results_conc shape:',interp_results.shape)
+            return interp_results
         JacData = namedtuple('JacData',['jac','output_cols','param_cols'])
 
         if return_var:
