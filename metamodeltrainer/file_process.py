@@ -40,11 +40,10 @@ def read_paramfile(pfile, parameters=['alpha','mu','deviatoric_20viscosity'],ver
 
 
 
-def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']): #ONLY COMP_TEN for now
-    
+def import_csv(data_dir,verbose:int=0,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']): #ONLY COMP_TEN for now
     #Reads and formats the data from a single simulation, given a path to its directory
     #Separates into inputs (material parameters and given input columns) and outputs
-    
+
     file_list = []
     mat_p, names = read_paramfile(Path(data_dir,"parameter_file.json"),parameters=parameters,verbose=verbose)
     default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
@@ -63,7 +62,6 @@ def import_csv(data_dir,verbose=0,parameters=['alpha','mu','deviatoric_20viscosi
     X = P.spread(np.array(dataset[inputs]).reshape(len(dataset),len(inputs)),input_columns=inputs)
     Y = ExData(np.array(dataset[outputs]).reshape(1,len(dataset),len(outputs)),p=0,columns=outputs)
     return X,Y
-
 
 def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']):
     
@@ -87,11 +85,11 @@ def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'
 
 
 
-def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+def res_to_file(X,Y,input_dir:Path = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm')
                 ): #Takes the predicted results from the model and writes them to a folder following input structure
-    
+
     '''
     Writes two ExData objects to .csv files following the structure of files from input_dir
     The function sorts all files from input_dir using as key the integer before _ in the file name
@@ -103,7 +101,6 @@ def res_to_file(X,Y,input_dir = Path(Path(__file__).resolve().parents[1],'FE','d
 
     MISSING : A way to write the corresponding parameter file...
     '''
-
 
     if not os.path.exists(output_dir): os.mkdir(output_dir)
 
