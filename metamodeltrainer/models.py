@@ -697,6 +697,7 @@ class MegaModel():
     def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = str(uuid4())[:8],
                 parameter_file = Path('../FE/data/prm/reference.prm')):
+        
         columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
         dataset = pd.DataFrame(columns=columns)
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
