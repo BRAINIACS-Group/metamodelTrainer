@@ -820,6 +820,9 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
     for j in range(k):
         i = 0
+        #check minimum distance to existing training points in normalized
+        #parameter space
+        #
         while distance_to_sample(P[I[i]],P_T,PSpace) < min(1/X_T.n,0.5*min_distance(P_T,PSpace)): 
             i += 1
             if i == len(I): 
