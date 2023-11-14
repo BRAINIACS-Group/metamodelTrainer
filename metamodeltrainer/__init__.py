@@ -3,7 +3,7 @@
 #once the pyVlab module is made available thorugh pythons package system
 from pathlib import Path
 import sys
-parent_dir = Path(__file__).parents[3]
+parent_dir = Path(__file__).parents[2]
 pyLabPath = parent_dir / "efiPyVlab/src"
 sys.path += [str(pyLabPath)]
 

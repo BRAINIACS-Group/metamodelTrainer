@@ -7,11 +7,13 @@ This script is an example of how to use a model, once built (see build_example t
 3. Predict results.
 
 '''
-
-from explore_param_space import Sample
-from models import load_model
-
+import sys
 from pathlib import Path
+sys.path.append(str(Path(__file__).parents[1]))
+
+from metamodeltrainer.explore_param_space import Sample
+from metamodeltrainer.models import load_model
+
 
 
 cwd = Path(__file__).resolve().parents[1]
@@ -39,7 +41,9 @@ NOTE : A sample should be a 2D array, so if you only want to test a single param
 (n,1) and not (n,).
 '''
 
-S = Sample([[5,200,-5,100,1000]],columns = ['alpha_inf','mu_inf','alpha_1','mu_1','eta_1'])
+#S = Sample([[5,200,-5,100,1000]],columns = ['alpha_inf','mu_inf','alpha_1','mu_1','eta_1'])
+S = Sample([[-10,400,-5,300,5000]],columns = ['alpha_inf','mu_inf','alpha_1','mu_1','eta_1'])
+
 
 '''
 STEP 3 : Predict results.
@@ -59,7 +63,10 @@ given as input :
              be written in a separate file
              default is '../FE/data/prm/reference.prm'
 '''
-
-path = model.run(S)
+parameter_filepath = Path(__file__).parents[1] / "FE/data/prm/HBE_05_16.prm"
+output_dir = Path(__file__).parents[1] / "out" / "HBE_05_16"
+input_dir  = Path(__file__).parents[1] / "FE" / "data" / "input" / "HBE_05_16_P2a_FC_38"
+path = model.run(S,parameter_file=parameter_filepath,output_dir=output_dir,
+    input_dir=input_dir)
 print(path)
 
