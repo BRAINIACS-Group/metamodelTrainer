@@ -511,14 +511,20 @@ class Processor(ABC):
 
     @abstractmethod
     def preprocessX(X):
+        '''Preprocessing (normalizing etc.) of input data'''
         pass
 
     @abstractmethod
-    def preprocessY(X):
+    def preprocessY(Y):
+        '''Preprocessing of output data for training'''
         pass
 
     @abstractmethod
-    def postprocessY(X):
+    def postprocessY(Y):
+        '''Postprocessing of output data to invert previous operations'''
+        pass
+
+    def postprocessJac(X):
         pass
 
 class R_Processor(Processor):
@@ -559,6 +565,8 @@ class R_Processor_I(R_Processor):
         return super().postprocessY(
             interpolate(ExData(Y,n=X.n),
                 X[:,:,X.columns.index('time')],old_time=self.new_time),X)
+
+
 
 class ProcessorGenerator:
     '''Utility class to generate a processing function with pre and
