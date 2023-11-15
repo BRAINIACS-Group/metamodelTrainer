@@ -30,7 +30,7 @@ from pyVlab.optvars    import OptVars,OptVarData
 from pyVlab.testing_device import TestingDevice
 from pyVlab.geometry   import Geometry
 
-from efiPostProc import SimRes
+#from efiPostProc import SimRes
 
 def get_execPath():
     if not 'VLAB_EXEC' in os.environ.keys():
@@ -102,7 +102,7 @@ def run_sim(X,prm_file:Path,
 
     #The SimRes objects uses the TestingDevice and Geometry object under the hood 
     #to calculate stresses and so on to plot as well as write out results
-    simRes = SimRes(prm,output_dir=wd)
+    #simRes = SimRes(prm,output_dir=wd)
     
     return wd
    
