@@ -5,7 +5,11 @@ from pathlib import Path
 import sys
 parent_dir = Path(__file__).parents[2]
 pyLabPath = parent_dir / "efiPyVlab/src"
-sys.path += [str(pyLabPath)]
+pyPostPath = parent_dir / "efiPostProc/src"
+pyOptPath = parent_dir / "efiOpt/src"
+sys.path += [str(pyLabPath),
+             str(pyPostPath),
+             str(pyOptPath)]
 
 import pyVlab
 
