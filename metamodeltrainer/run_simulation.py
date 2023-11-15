@@ -65,7 +65,7 @@ def label(X,prm_file = Path('../FE/data/prm/reference.prm')):
 
 
 def run_sim(X,prm_file:Path,
-    out_dir:Path=Path(__file__).parents[1] / Path('FE/out') ):
+    out_dir:Path=Path(__file__).resolve().parents[1] / Path('FE/out') ):
     
     prm = ParameterHandler.from_file(prm_file)
     

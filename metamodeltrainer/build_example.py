@@ -16,10 +16,10 @@ The following example is based on the ___ model (don't know the name - one term-
 '''
 from pathlib import Path
 import sys
-parent_dir = Path(__file__).parents[2]
+parent_dir = Path(__file__).resolve().parents[2]
 pyLabPath = parent_dir / "efiPyVlab/src"
 sys.path += [str(pyLabPath),
-        str(Path(__file__).parents[1])]
+        str(Path(__file__).resolve().parents[1])]
 
 import pyVlab
 #STL modules
@@ -75,7 +75,7 @@ And then return ExData(X, p = 5, columns = ['alpha_inf','mu_inf','alpha_1','mu_1
 where p = 5 indicates that the first 5 columns are material parameters
 Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'])
 '''
-cur_dir = Path(__file__).parent
+cur_dir = Path(__file__).resolve().parent
 label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/reference_short.prm'))
 
 S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
