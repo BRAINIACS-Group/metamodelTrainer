@@ -37,8 +37,8 @@ def get_execPath():
         return None
     return os.environ['VLAB_EXEC']
 
-def label(X): #A really inelegant way to get the material parameters in the correct order for the model
-    path = run_sim(X)
+def label(X,prm_file = Path('../FE/data/prm/reference.prm')):
+    path = run_sim(X,prm_file)
     X_res, Y_res = load_FE(path)
     P,S = X_res.separate()
     inputs = X_res.columns[X_res.p:]
@@ -64,14 +64,16 @@ def label(X): #A really inelegant way to get the material parameters in the corr
     return X_cor, Y_cor
 
 
-def run_sim(X):
-    prm_file = Path('../FE/data/prm/reference.prm')
+def run_sim(X,prm_file:Path,
+    out_dir:Path=Path(__file__).parents[1] / Path('FE/out') ):
+    
     prm = ParameterHandler.from_file(prm_file)
     
     variables = X  
     dir_name = str(uuid4())[:8]
     
-    wd = Path(f'../FE/out/{dir_name}').resolve()
+    wd = out_dir / dir_name
+    wd = wd.resolve()
     if not wd.is_dir():
         wd.mkdir()
 
@@ -102,7 +104,7 @@ def run_sim(X):
     #to calculate stresses and so on to plot as well as write out results
     simRes = SimRes(prm,output_dir=wd)
     
-    return Path(f'../FE/out/{dir_name}').resolve()
+    return wd
    
     
   
