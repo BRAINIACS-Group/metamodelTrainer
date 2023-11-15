@@ -113,8 +113,8 @@ It is good practice, although not necessary, to save the model at each iteration
 '''
 
 for i in range(48):
-    model_bis = improve(model,label_fn,PSpace,k=2)                             
-    model_bis.save(Path(save_path,f"model_improved_{str(i).zfill(3)}"))
+    model_bis = improve(model,label_fn,PSpace,k=2)
+    model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}")
     model = model_bis
 
 '''
@@ -122,4 +122,4 @@ STEP 6 : 6. Build and train a "final" model (and save it).
 '''
 
 model_final = model.finalize(n_epochs = 1000)
-model_final.save(Path(save_path,"model_final"))
+model_final.save(save_path / "model_final")

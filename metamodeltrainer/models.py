@@ -1,11 +1,11 @@
 #STL imports
 from abc import ABC,abstractmethod
-import os,sys,pickle
+import os,sys,pickle,shutil
 from pathlib import Path
 from datetime import datetime
 from collections import namedtuple
 from typing import Any
-from dataclasses import dataclass, asdict
+#from dataclasses import dataclass, asdict
 
 #3rd party imports
 import numpy as np
@@ -14,7 +14,7 @@ from tensorflow import keras
 from keras.models import Sequential
 from keras.models import load_model as klm
 from keras.layers import Dense, Dropout, LSTM, TimeDistributed
-from keras.callbacks import EarlyStopping
+#from keras.callbacks import EarlyStopping
 import scipy.interpolate as spi
 import pandas as pd
 
@@ -383,7 +383,7 @@ class Model():
         self.X_T = self.X_T[0]
         self.Y_T = self.Y_T[0]
 
-    def save(self,dirpath:Path):
+    def save(self,dirpath:Path,overwrite:bool=False):
 
         '''
         Saving a model uses the native keras save method to save the contained model to a 'model.h5' file ; it will save all 
@@ -392,9 +392,14 @@ class Model():
 
         Use model = load_model(path) to load it back
         '''
-
-        if dirpath.is_dir():
+        if not dirpath.is_dir():
             dirpath.mkdir()
+        else:
+            if not overwrite:
+                raise FileExistsError(f'{dirpath} already exists')
+            shutil.rmtree(dirpath)
+            dirpath.mkdir()
+
         self.model.save(dirpath / "model.h5")
         self.X_T.reform()
         self.Y_T.reform()
@@ -406,10 +411,10 @@ class Model():
 #                'postprocessY': self.postprocessY,
                 'summary': self.sum,
             }
-        with open(Path(name,'summary.txt'),'w') as f:
+        with open(dirpath / 'summary.txt','w') as f:
             f.write(self.sum.to_string())
 
-        with open(Path(name,"aux.pkl"), 'wb') as f:
+        with open(dirpath / "aux.pkl", 'wb') as f:
             pickle.dump(data, f)
 
 
