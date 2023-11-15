@@ -96,7 +96,7 @@ HP = HyperParameters(layers=[64,64],        #Architecture of the network
 
 model = RecModel(X_T,Y_T,HP)
 model.train(n_epochs=100,verbose=1)
-model.save(Path(save_path,"model_base"))
+model.save(save_path / "model_base",overwrite=True)
 
 '''
 STEPS 4 & 5 : Use active learning to find new points to add to the training sample and train a new model on it.
@@ -114,7 +114,7 @@ It is good practice, although not necessary, to save the model at each iteration
 
 for i in range(48):
     model_bis = improve(model,label_fn,PSpace,k=2)
-    model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}")
+    model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}",overwrite=True)
     model = model_bis
 
 '''
