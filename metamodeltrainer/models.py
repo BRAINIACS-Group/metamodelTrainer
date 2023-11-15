@@ -524,7 +524,7 @@ class Processor(ABC):
         '''Postprocessing of output data to invert previous operations'''
         pass
 
-    def postprocessJac(X):
+    def postprocessJac(jac):
         pass
 
 class R_Processor(Processor):
@@ -540,6 +540,9 @@ class R_Processor(Processor):
     def postprocessY(self,Y,X):
         Y = ExData(Y)
         return ExData(Y.scale_back(self.scalerY),n=X.n)
+    
+    def postprocessJac(jac):
+        raise NotImplementedError
 
 class R_Processor_I(R_Processor):
     '''Class representing pre and postprocessing function with interpolation
@@ -566,6 +569,8 @@ class R_Processor_I(R_Processor):
             interpolate(ExData(Y,n=X.n),
                 X[:,:,X.columns.index('time')],old_time=self.new_time),X)
 
+    def postprocessJac(jac):
+        raise NotImplementedError
 
 
 class ProcessorGenerator:
