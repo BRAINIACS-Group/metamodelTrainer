@@ -76,7 +76,7 @@ where p = 5 indicates that the first 5 columns are material parameters
 Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'])
 '''
 cur_dir = Path(__file__).resolve().parent
-label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/reference_short.prm'))
+label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'))
 
 S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
 X_T, Y_T = label_fn(S)
