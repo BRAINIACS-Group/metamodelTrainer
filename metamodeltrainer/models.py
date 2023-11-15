@@ -207,9 +207,9 @@ class Model():
         elif verbose == 2: verbose = 1
         #preX_fn, preX_arg = self.preprocessX
         #preY_fn, preY_arg = self.preprocessY
-        preprocessor = self.processor_gen(self.X_T)
-        Xs = preprocessor.preprocessX(self.X_T)
-        Ys = preprocessor.preprocessY(self.Y_T,self.X_T)
+        processor = self.processor_gen(self.X_T)
+        Xs = processor.preprocessX(self.X_T)
+        Ys = processor.preprocessY(self.Y_T,self.X_T)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
         history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(Xs)/16),validation_split=0.1)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
@@ -219,7 +219,7 @@ class Model():
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         
-        processor = self.proc_generator(X)
+        processor = self.processor_gen(X)
 
         preX_fn  = processor.preprocessX
         postY_fn = processor.postprocessY
