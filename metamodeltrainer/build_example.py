@@ -14,20 +14,30 @@ Overall, the structure of the process is :
 The following example is based on the ___ model (don't know the name - one term-ogden ...?).
 
 '''
+from pathlib import Path
+import sys
+parent_dir = Path(__file__).parents[2]
+pyLabPath = parent_dir / "efiPyVlab/src"
+sys.path += [str(pyLabPath),
+        str(Path(__file__).parents[1])]
+
+import pyVlab
 #STL modules
 from datetime import datetime
 from pathlib import Path
 
 #Local models
 
-from explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
-from models import HyperParameters, RecModel, improve, load_model           #Neural Network management
-from run_simulation import label
+from metamodeltrainer.explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
+from metamodeltrainer.models import HyperParameters, RecModel, improve, load_model           #Neural Network management
+from metamodeltrainer.run_simulation import label
 
 
 
 cwd = Path(__file__).resolve().parents[1]
 save_path = Path(cwd,f"models_{datetime.today().strftime('%Y%m%d')}")
+if not save_path.is_dir():
+    save_path.mkdir()
 
 '''
 STEP 1 : Define a parameter space to explore
@@ -65,9 +75,11 @@ And then return ExData(X, p = 5, columns = ['alpha_inf','mu_inf','alpha_1','mu_1
 where p = 5 indicates that the first 5 columns are material parameters
 Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'])
 '''
+cur_dir = Path(__file__).parent
+label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/reference_short.prm'))
 
 S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
-X_T, Y_T = label(S)
+X_T, Y_T = label_fn(S)
 
 '''
 STEP 3 : Build and train a model equipped with an uncertainty indicator on this sampling.
@@ -101,7 +113,7 @@ It is good practice, although not necessary, to save the model at each iteration
 '''
 
 for i in range(48):
-    model_bis = improve(model,label,PSpace,k=2)                             
+    model_bis = improve(model,label_fn,PSpace,k=2)                             
     model_bis.save(Path(save_path,f"model_improved_{str(i).zfill(3)}"))
     model = model_bis
 

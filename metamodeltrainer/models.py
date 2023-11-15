@@ -383,7 +383,7 @@ class Model():
         self.X_T = self.X_T[0]
         self.Y_T = self.Y_T[0]
 
-    def save(self,name):
+    def save(self,dirpath:Path):
 
         '''
         Saving a model uses the native keras save method to save the contained model to a 'model.h5' file ; it will save all 
@@ -393,8 +393,9 @@ class Model():
         Use model = load_model(path) to load it back
         '''
 
-        if not(os.path.exists(name)): os.mkdir(name)
-        self.model.save(Path(name,"model.h5"))
+        if dirpath.is_dir():
+            dirpath.mkdir()
+        self.model.save(dirpath / "model.h5")
         self.X_T.reform()
         self.Y_T.reform()
         data = {
@@ -609,7 +610,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
     else:
         n_interp = HP['interpolation']
         #new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),n)
-        processor_gen = ProcessorGenerator(proc_cls=R_Processor,
+        processor_gen = ProcessorGenerator(proc_cls=R_Processor_I,
                 scalerX=scalerX,scalerY=scalerY,n_interp=n_interp)
         # preprocessX = (R_preX_fn_I,[scalerX,new_time])
         # preprocessY = (R_preY_fn_I,[scalerY,new_time])

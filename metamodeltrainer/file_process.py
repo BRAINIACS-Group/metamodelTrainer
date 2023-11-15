@@ -17,8 +17,8 @@ from pyVlab import ParameterHandler
 from pyVlab.geometry import Geometry,Cylinder
 
 #local imports
-from .explore_param_space import *
-from .utility import convert_to_force_disp,convert_to_stress
+from metamodeltrainer.explore_param_space import *
+from metamodeltrainer.utility import convert_to_force_disp,convert_to_stress
 
 def read_paramfile(pfile, parameters=['alpha','mu','deviatoric_20viscosity'],verbose=0): 
     

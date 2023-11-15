@@ -1,0 +1,117 @@
+# Listing of Parameters
+# ---------------------
+subsection experiment
+  # options: set directory or leave blank for current directory
+  set input directory   = 
+
+  # options: set directory or leave blank for current directory
+  set output directory  = 
+
+  # reset the solution vector after each testing device
+  set reset             = false
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity console = normal
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity logfile = normal
+
+
+  subsection sample
+    subsection constitutive@[type=maxwell_wiechert,instance=1]
+      subsection constitutive@[type=maxwell_element,instance=1]
+        set deviatoric viscosity = 4472.622303012855 # default: 0
+
+
+        subsection constitutive@[type=modified_one_term_ogden,instance=1]
+          set alpha                 = 0.5922978460278614 # default: -20
+          set bulk modulus          = 1393.18181327674   # default: 3.e3
+          set empirical coefficient = -2.
+          set mu                    = 144.12225654586942 # default: 0.7e3
+        end
+
+      end
+
+      subsection constitutive@[type=modified_one_term_ogden,instance=1]
+        set alpha                 = -11.832619857979891 # default: -20
+        set bulk modulus          = 3634.56756453348    # default: 3.e3
+        set empirical coefficient = -2.
+        set mu                    = 375.989748055187    # default: 0.7e3
+      end
+
+    end
+
+    subsection finite element
+      set polynomial degree = 2 # default: 1
+    end
+
+    subsection geometry@[type=rotation_sym_cylinder]
+      set height                       = 0.00369233203125 # default: 1
+      # Maximum allowed local element size relative to the radius in (0,1].
+      # Used for the specified refinement method
+      set local element size           = 1
+      set radius                       = 4e-3             # default: 0.5
+
+      # Refinement method to be used. With both methods all elements will be
+      # refined untilthe maximum element size is smaller then the specified
+      # limit. With boundaries allcells on the boundary will be refined up to
+      # the same level to prevent hanging nodes.With the point method all cell
+      # centers which are inside the given refinement radius around thepoint
+      # that depends on the geometry (usually the center of the inhomogeneous
+      # boundary
+      set refinement method            = boundaries
+
+      # radius used for point refinement method
+      set refinement radius            = 1
+
+      # Maximum allowed element size relative to the radius in (0,1].
+      set relative maxium element size = 0.5              # default: 1
+    end
+
+    subsection nonlinear_solver_control
+      set absolute tolerance           = 1e-10  # default: 1e-12
+      # options: direct|CG|GMRES
+      set linear solver type           = direct
+      set maximum number of iterations = 10     # default: 100
+      set relative tolerance           = 1e-08  # default: 1e-8
+    end
+
+    subsection quadrature
+      # options: 'auto' or integer values > 0
+      set quadrature points per space direction = auto
+
+      # options:
+      # gauss|gauss_lobatto|gauss_chebyshev|gauss_radau_chebyshev|gauss_lobatto_chebyshev|midpoint|milne|simpson|trapez|weddle
+      set quadrature type                       = gauss
+    end
+
+  end
+
+  subsection testing_device@[type=rotational_rheometer,instance=2]
+    set column name angle = angle
+    set input files       = 16_torsion_cyc_l2_c3.csv # default: 
+  end
+
+  subsection testing_device@[type=tension_compression_testing_device,instance=1]
+    set column name displacement = displacement
+    set input files              = 1_interm_mode1.csv # default: 
+    set uniaxial                 = false
+  end
+
+end
+
+
+subsection global
+  set input directory   = ../../data/input/10.01.2022ALG_5_GEL_5_P2                                          # default: /home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/c76baabb
+  set output directory  = /home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/c76baabb/efi_cp_lj9d0jsf # default: /home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/c76baabb/out
+  # Set to true if you want to write output for paraview.
+  set paraview output   = false
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity console = debug                                                                              # default: normal
+
+  # options: quiet|normal|verbose|very verbose|debug
+  set verbosity logfile = debug                                                                              # default: normal
+end
+
+
