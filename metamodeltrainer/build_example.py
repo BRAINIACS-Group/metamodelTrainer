@@ -14,16 +14,20 @@ Overall, the structure of the process is :
 The following example is based on the ___ model (don't know the name - one term-ogden ...?).
 
 '''
+#STL modules
+from datetime import datetime
+from pathlib import Path
+
+#Local models
 
 from explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
 from models import HyperParameters, RecModel, improve, load_model           #Neural Network management
 from run_simulation import label
 
-from pathlib import Path
 
 
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,"models")
+save_path = Path(cwd,f"models_{datetime.today().strftime('%Y%m%d')}")
 
 '''
 STEP 1 : Define a parameter space to explore
@@ -62,7 +66,7 @@ where p = 5 indicates that the first 5 columns are material parameters
 Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'])
 '''
 
-S = PDskSample(PSpace, k = 16) # k indicates the number of points to sample
+S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
 X_T, Y_T = label(S)
 
 '''
@@ -97,7 +101,7 @@ It is good practice, although not necessary, to save the model at each iteration
 '''
 
 for i in range(48):
-    model_bis = improve(model,label,PSpace,k=4)                             
+    model_bis = improve(model,label,PSpace,k=2)                             
     model_bis.save(Path(save_path,f"model_improved_{str(i).zfill(3)}"))
     model = model_bis
 

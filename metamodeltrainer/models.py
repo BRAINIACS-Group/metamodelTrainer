@@ -1,8 +1,11 @@
 #STL imports
+from abc import ABC,abstractmethod
 import os,sys,pickle
 from pathlib import Path
 from datetime import datetime
 from collections import namedtuple
+from typing import Any
+from dataclasses import dataclass, asdict
 
 #3rd party imports
 import numpy as np
@@ -192,34 +195,36 @@ class Model():
 
     '''
 
-    def __init__(self,model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary):
+    def __init__(self,model,X_T,Y_T,processor_gen,summary):
         self.model = model
         self.X_T = X_T
         self.Y_T = Y_T
-        self.preprocessX = preprocessX
-        self.preprocessY = preprocessY
-        self.postprocessY = postprocessY
+        self.processor_gen = processor_gen
         self.sum = summary
-
 
     def train(self,n_epochs=100,verbose=1):
         if verbose == 1: verbose = 2 
         elif verbose == 2: verbose = 1
-        preX_fn, preX_arg = self.preprocessX
-        preY_fn, preY_arg = self.preprocessY
-        Xs = preX_fn(self.X_T,*preX_arg)
-        Ys = preY_fn(self.Y_T,self.X_T,*preY_arg)
+        #preX_fn, preX_arg = self.preprocessX
+        #preY_fn, preY_arg = self.preprocessY
+        preprocessor = self.processor_gen(self.X_T)
+        Xs = preprocessor.preprocessX(self.X_T)
+        Ys = preprocessor.preprocessY(self.Y_T,self.X_T)
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
         history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(Xs)/16),validation_split=0.1)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X,return_var=False,return_jac:bool=False):
+    def predict(self,X:Sample,return_var=False,return_jac:bool=False):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
-        preX_fn, preX_arg = self.preprocessX
-        postY_fn, postY_arg = self.postprocessY
-        Xs = preX_fn(X,*preX_arg)
+        
+        processor = self.proc_generator(X)
+
+        preX_fn  = processor.preprocessX
+        postY_fn = processor.postprocessY
+        post_jac_fn = processor.postprocessJac
+        Xs = preX_fn(X)
         
         def interp_jac(jac:tf.Tensor)->np.ndarray:
             new_time = postY_arg[1]
@@ -234,6 +239,10 @@ class Model():
             print('interp_results:',interp_results)
             interp_results = np.concatenate(interp_results)
             print('interp_results_conc shape:',interp_results.shape)
+            
+            raise NotImplementedError()
+            jac_post = jac * correction_factor
+            
             return interp_results
         JacData = namedtuple('JacData',['jac','output_cols','param_cols'])
 
@@ -243,7 +252,7 @@ class Model():
             predictions = []
             for _ in range(16):
                 pred = self.model(Xs,training=True)
-                pred_post = postY_fn(pred,X,*postY_arg)
+                pred_post = postY_fn(pred,X)
                 predictions.append(pred_post)
             
             Y = np.mean(np.array(predictions),axis=0)
@@ -280,23 +289,23 @@ class Model():
                 #print(jac)
                 assert X.n == 1, 'make this also work for n>1?'
                 
-                jac_post = jac * correction_factor
-                jac_post = interp_jac(jac_post)
+                
+                jac_post = post_jac_fn(jac)
                 jac_data = JacData(jac_post,self.sum['output_col'],
                     self.sum['input_col'][:X.p])
                 
-                Y_post = postY_fn(Y,X,*postY_arg)
+                Y_post = postY_fn(Y,X)
 
                 return (ExData(Y_post,n=X.n,columns = self.sum['output_col']),
                     jac_data)
             else:
                 return ExData(
-                    postY_fn(self.model.predict(Xs,verbose=0),X,*postY_arg),
+                    postY_fn(self.model.predict(Xs,verbose=0),X),
                     n=X.n,columns = self.sum['output_col'])
 
 
     
-    def run(self,S,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
+    def run(self,S:Sample,input_dir = Path(Path(__file__).resolve().parents[1],'FE','data','input','10.01.2022ALG_5_GEL_5_P2'),
                 output_dir = Path(Path(__file__).resolve().parents[1],'out',str(uuid4())[:8]),
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm'),
                 return_jac:bool=False):
@@ -391,9 +400,9 @@ class Model():
         data = {
                 'X_T': self.X_T,
                 'Y_T': self.Y_T,
-                'preprocessX': self.preprocessX,
-                'preprocessY': self.preprocessY,
-                'postprocessY': self.postprocessY,
+                'processor_gen': self.processor_gen,
+#                'preprocessY': self.preprocessY,
+#                'postprocessY': self.postprocessY,
                 'summary': self.sum,
             }
         with open(Path(name,'summary.txt'),'w') as f:
@@ -467,30 +476,6 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
 
 #Used for Viscoelastic data : output depends on history (LSTM model)
 
-#Pre/post processing functions :
-
-def R_preX_fn(X,scalerX):
-    X.reform()
-    return X.scale(scalerX)
-
-def R_preY_fn(Y,X,scalerY):
-    Y.reform()
-    return Y.scale(scalerY)
-
-def R_postY_fn(Y,X,scalerY):
-    Y = ExData(Y)
-    return ExData(Y.scale_back(scalerY),n=X.n)
-
-def R_preX_fn_I(X,scalerX,nt):
-    return R_preX_fn(interpolate(X,nt),scalerX)
-
-def R_preY_fn_I(Y,X,scalerY,nt):
-    return R_preY_fn(interpolate(Y,nt,old_time=X[:,:,X.columns.index('time')]),X,scalerY)
-
-def R_postY_fn_I(Y,X,scalerY,nt):
-    return R_postY_fn(interpolate(ExData(Y,n=X.n),X[:,:,X.columns.index('time')],old_time=nt),X,scalerY)
-
-
 #Interpolates new_time values from a given X, whose values are ordered by old_time
 def interpolate(X,new_time,old_time=None):
     res = []
@@ -507,6 +492,83 @@ def interpolate(X,new_time,old_time=None):
         else:
             res.append(P.spread(fn(new_time[i]),input_columns=X.columns[X.p:])[0])
     return ExData(res,n=X.n,p=X.p,columns=X.columns)
+
+#Pre/post processing functions :
+class Processor(ABC):
+    '''Class representing pre and postprocessing function for in- and output of
+    the network'''
+
+    def __init__(self,X,scalerX,scalerY) -> None:
+        self.X = X
+        self.scalerX = scalerX
+        self.scalerY = scalerY
+
+    @abstractmethod
+    def preprocessX(X):
+        pass
+
+    @abstractmethod
+    def preprocessY(X):
+        pass
+
+    @abstractmethod
+    def postprocessY(X):
+        pass
+
+class R_Processor(Processor):
+    ''''''
+    def preprocessX(self,X):
+        X.reform()
+        return X.scale(self.scalerX)
+
+    def preprocessY(self,Y,X):
+        Y.reform()
+        return Y.scale(self.scalerY)
+
+    def postprocessY(self,Y,X):
+        Y = ExData(Y)
+        return ExData(Y.scale_back(self.scalerY),n=X.n)
+
+class R_Processor_I(R_Processor):
+    '''Class representing pre and postprocessing function with interpolation
+    for the RNN network'''
+
+    def __init__(self,X:Sample,scalerX:StandardScaler,scalerY:StandardScaler,
+            n_interp:int) -> None:
+        super().__init__(X,scalerX,scalerY)
+        self.new_time = np.linspace(0,
+            np.max(np.asarray(X)[0,:,X.columns.index('time')]),n_interp)
+ 
+    def preprocessX(self,X:Sample):
+        '''Input preprocessing'''
+        return super().preprocessX(interpolate(X,self.new_time))
+
+    def preprocessY(self,Y,X):
+        '''Output preprocessing (only for training)'''
+        return super().preprocessY(
+            interpolate(Y,self.new_time,old_time=X[:,:,X.columns.index('time')]),X)
+
+    def postprocessY(self,Y,X):
+        '''Output postprocessing'''
+        return super().postprocessY(
+            interpolate(ExData(Y,n=X.n),
+                X[:,:,X.columns.index('time')],old_time=self.new_time),X)
+
+class ProcessorGenerator:
+    '''Utility class to generate a processing function with pre and
+    postprocessing method'''
+
+    def __init__(self,proc_cls,*args,**kwargs):
+        self.proc_cls = proc_cls
+        self.args = args
+        self.kwargs = kwargs
+
+    def __call__(self, *args: Any, **kwds: Any) -> Any:
+        kwargs = {**self.kwargs,**kwds}
+        args += self.args
+        return self.proc_cls(*args,**kwargs)
+
+
 
 #Model creation :
 
@@ -539,17 +601,20 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
     Y_T.reform()
 
     if HP['interpolation'] == None:
-    
-        preprocessX = (R_preX_fn,[scalerX])
-        preprocessY = (R_preY_fn,[scalerY])
-        postprocessY = (R_postY_fn,[scalerY])
-
+        processor_gen = ProcessorGenerator(proc_cls=R_Processor,
+                scalerX=scalerX,scalerY=scalerY)
+        #preprocessX = (R_preX_fn,[scalerX])
+        #preprocessY = (R_preY_fn,[scalerY])
+        #postprocessY = (R_postY_fn,[scalerY])
     else:
-        n = HP['interpolation']
-        new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),n)
-        preprocessX = (R_preX_fn_I,[scalerX,new_time])
-        preprocessY = (R_preY_fn_I,[scalerY,new_time])
-        postprocessY = (R_postY_fn_I,[scalerY,new_time])
+        n_interp = HP['interpolation']
+        #new_time = np.linspace(0,np.max(np.asarray(X_T)[0,:,X_T.columns.index('time')]),n)
+        processor_gen = ProcessorGenerator(proc_cls=R_Processor,
+                scalerX=scalerX,scalerY=scalerY,n_interp=n_interp)
+        # preprocessX = (R_preX_fn_I,[scalerX,new_time])
+        # preprocessY = (R_preY_fn_I,[scalerY,new_time])
+        # postprocessY = (R_postY_fn_I,[scalerY,new_time])
+       
 
     summary = Summary(method = 'RNN',
                       date = datetime.now(),
@@ -561,7 +626,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
                       input_col = X_T.columns,
                       output_col = Y_T.columns)
 
-    return Model(model,X_T,Y_T,preprocessX,preprocessY,postprocessY,summary)
+    return Model(model,X_T,Y_T,processor_gen,summary)
 
 
 ####################
@@ -769,8 +834,9 @@ def load_single(name): #Loads a model from a given folder
     with open(Path(name,'aux.pkl'),'rb') as f:
         data = pickle.load(f)
     return Model(model,
-                 ExData(data['X_T'],columns = data['summary']['input_col']),ExData(data['Y_T'],columns = data['summary']['output_col']),
-                 data['preprocessX'],data['preprocessY'],data['postprocessY'],
+                 ExData(data['X_T'],columns = data['summary']['input_col']),
+                 ExData(data['Y_T'],columns = data['summary']['output_col']),
+                 data['preprocess_gen'],
                  data['summary'])
 
 def load_mega(name):
@@ -822,8 +888,8 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None):
         i = 0
         #check minimum distance to existing training points in normalized
         #parameter space
-        #
-        while distance_to_sample(P[I[i]],P_T,PSpace) < min(1/X_T.n,0.5*min_distance(P_T,PSpace)): 
+        #compare to 0.5* minimum distance in the training parameter space or 
+        while distance_to_sample(P[I[i]],P_T,PSpace) < min(1/X_T.n,0.5*min_distance(P_T,PSpace)):
             i += 1
             if i == len(I): 
                 i = j
