@@ -114,6 +114,7 @@ It is good practice, although not necessary, to save the model at each iteration
 
 for i in range(48):
     model_bis = improve_random(model,label_fn,PSpace,k=2)
+    model_bis.train(100,1)
     model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}",overwrite=True)
     model = model_bis
 
