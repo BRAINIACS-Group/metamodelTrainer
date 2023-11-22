@@ -33,7 +33,6 @@ from metamodeltrainer.models import HyperParameters, RecModel, improve, load_mod
 from metamodeltrainer.run_simulation import label
 
 
-
 cwd = Path(__file__).resolve().parents[1]
 save_path = Path(cwd,f"models_HBE_05_16_random{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():

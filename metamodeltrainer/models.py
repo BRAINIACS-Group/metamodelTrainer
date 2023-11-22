@@ -331,7 +331,8 @@ class Model():
             'simulation/experiment/sample/geometry')
         dataset_stress = convert_to_stress(dataset,geom=geom)
         dataset        = convert_to_force_disp(dataset_stress,
-            geom=Cylinder(radius=4e-3,height=0.00369233203125))
+            geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
+            )
 
         #Convert into usable ExData
         P = S
@@ -855,7 +856,7 @@ def load_single(name): #Loads a model from a given folder
     return Model(model,
                  ExData(data['X_T'],columns = data['summary']['input_col']),
                  ExData(data['Y_T'],columns = data['summary']['output_col']),
-                 data['preprocess_gen'],
+                 data['processor_gen'],
                  data['summary'])
 
 def load_mega(name):
