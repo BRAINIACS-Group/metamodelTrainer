@@ -329,10 +329,10 @@ class Model():
         prm = ParameterHandler.from_file(parameter_file)
         geom = Geometry.from_prm(prm,
             'simulation/experiment/sample/geometry')
-        dataset_stress = convert_to_stress(dataset,geom=geom)
-        dataset        = convert_to_force_disp(dataset_stress,
-            geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
-            )
+        #dataset_stress = convert_to_stress(dataset,geom=geom)
+        #dataset        = convert_to_force_disp(dataset_stress,
+        #    geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
+        #    )
 
         #Convert into usable ExData
         P = S
