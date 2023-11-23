@@ -51,7 +51,7 @@ PSpace = ParameterSpace(
     eta_1     = (0,10000)
 )
 
-model = load_model(save_path / "model_improved_47")
+model = load_model(save_path / "model_improved_047")
 
 for i in range(48,96+1):
     model_bis = improve(model,label_fn,PSpace,k=2)
