@@ -146,5 +146,3 @@ def res_to_file(X,Y,input_dir:Path = Path(Path(__file__).resolve().parents[1],'F
     else:
         for i in range(X.n):
             res_to_file(X[i],Y[i],input_dir,Path(output_dir,str(uuid4())[:8]))
-
-        
