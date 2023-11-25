@@ -322,14 +322,10 @@ class Model():
                 dataset = pd.concat((dataset, df), ignore_index=True)\
                     .sort_values(by=["time"])
        
-        #as the model was trained on force, displacement, torque and angle we
-        #need to trick a bit by first converting the data to engineering stress
-        #and then back to force, displacement etc. for the trained geometry
-        
         prm = ParameterHandler.from_file(parameter_file)
         geom = Geometry.from_prm(prm,
             'simulation/experiment/sample/geometry')
-        #dataset_stress = convert_to_stress(dataset,geom=geom)
+        dataset = convert_to_stress(dataset,geom=geom)
         #dataset        = convert_to_force_disp(dataset_stress,
         #    geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
         #    )

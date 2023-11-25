@@ -7,6 +7,8 @@ import shutil
 import re
 from pathlib import Path
 from uuid import uuid4
+from itertools import chain
+from typing import List
 
 #3rd party imports
 import numpy as np
@@ -38,42 +40,98 @@ def read_paramfile(pfile, parameters=['alpha','mu','deviatoric_20viscosity'],ver
     if verbose == 1: print(f"{len(values)} material parameters found in total.")
     return [float(x) for x in values],columns
 
+def get_material_parameters_fix(prm:ParameterHandler):
+    '''quick fix to reliably get parameters for maxwell model with ogden 
+    springs'''
+    
+    prm_dict = {}
+    sec_path = 'experiment/sample/'\
+        'constitutive@[type=maxwell_wiechert,instance=1]'
 
+    ogden_inf_path = sec_path +\
+        '/constitutive@[type=modified_one_term_ogden,instance=1]'
+    prm_dict['alpha_inf'] = prm.get_float(ogden_inf_path, 'alpha')
+    prm_dict['mu_inf']    = prm.get_float(ogden_inf_path, 'mu')
 
-def import_csv(data_dir,verbose:int=0,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']): #ONLY COMP_TEN for now
+    maxwell_element_path = sec_path +\
+        '/constitutive@[type=maxwell_element,instance=1]'
+    prm_dict['eta_1']     = prm.get_float(maxwell_element_path,
+        'deviatoric viscosity')
+
+    maxwell_spring_path = maxwell_element_path+\
+        '/constitutive@[type=modified_one_term_ogden,instance=1]'
+    prm_dict['alpha_1'] = prm.get_float(maxwell_spring_path, 'alpha')
+    prm_dict['mu_1']    = prm.get_float(maxwell_spring_path, 'mu')
+
+    return prm_dict
+
+def import_csv(data_dir,parameters:List[str],verbose:int=0,stress:bool=True):
+    #parameters=['alpha','mu','deviatoric_20viscosity'],
+    #inputs=['time','displacement','angle'],outputs=['force','torque'],
+    
+    #ONLY COMP_TEN for now
     #Reads and formats the data from a single simulation, given a path to its directory
     #Separates into inputs (material parameters and given input columns) and outputs
 
-    file_list = []
-    mat_p, names = read_paramfile(Path(data_dir,"parameter_file.json"),parameters=parameters,verbose=verbose)
-    default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
-    for i,x in enumerate(names):
-        default[x] = mat_p[i]
-    columns = names + ['time', 'displacement', 'force', 'angle', 'torque']
-    dataset = pd.DataFrame(columns=columns)
+    #mat_p, names = read_paramfile(Path(data_dir,"parameter_file.json"),parameters=parameters,verbose=verbose)
+    prm_file = data_dir / "parameter_file.prm"
+    parameter_handler = ParameterHandler.from_file(prm_file)
+    mat_p_dict = get_material_parameters_fix(parameter_handler)
+    geom = Geometry.from_prm(parameter_handler,'experiment/sample/geometry')
+
+    if set(parameters) != set(mat_p_dict.keys()):
+        raise ValueError('different parameters found')
+    mat_p_dict = {k:mat_p_dict[k] for k in parameters}
+
+    default = {'time': 0}
+    if stress:
+        inputs  = ['displacement','angle']
+        outputs = ['force','torque']
+    else:
+        inputs = ['stretch','shear']
+        outputs = ['normal_stress','shear_stress']
+    default.update({k:0. for k in chain(inputs,outputs)})
+    #default = {**mat_p_dict, **default}
+
+    #dataset = pd.DataFrame(columns=columns)
     #Get data
+    df_list = []
     for file in os.listdir(data_dir):
         if file.endswith('.csv'):
-            df = pd.read_csv(Path(data_dir, file),dtype=np.float32).rename(columns = {' displacement': 'displacement', ' force':'force', ' angle':'angle', ' torque':'torque'})
-            df = pd.DataFrame({**default, **df},dtype=np.float32)
-            dataset = pd.concat((dataset, df), ignore_index=True).sort_values(by=["time"])
+            df = pd.read_csv(Path(data_dir, file),dtype=np.float32)\
+                .rename(columns = str.strip)
+            if stress:
+                df = convert_to_stress(df,geom)
+            df_list.append(pd.DataFrame({**default, **df},dtype=np.float32))
+            
+    dataset = pd.concat(df_list, ignore_index=True)\
+        .sort_values(by=["time"])\
+        .assign(**mat_p_dict)
+
     #Convert into usable ExData
-    P = Sample(np.array([mat_p]),columns=names)
-    X = P.spread(np.array(dataset[inputs]).reshape(len(dataset),len(inputs)),input_columns=inputs)
-    Y = ExData(np.array(dataset[outputs]).reshape(1,len(dataset),len(outputs)),p=0,columns=outputs)
+    P = Sample(np.array([list(mat_p_dict.values())]),
+        columns=list(mat_p_dict.keys()))
+    X = P.spread(np.array(dataset[inputs]).reshape(len(dataset),len(inputs)),
+        input_columns=inputs)
+    Y = ExData(np.array(dataset[outputs]).reshape(1,len(dataset),len(outputs)),
+        p=0,columns=outputs)
+    
     return X,Y
 
-def load_FE(data_dir,verbose=1,parameters=['alpha','mu','deviatoric_20viscosity'],inputs=['time','displacement','angle'],outputs=['force','torque']):
+def load_FE(data_dir,parameters:List[str],verbose=1,stress:bool=True):
     
     #Loads up all simulation results from a given folder (applies import_csv to all subdirectories)
     #Returns two ExData objects with all the results (input & output)
     
-    dir_list = [x for x in os.listdir(data_dir) if os.path.exists(Path(data_dir,x,"parameter_file.json"))]
-    X,Y = import_csv(Path(data_dir,dir_list[0]),verbose=1,parameters=parameters,inputs=inputs,outputs=outputs)
+    dir_list = [x for x in os.listdir(data_dir) 
+        if os.path.exists(Path(data_dir,x,"parameter_file.json"))]
+    
+    X,Y = import_csv(Path(data_dir,dir_list[0]),parameters,verbose=1,stress=stress)
     if verbose == 1: print(f"{dir_list[0]} loaded.")
+    
     for i in range(1,len(dir_list)):
-        X_A,Y_A = import_csv(Path(data_dir,dir_list[i]),inputs=inputs,outputs=outputs)
-        try: 
+        X_A,Y_A = import_csv(Path(data_dir,parameters,dir_list[i]),stress=stress)
+        try:
             X = X.append(X_A)
             Y = Y.append(Y_A)
             if verbose == 1: print(f"{dir_list[i]} loaded.")

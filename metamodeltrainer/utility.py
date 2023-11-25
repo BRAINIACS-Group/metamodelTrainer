@@ -16,13 +16,19 @@ def convert_to_stress(dataset:pd.DataFrame,geom:Geometry)->pd.DataFrame:
         converted Dataframe
     Raises:
     '''
-    dataset_stress = pd.DataFrame({
-        'time':dataset.time,
-        'stretch' : geom.get_axialstretch(dataset.displacement),
-        'normal_stress' : geom.get_axialstress(dataset.force),
-        'shear': geom.get_torsionstrain(dataset.angle),
-        'shear_stress':geom.get_torsionstress(dataset.torque),
-    })
+    col_func_list = {
+            ('time','time',lambda s: s),
+            ('displacement','stretch',geom.get_axialstretch),
+            ('force','normal_stress',geom.get_axialstress),
+            ('angle','shear', geom.get_torsionstrain),
+            ('torque','shear_stress',geom.get_torsionstress),
+        }
+    stress_col_dict = {} 
+    for colname_old,colname_new,col_fn in col_func_list:
+        if colname_old in dataset:
+            stress_col_dict[colname_new] = col_fn(dataset[colname_old])
+            
+    dataset_stress = pd.DataFrame(stress_col_dict)
     return dataset_stress
 
 def convert_to_force_disp(dataset:pd.DataFrame,geom:Geometry)->pd.DataFrame:
