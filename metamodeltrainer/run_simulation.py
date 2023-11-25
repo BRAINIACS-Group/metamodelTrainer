@@ -37,10 +37,10 @@ def get_execPath():
         return None
     return os.environ['VLAB_EXEC']
 
-def label(X,prm_file = Path('../FE/data/prm/reference.prm')):
+def label(X:Sample,prm_file = Path('../FE/data/prm/reference.prm')):
     path = run_sim(X,prm_file)
     #path = "/home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/d5d93e59"
-    X_res, Y_res = load_FE(path)
+    X_res, Y_res = load_FE(path,X.columns)
     P,S = X_res.separate()
     inputs = X_res.columns[X_res.p:]
     comp = np.sum(P - X[0],axis = 1)
