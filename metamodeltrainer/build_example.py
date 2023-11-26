@@ -35,7 +35,7 @@ from metamodeltrainer.run_simulation import label
 
 
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_stress_HBE_05_16_active_{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 
@@ -78,7 +78,7 @@ Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'
 cur_dir = Path(__file__).resolve().parent
 label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'))
 
-S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
+S = PDskSample(PSpace, k = 2) # k indicates the number of points to sample
 X_T, Y_T = label_fn(S)
 
 '''
@@ -112,7 +112,7 @@ the parameter space to sample, and a number of points k to add to the training s
 It is good practice, although not necessary, to save the model at each iteration
 '''
 
-for i in range(48):
+for i in range(99):
     model_bis = improve(model,label_fn,PSpace,k=2)
     model_bis.train(100,1)
     model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}",overwrite=True)
