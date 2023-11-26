@@ -34,7 +34,7 @@ from metamodeltrainer.run_simulation import label
 
 
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_HBE_05_16_random{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_stress_HBE_05_16_random{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 
@@ -111,7 +111,7 @@ the parameter space to sample, and a number of points k to add to the training s
 It is good practice, although not necessary, to save the model at each iteration
 '''
 
-for i in range(48):
+for i in range(99):
     model_bis = improve_random(model,label_fn,PSpace,k=2)
     model_bis.train(100,1)
     model_bis.save(save_path / f"model_improved_{str(i).zfill(3)}",overwrite=True)

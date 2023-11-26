@@ -83,14 +83,15 @@ def import_csv(data_dir,parameters:List[str],verbose:int=0,stress:bool=True):
         raise ValueError('different parameters found')
     mat_p_dict = {k:mat_p_dict[k] for k in parameters}
 
-    default = {'time': 0}
+    inputs = ['time']
     if stress:
-        inputs  = ['displacement','angle']
-        outputs = ['force','torque']
-    else:
-        inputs = ['stretch','shear']
+        inputs  += ['stretch','shear']
         outputs = ['normal_stress','shear_stress']
-    default.update({k:0. for k in chain(inputs,outputs)})
+    else:
+        inputs  += ['displacement','angle']
+        outputs = ['force','torque']
+        
+    default = {k:0. for k in chain(inputs,outputs)}
     #default = {**mat_p_dict, **default}
 
     #dataset = pd.DataFrame(columns=columns)
@@ -130,7 +131,8 @@ def load_FE(data_dir,parameters:List[str],verbose=1,stress:bool=True):
     if verbose == 1: print(f"{dir_list[0]} loaded.")
     
     for i in range(1,len(dir_list)):
-        X_A,Y_A = import_csv(Path(data_dir,parameters,dir_list[i]),stress=stress)
+        X_A,Y_A = import_csv(Path(data_dir,dir_list[i]),parameters,verbose=1,
+            stress=stress)
         try:
             X = X.append(X_A)
             Y = Y.append(Y_A)
