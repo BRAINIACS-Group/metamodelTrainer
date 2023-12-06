@@ -173,9 +173,9 @@ def res_to_file(X,Y,input_dir:Path = Path(Path(__file__).resolve().parents[1],'F
         prm = ParameterHandler.from_file(parameter_file)
         geom_prm = Geometry.from_prm(prm,
             'simulation/experiment/sample/geometry')
-        res_df_stress = convert_to_stress(res_df,
-            geom=Cylinder(radius=4e-3,height=0.00369233203125))
-        res_df        = convert_to_force_disp(res_df_stress,
+        #res_df_stress = convert_to_stress(res_df,
+        #    geom=Cylinder(radius=4e-3,height=0.00369233203125))
+        res_df        = convert_to_force_disp(res_df,
         geom=geom_prm)
         
         
