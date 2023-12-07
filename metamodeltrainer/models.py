@@ -325,10 +325,11 @@ class Model():
         prm = ParameterHandler.from_file(parameter_file)
         geom = Geometry.from_prm(prm,
             'simulation/experiment/sample/geometry')
-        dataset = convert_to_stress(dataset,geom=geom)
-        #dataset        = convert_to_force_disp(dataset_stress,
-        #    geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
-        #    )
+        dataset_stress = convert_to_stress(dataset,geom=geom)
+        if 'displacement' in self.sum['input_col']:
+            dataset        = convert_to_force_disp(dataset_stress,
+               geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
+               )
 
         #Convert into usable ExData
         P = S
@@ -849,11 +850,17 @@ def load_single(name): #Loads a model from a given folder
     sys.path.append(str(Path(__file__).parent))
     with open(Path(name,'aux.pkl'),'rb') as f:
         data = pickle.load(f)
-    return Model(model,
+    model_obj = Model(model,
                  ExData(data['X_T'],columns = data['summary']['input_col']),
                  ExData(data['Y_T'],columns = data['summary']['output_col']),
                  data['processor_gen'],
                  data['summary'])
+    #parent = Path(name).resolve().parent
+    if Path(name).resolve().parent.name in ["models_HBE_05_16_active_20231116",
+                                          "models_HBE_05_16_random_20231116"]:
+        model_obj.sum['input_col'] = ['alpha_1','alpha_inf','mu_1','mu_inf',
+            'eta_1','time','displacement','angle']
+    return model_obj
 
 def load_mega(name):
     file_list = os.listdir(name)
