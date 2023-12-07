@@ -28,15 +28,16 @@ from pathlib import Path
 
 #Local models
 
-from metamodeltrainer.explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
-from metamodeltrainer.models import HyperParameters, RecModel, improve_random, load_model           #Neural Network management
+from metamodeltrainer.explore_param_space import (ParameterSpace, ExData, 
+    Sample, PDskSample)  #Data structure & Sampling method
+from metamodeltrainer.models import (HyperParameters, RecModel, improve,
+    load_model)           #Neural Network management
 from metamodeltrainer.run_simulation import label
-
 
 
 cwd = Path(__file__).resolve().parents[1]
 save_path = Path(cwd,
-    f"models_force_HBE_05_16_random_{datetime.today().strftime('%Y%m%d')}")
+    f"models_persistent_force_HBE_05_16_active_{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()   
 
@@ -134,7 +135,7 @@ for i in range(99):
 
     improve_cpu_start  = time.process_time()
     improve_wall_start = time.perf_counter()
-    model_bis = improve_random(model,label_fn,PSpace,k=4)
+    model_bis = improve(model,label_fn,PSpace,k=4,keep_weights=True)
     improve_cpu  = time.process_time() - improve_cpu_start
     improve_wall = time.perf_counter() - improve_wall_start
 
