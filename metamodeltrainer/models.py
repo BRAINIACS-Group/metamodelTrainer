@@ -858,8 +858,11 @@ def load_single(name): #Loads a model from a given folder
     #parent = Path(name).resolve().parent
     if Path(name).resolve().parent.name in ["models_HBE_05_16_active_20231116",
                                           "models_HBE_05_16_random_20231116"]:
-        model_obj.sum['input_col'] = ['alpha_1','alpha_inf','mu_1','mu_inf',
+        new_cols = ['alpha_1','alpha_inf','mu_1','mu_inf',
             'eta_1','time','displacement','angle']
+        model_obj.sum['input_col'] = new_cols
+        model_obj.X_T.columns[:model_obj.X_T.p] = new_cols
+        model_obj.Y_T.columns[:model_obj.Y_T.p] = new_cols
     return model_obj
 
 def load_mega(name):
