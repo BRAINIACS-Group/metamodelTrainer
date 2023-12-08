@@ -48,10 +48,10 @@ as values in a dictionary, containing the ranges to explore.
 '''
 
 PSpace = ParameterSpace(
-    alpha_inf = (-20,20),
-    mu_inf    = (100,2000),
     alpha_1   = (-20,20),
+    alpha_inf = (-20,20),
     mu_1      = (100,2000),
+    mu_inf    = (100,2000),
     eta_1     = (0,10000)
 )
 
