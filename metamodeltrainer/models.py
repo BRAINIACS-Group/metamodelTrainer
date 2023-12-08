@@ -862,7 +862,7 @@ def load_single(name): #Loads a model from a given folder
             'eta_1','time','displacement','angle']
         model_obj.sum['input_col'] = new_cols
         model_obj.X_T.columns[:model_obj.X_T.p] = new_cols
-        model_obj.Y_T.columns[:model_obj.Y_T.p] = new_cols
+        
     return model_obj
 
 def load_mega(name):
