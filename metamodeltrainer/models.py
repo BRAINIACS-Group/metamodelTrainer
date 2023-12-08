@@ -861,7 +861,7 @@ def load_single(name): #Loads a model from a given folder
         new_cols = ['alpha_1','alpha_inf','mu_1','mu_inf',
             'eta_1','time','displacement','angle']
         model_obj.sum['input_col'] = new_cols
-        model_obj.X_T.columns[:model_obj.X_T.p] = new_cols
+        model_obj.X_T.columns = new_cols
         
     return model_obj
 
