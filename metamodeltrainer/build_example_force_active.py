@@ -41,13 +41,6 @@ save_path = Path(cwd,
 if not save_path.is_dir():
     save_path.mkdir()   
 
-'''
-STEP 1 : Define a parameter space to explore
-
-Use the ParameterSpace object. It takes any number of arguments and passes the names as keys and the values
-as values in a dictionary, containing the ranges to explore.
-'''
-
 PSpace = ParameterSpace(
     alpha_inf = (-20,20),
     mu_inf    = (100,2000),
@@ -56,42 +49,12 @@ PSpace = ParameterSpace(
     eta_1     = (0,10000)
 )
 
-'''
-STEP 2 : Generate an initial sampling of the parameter space
-
-Use the 'PDskSample' method to sample the parameter space (best method found), as well as the 'label' function
-to get FE simulation results.
-
-NOTE : For new constitutive model, you'll have to go into the run_simulation file and modify the 'run_sim' function
-so that the correct FE simulation is used. I have not touched the code that much, so it should not be too complicated.
-Also, the 'label' function works in a way that the simulation function from run_sim are saved in a folder, and then 
-loaded back from that folder in the 'label' function. This might not be as robust as I hoped, so I would advise you 
-try to see if using your own objects is more consistent.
-The most important part is that the function should return two ExData objects, inputs and outputs, which is are
-3-dimensional arrays equipped with names for the columns and a parameter p indicating how many material parameters there are.
-For instance, in the example I worked on, you could load the FE results however you want into a 3D-array X of shape (n,t,f), where:
-- n is the number of different samples
-- t the number of time steps per sample (in the protocol)
-- f the number of features (material parameters + inputs)
-And then return ExData(X, p = 5, columns = ['alpha_inf','mu_inf','alpha_1','mu_1','viscosity','time','displacement','angle'])
-where p = 5 indicates that the first 5 columns are material parameters
-Similarly, you would return as well ExData(Y, p = 0, columns = ['force','torque'])
-'''
 cur_dir = Path(__file__).resolve().parent
 label_fn = lambda S: label(S,
     prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'),
     stress=False)
 
-S = PDskSample(PSpace, k = 4) # k indicates the number of points to sample
-
-
-'''
-STEP 3 : Build and train a model equipped with an uncertainty indicator on this sampling.
-
-Use 'RecModel' to build a recurrent neural network, after defining the desired HyperParameters. Setting 'dropout_rate' to a
-non-zero value will allow for an uncertainty indicator to arise.
-Training for 100 epochs seems sufficient to observe uncertainty trends arise.
-'''
+S = PDskSample(PSpace, k = 20) # k indicates the number of points to sample
 
 HP = HyperParameters(layers=[64,64],        #Architecture of the network
                      loss='mae',            #Loss to minimize
