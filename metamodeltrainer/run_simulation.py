@@ -1,19 +1,11 @@
-#Find repositories
-from pathlib import Path
-import sys
-print(Path(__file__).resolve())
-parent_dir = Path(__file__).resolve().parents[2]
-pyLabPath = parent_dir / "efiPyVlab/src"
-pyPostPath = parent_dir / "efiPostProc/src"
-pyOptPath = parent_dir / "efiOpt/src"
-sys.path += [str(pyLabPath),
-str(pyPostPath),str(pyOptPath)]
+
 
 #STL imports
 from pathlib import Path
 import math
 import os
 from uuid import uuid4
+from typing import Tuple
 
 #3rd party imports
 import matplotlib.pyplot as plt
@@ -31,6 +23,36 @@ from pyVlab.testing_device import TestingDevice
 from pyVlab.geometry   import Geometry
 
 #from efiPostProc import SimRes
+
+def label_from_dataset(dataset:Tuple[Sample],X:Sample):
+    '''Find next closest point in dataset and return it'''
+
+    X_d,Y_d = dataset
+    P,S = X_d.separate()
+    inputs = X_d.columns[X_d.p:]
+    if X.columns != X_d.columns[:X_d.p]:
+        raise ValueError(f'different columns {X.columns} than those in dataset:'
+                         f'{X_d.columns}')
+    for i in range(len(X)):
+        comp = np.sum(P - X[i],axis = 1)
+        k = 0
+        for j in range(len(comp)):
+            if abs(comp[j]) < abs(comp[k]):
+                k = j
+        print(f"next best parameter set for {X[i]} is {P[k]}")
+        print(f"relative distance to found parameters: {(P[k]-X[i]) / X[i]}")
+        if i == 0:
+            X_cor = X_d[k]
+            Y_cor = Y_d[k]
+        else:
+            X_cor = X_cor.append(X_d[k])
+            Y_cor = Y_cor.append(Y_d[k])
+
+    X_cor.reform()
+    Y_cor.reform()
+
+    return X_cor, Y_cor
+
 
 def get_execPath():
     if not 'VLAB_EXEC' in os.environ.keys():

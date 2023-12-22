@@ -79,9 +79,10 @@ def import_csv(data_dir,parameters:List[str],verbose:int=0,stress:bool=True):
     mat_p_dict = get_material_parameters_fix(parameter_handler)
     geom = Geometry.from_prm(parameter_handler,'experiment/sample/geometry')
 
-    if set(parameters) != set(mat_p_dict.keys()):
-        raise ValueError('different parameters found')
-    mat_p_dict = {k:mat_p_dict[k] for k in parameters}
+    if parameters is not None:
+        if set(parameters) != set(mat_p_dict.keys()):
+            raise ValueError('different parameters found')
+        mat_p_dict = {k:mat_p_dict[k] for k in parameters}
 
     inputs = ['time']
     if stress:
