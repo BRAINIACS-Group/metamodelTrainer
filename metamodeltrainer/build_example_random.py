@@ -31,7 +31,8 @@ PSpace = ParameterSpace(
     eta_1     = (0,10000)
 )
 cur_dir = Path(__file__).resolve().parent
-label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'))
+label_fn = lambda S: label(S,
+    prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'),stress=False)
 
 S = PDskSample(PSpace, k = 25) # k indicates the number of points to sample
 X_T, Y_T = label_fn(S)
