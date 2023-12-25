@@ -6,7 +6,8 @@ sys.path += [str(pyLabPath),
         str(Path(__file__).resolve().parents[1])]
 
 #STL modules
-from pathlib import Path
+from pathlib  import Path
+from datetime import datetime
 
 #3rd party modules
 
@@ -24,13 +25,15 @@ PSpace = ParameterSpace(
 )
 
 cur_dir = Path(__file__).resolve().parent
-label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'))
+label_fn = lambda S: label(S,
+    prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'))
 
-data_dir = cur_dir / Path('../data/PDsk_64_231121')
+data_dir = cur_dir / Path(
+    f"../data/PDsk_100_red_{datetime.today().strftime('%Y%m%d')}")
 if not data_dir.is_dir():
     data_dir.mkdir()
 
-S = PDskSample(PSpace, k = 64) # k indicates the number of points to sample
+S = PDskSample(PSpace, k = 100) # k indicates the number of points to sample
 X_T, Y_T = label_fn(S)
 X_T.save(data_dir / 'X_T')
 Y_T.save(data_dir / 'Y_T')

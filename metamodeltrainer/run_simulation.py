@@ -102,7 +102,7 @@ def run_sim(X,prm_file:Path,
         wd.mkdir()
 
     sim = FESimulation(prm,execPath=get_execPath(),
-        wd=wd,out_dir=wd,nworker=8,nthreads_per_proc=2)
+        wd=wd,out_dir=wd,nworker=20,nthreads_per_proc=2)
 
     optVars = [OptVars(
         alpha_inf = OptVarData(variables[i][variables.columns.index('alpha_inf')],  bounds=(-100,100)),
