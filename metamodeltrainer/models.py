@@ -21,6 +21,7 @@ import pandas as pd
 #vlab imports
 from pyVlab import ParameterHandler, TestingDevice
 from pyVlab.geometry import Geometry,Cylinder
+import matplotlib.pyplot as plt
 
 #local imports
 from metamodeltrainer.utility import convert_to_stress,convert_to_force_disp
@@ -215,7 +216,8 @@ class Model():
         self.sum['training_history'].append((n_epochs,self.X_T.n))
         return history
 
-    def predict(self,X:Sample,return_var=False,return_jac:bool=False):
+    def predict(self,X:Sample,return_var=False,return_jac:bool=False,
+                var_iterations:int=16):
         if X.columns != self.sum['input_col']:
             raise ValueError(f"Input columns do not match training columns. Expected {str(self.sum['input_col'])}, got {str(X.columns)} instead.")
         
@@ -250,7 +252,7 @@ class Model():
             #raise NotImplementedError('implement gradient for each model call and average')
             
             predictions = []
-            for _ in range(16):
+            for _ in range(var_iterations):
                 pred = self.model(Xs,training=True)
                 pred_post = postY_fn(pred,X)
                 predictions.append(pred_post)
@@ -897,31 +899,58 @@ def load_mega(name):
 #  7. Return the new, trained model
 
 def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
-    
+
     if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = PDskSample(PSpace,pool_size)
+    pspace_min_dist = min_distance(P_T,PSpace)
+    pspace_dist_threshold = 0.5*pspace_min_dist
     
-    X = P.spread(inputs, input_columns = X_T.columns[X_T.p:])
+    P_var = None
+    pool_size_current = 0
+    iteration = 0
+    while pool_size_current < pool_size:
+        iteration += 1
+        pool_candidates = RandSample(PSpace,pool_size-pool_size_current)
+        for c in range(len(pool_candidates)):
+            if distance_to_sample(pool_candidates[c],P_T,PSpace) < \
+                pspace_dist_threshold:
+                if P_var is None:
+                    P_var = pool_candidates[c]
+                else:
+                    P_var = P_var.append(pool_candidates[c])
+                pool_size_current +=1
+        if iteration > pool_size:
+            print('cant find suitable candidates for pool')
+            P_var = P_var.append(pool_candidates)
+            break
+
+    X = P_var.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)
     V = np.mean(V,axis=(1,2))
     I = np.argsort(-V) #Indexes corresponding to V sorted in descending order
+    
     for j in range(k):
         i = 0
         #check minimum distance to existing training points in normalized
         #parameter space
-        #compare to 0.5* minimum distance in the training parameter space or 
-        while distance_to_sample(P[I[i]],P_T,PSpace) < min(1/X_T.n,0.5*min_distance(P_T,PSpace)):
+        #compare to 0.5* minimum distance in the training parameter space or
+        
+        while distance_to_sample(P_var[I[i]],P_T,PSpace) < pspace_dist_threshold:
             i += 1
-            if i == len(I): 
+            if i >= len(I):
                 i = j
                 break
-        P_T = P_T.append(P[I[i]])
+        P_T = P_T.append(P_var[I[i]])
+   
     print("Start labeling")
+
+    # parameters = pd.DataFrame(P_T[X_T.n:],columns=P_T.columns)
+    # parameters.hist()
+    # plt.show()
 
     X_A, Y_A = label_fn(P_T[X_T.n:])
     
@@ -955,23 +984,31 @@ def improve_random(model,label_fn,PSpace,k=8,pool_size=None,
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    P = LHCuSample(PSpace,pool_size)
-    P_T,inputs = X_T.separate()
-    X = P.spread(inputs)
-    #Y = model.predict(X,return_var=False)
-    for j in range(k):
-        X = RandSample(PSpace,1)
-        i = 0
-        while distance_to_sample(X[0],P_T,PSpace) < min(0.5/X_T.n,0.5*min_distance(P_T,PSpace)): 
-            X = RandSample(PSpace,1)
-            i += 1
-            if i == 10*k:
-                i = j
-                break
-        P_T = P_T.append(X)
-    
+    pspace_min_dist = min_distance(P_T,PSpace)
+    pspace_dist_threshold = 0.5*pspace_min_dist
+ 
+    P_var = None
+    pool_size_current = 0
+    iteration = 0
+    while pool_size_current < pool_size:
+        iteration += 1
+        pool_candidates = RandSample(PSpace,pool_size-pool_size_current)
+        for c in range(len(pool_candidates)):
+            if distance_to_sample(pool_candidates[c],P_T,PSpace) < \
+                pspace_dist_threshold:
+                if P_var is None:
+                    P_var = pool_candidates[c]
+                else:
+                    P_var = P_var.append(pool_candidates[c])
+                pool_size_current +=1
+        if iteration > pool_size:
+            print('cant find suitable candidates for pool')
+            P_var = P_var.append(pool_candidates)
+            break
+
+    P_T = P_T.append(P_var)
     X_A, Y_A = label_fn(P_T[X_T.n:])
-    
+
     X_T = X_T.append(X_A)
     Y_T = Y_T.append(Y_A)
 

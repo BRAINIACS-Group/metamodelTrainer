@@ -10,7 +10,7 @@ import pickle
 #3rd party imports
 import matplotlib.pyplot as mpl
 import numpy as np
-from scipy.stats.qmc import PoissonDisk
+from scipy.stats.qmc import PoissonDisk,LatinHypercube
 
 ref_input = np.linspace(0.80,1.2,50).reshape(50,1)
 
@@ -117,18 +117,23 @@ class Sample(np.ndarray):
 ### Sampling Methods ###
 ########################
 
-def scale_to(X,R0,R1): #Scales a given sampling from R0 ranges to R1 ranges
+def scale_to(X,R0,R1): 
+    #Scales a given sampling from R0 ranges to R1 ranges
     for i in range(len(R1)):
         X[:,i] -= R0[i][0]
         X[:,i] *= (R1[i][1]-R1[i][0])/(R0[i][1]-R0[i][0])
         X[:,i] += R1[i][0]       
+    
     return X
 
 def RandSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)), k = 100): #Samples k points in a n-dim space randomly
     Points = []
     for i in range(k):
         Points.append([random.random() for j in range(len(PSpace))])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
+    return Sample(scale_to(np.array(Points),
+        [(0,1) for _ in range(len(PSpace))],
+        list(PSpace.values())),
+        columns = list(PSpace.keys()))
 
 def GridSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),p=5): #Samples a random point in each square of a n-dim grid with p subdivisions
     n = len(PSpace)
@@ -138,15 +143,21 @@ def GridSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),p=5): #Samp
     return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
 def LHCuSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Creates a Latin Hypercube from k equal divisions of the n-dim cube
-    n = len(PSpace)
-    grid = np.empty((k,n))
-    for i in range(n):
-        grid[:,i] = np.random.permutation(k)
+    #n = len(PSpace)
+    # grid = np.empty((k,n))
+    # for i in range(n):
+    #     grid[:,i] = np.random.permutation(k)
         
-    Points = []
-    for i in range(k):
-        Points.append([(grid[i,j]+random.random())/k for j in range(n)])
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
+    # Points = []
+    # for i in range(k):
+    #     Points.append([(grid[i,j]+random.random())/k for j in range(n)])
+    sampler = LatinHypercube(d=len(PSpace))
+    points = sampler.random(k)
+
+    return Sample(scale_to(points,
+        [(0,1) for _ in range(len(PSpace))],
+        list(PSpace.values())),
+        columns = list(PSpace.keys()))
 
 
 def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Uses the PoissonDisk method to sample k points with maximum coverage
@@ -157,28 +168,39 @@ def PDskSample(PSpace = ParameterSpace(dim_0 = (0,1), dim_1 = (0,1)),k=100): #Us
         Points = engine.random(k)
         n = len(Points)
         r *= 0.9
-    return Sample(scale_to(np.array(Points),[(0,1) for _ in range(len(PSpace))],list(PSpace.values())),columns = list(PSpace.keys()))
 
-def distance(A,B,PSpace): #Returns the normalized distance between two points (when scaled to a unit square)
-    R = list(PSpace.values())
-    A = scale_to(np.array([A]),R,[(0,1) for _ in range(len(R))])[0]
-    B = scale_to(np.array([B]),R,[(0,1) for _ in range(len(R))])[0]
-    return np.sqrt(np.sum((A-B)**2))
+    return Sample(
+        scale_to(np.array(Points),
+            [(0,1) for _ in range(len(PSpace))],
+            list(PSpace.values())),
+            columns = list(PSpace.keys()))
 
-def distance_to_sample(A,X,PSpace): #Returns the minimum distance from a point to a set of points
-    R = list(PSpace.values())
-    d = [distance(A,X[i],PSpace) for i in range(len(X))]
-    return min(d)
+def distance(point_a,point_b,PSpace): #Returns the normalized distance between two points (when scaled to a unit square)
+    ranges = list(PSpace.values())
+    point_a_norm = scale_to(np.array([point_a]),ranges,
+        [(0,1) for _ in range(len(ranges))])[0]
+    point_b_norm = scale_to(np.array([point_b]),ranges,
+        [(0,1) for _ in range(len(ranges))])[0]
 
-def avg_distance(X,PSpace): #Returns the average distance between all points of a sample
-    R = list(PSpace.values())
-    d = [distance(X[i],X[j],PSpace) for j in range(len(X)) for i in range(len(X)) if i != j]
-    return np.mean(d)
+    #return euclidean distance in normalized space
+    return np.sqrt(np.sum((point_a_norm-point_b_norm)**2))
 
-def min_distance(X,PSpace): #Returns the minimal distance between two points of a sample
-    R = list(PSpace.values())
-    d = [distance(X[i],X[j],PSpace) for j in range(len(X)) for i in range(len(X)) if i != j]
-    return min(d)
+def distance_to_sample(point_a,X:Sample,PSpace):
+    #Returns the minimum distance from a point to a set of points
+    distances = [distance(point_a,X[i],PSpace) for i in range(len(X))]
+    return min(distances)
+
+def avg_distance(X:Sample,PSpace):
+    #Returns the average distance between all points of a sample
+    distances = [distance(X[i],X[j],PSpace) for j in range(len(X))
+        for i in range(len(X)) if i != j]
+    return np.mean(distances)
+
+def min_distance(X:Sample,PSpace):
+    #Returns the minimal distance between two points of a sample
+    distances = [distance(X[i],X[j],PSpace) for j in range(len(X))
+        for i in range(len(X)) if i != j]
+    return min(distances)
 
 #########################
 ### ExData definition ###
