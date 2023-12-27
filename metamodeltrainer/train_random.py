@@ -71,14 +71,13 @@ else:
     train_cpu  = time.process_time()  - train_cpu_start
     train_wall = time.perf_counter() - train_wall_start
 
-
+    model.save(model_path,overwrite=True)
     with open(model_path/'times.txt','w',encoding='utf-8') as f:
         f.write(f"cpu_time_train,{train_cpu}\n"
                 f"wall_time_train,{train_wall}\n"
                 f"cpu_time_label,{label_cpu}\n"
                 f"wall_time_label,{label_wall}\n"
                 )
-    model.save(model_path,overwrite=True)
 
 get_it_from_name = lambda d: int(d.name.split('_')[-1])
 model_paths = sorted(save_path.glob("model_improved_*"),
@@ -109,14 +108,13 @@ for i in range(i_start,95):
 
     model_path = save_path / f"model_improved_{str(i).zfill(3)}"
 
+    model_bis.save(model_path,overwrite=True)
     with open(model_path / 'times.txt','w',encoding='utf-8') as f:
         f.write(f"cpu_time_train,{train_cpu}\n"
                 f"wall_time_train,{train_wall}\n"
                 f"cpu_time_improve {improve_cpu}:\n"
                 f"wall_time_improve: {improve_wall}\n"
                 )
-
-    model_bis.save(model_path,overwrite=True)
     model = model_bis
 
 model_final = model.finalize(n_epochs = 1000)
