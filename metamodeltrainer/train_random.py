@@ -91,6 +91,10 @@ if model_paths:
 else:
     i_start = 0
 
+# i_start = 0
+# model = load_model("/home/jan/Projects/Active_Learning/plots/data/models/"
+#                    "models_red_stress/models_HBE_05_16_red_stress_random_20231227/model_base")
+
 for i in range(i_start,95):
 
     improve_cpu_start  = time.process_time()
