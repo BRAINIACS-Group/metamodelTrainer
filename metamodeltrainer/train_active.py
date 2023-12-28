@@ -42,53 +42,57 @@ label_fn = lambda S: label(S,
 
 model_path = save_path / "model_base"
 
-if model_path.is_dir():
-    if not CONTINUE:
-        raise ValueError(f'found model at {model_path} but CONTINUE set to false')
-    model = load_model(model_path)
-else:
-    S = LHCuSample(PSpace, k = 25) # k indicates the number of points to sample
+# if model_path.is_dir():
+#     if not CONTINUE:
+#         raise ValueError(f'found model at {model_path} but CONTINUE set to false')
+#     model = load_model(model_path)
+# else:
+#     S = LHCuSample(PSpace, k = 25) # k indicates the number of points to sample
 
-    label_cpu_start  = time.process_time()
-    label_wall_start = time.perf_counter()
-    X_T, Y_T = label_fn(S)
-    label_cpu  = time.process_time() - label_cpu_start
-    label_wall = time.perf_counter() - label_wall_start
+#     label_cpu_start  = time.process_time()
+#     label_wall_start = time.perf_counter()
+#     X_T, Y_T = label_fn(S)
+#     label_cpu  = time.process_time() - label_cpu_start
+#     label_wall = time.perf_counter() - label_wall_start
 
-    HP = HyperParameters(layers=[64,64],        #Architecture of the network
-                        loss='mae',            #Loss to minimize
-                        dropout_rate=0.5,      #Allows uncertainty
-                        interpolation=1000)    #Faster computing
+#     HP = HyperParameters(layers=[64,64],        #Architecture of the network
+#                         loss='mae',            #Loss to minimize
+#                         dropout_rate=0.5,      #Allows uncertainty
+#                         interpolation=1000)    #Faster computing
 
-    model = RecModel(X_T,Y_T,HP)
-    #model = load_model("/home/jan/Projects/Active_Learning/plots/data/models/"
-    #    "models_red_force/models_HBE_05_16_red_active_20231223/model_base")
-    train_cpu_start  = time.process_time()
-    train_wall_start = time.perf_counter()
-    model.train(n_epochs=100,verbose=1)
-    train_cpu  = time.process_time()  - train_cpu_start
-    train_wall = time.perf_counter() - train_wall_start
+#     model = RecModel(X_T,Y_T,HP)
+#     #model = load_model("/home/jan/Projects/Active_Learning/plots/data/models/"
+#     #    "models_red_force/models_HBE_05_16_red_active_20231223/model_base")
+#     train_cpu_start  = time.process_time()
+#     train_wall_start = time.perf_counter()
+#     model.train(n_epochs=100,verbose=1)
+#     train_cpu  = time.process_time()  - train_cpu_start
+#     train_wall = time.perf_counter() - train_wall_start
 
-    model.save(model_path,overwrite=True)
+#     model.save(model_path,overwrite=True)
 
-    with open(model_path/'times.txt','w',encoding='utf-8') as f:
-        f.write(f"cpu_time_train,{train_cpu}\n"
-                f"wall_time_train,{train_wall}\n"
-                f"cpu_time_label,{label_cpu}\n"
-                f"wall_time_label,{label_wall}\n"
-                )
+#     with open(model_path/'times.txt','w',encoding='utf-8') as f:
+#         f.write(f"cpu_time_train,{train_cpu}\n"
+#                 f"wall_time_train,{train_wall}\n"
+#                 f"cpu_time_label,{label_cpu}\n"
+#                 f"wall_time_label,{label_wall}\n"
+#                 )
 
-get_it_from_name = lambda d: int(d.name.split('_')[-1])
-model_paths = sorted(save_path.glob("model_improved_*"),
-    key=get_it_from_name)
-if model_paths:
-    last_model_path = model_paths[-1]
-    if not CONTINUE:
-        raise FileExistsError(f'{last_model_path} exists but CONTINUE set to False')
-    i_start = get_it_from_name(last_model_path) + 1
-    model = load_model(last_model_path)
-else:
-    i_start = 0
+# get_it_from_name = lambda d: int(d.name.split('_')[-1])
+# model_paths = sorted(save_path.glob("model_improved_*"),
+#     key=get_it_from_name)
+# if model_paths:
+#     last_model_path = model_paths[-1]
+#     if not CONTINUE:
+#         raise FileExistsError(f'{last_model_path} exists but CONTINUE set to False')
+#     i_start = get_it_from_name(last_model_path) + 1
+#     model = load_model(last_model_path)
+# else:
+#     i_start = 0
+
+i_start = 0
+model = load_model("/home/jan/Projects/Active_Learning/plots/data/models/"
+                   "models_red_stress/models_HBE_05_16_red_active_20231222/model_base")
 
 for i in range(i_start,95):
 

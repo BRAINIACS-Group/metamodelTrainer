@@ -924,8 +924,11 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
                     P_var = P_var.append(pool_candidates[c])
                 pool_size_current +=1
         if iteration > pool_size:
-            print('cant find suitable candidates for pool')
-            P_var = P_var.append(pool_candidates)
+            print('cant find enough suitable candidates for pool'
+                  f' {pool_size_current} of {pool_size}')
+            if pool_size_current < k:
+                raise ValueError('can not find minimum pool candidates')
+            #P_var = P_var.append(pool_candidates)
             break
 
     X = P_var.spread(inputs, input_columns = X_T.columns[X_T.p:])
@@ -978,35 +981,39 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
 
 def improve_random(model,label_fn,PSpace,k=8,pool_size=None,
         keep_weights:bool=False):
+    
     if pool_size == None: pool_size = min(k*50,500)
     X_T = model.X_T
     Y_T = model.Y_T
     P_T,inputs = X_T.separate()
     HP = model.sum['HP']
 
-    pspace_min_dist = min_distance(P_T,PSpace)
-    pspace_dist_threshold = 0.5*pspace_min_dist
+    # pspace_min_dist = min_distance(P_T,PSpace)
+    # pspace_dist_threshold = 0.5*pspace_min_dist
  
-    P_var = None
-    pool_size_current = 0
-    iteration = 0
-    while pool_size_current < pool_size:
-        iteration += 1
-        pool_candidates = RandSample(PSpace,pool_size-pool_size_current)
-        for c in range(len(pool_candidates)):
-            if distance_to_sample(pool_candidates[c],P_T,PSpace) < \
-                pspace_dist_threshold:
-                if P_var is None:
-                    P_var = pool_candidates[c]
-                else:
-                    P_var = P_var.append(pool_candidates[c])
-                pool_size_current +=1
-        if iteration > pool_size:
-            print('cant find suitable candidates for pool')
-            P_var = P_var.append(pool_candidates)
-            break
+    # pool_size_current = 0
+    # iteration = 0
+    # while pool_size_current < pool_size:
+    #     iteration += 1
+    #     pool_candidates = 
+    #     for c in range(len(pool_candidates)):
+    #         if distance_to_sample(pool_candidates[c],P_T,PSpace) < \
+    #             pspace_dist_threshold:
+    #             if P_var is None:
+    #                 P_var = pool_candidates[c]
+    #             else:
+    #                 P_var = P_var.append(pool_candidates[c])
+    #             pool_size_current +=1
+    #     if iteration > pool_size:
+    #         print('cant find enough suitable candidates for pool'
+    #               f' {pool_size_current} of {pool_size}')
+    #         if pool_size_current < k:
+    #             raise ValueError('can not find minimum pool candidates')
+    #         #P_var = P_var.append(pool_candidates)
+    #         break
 
-    P_T = P_T.append(P_var)
+    P_new = RandSample(PSpace,k)
+    P_T = P_T.append(P_new)
     X_A, Y_A = label_fn(P_T[X_T.n:])
 
     X_T = X_T.append(X_A)
