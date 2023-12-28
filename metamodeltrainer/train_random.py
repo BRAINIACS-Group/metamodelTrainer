@@ -12,10 +12,13 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-#Local models
+#3rd party modules
+import pandas as pd
+import matplotlib.pyplot as plt
 
+#Local models
 from metamodeltrainer.explore_param_space import (ParameterSpace, ExData, Sample,
-    PDskSample,LHCuSample,load_data)  #Data structure & Sampling method
+    PDskSample,LHCuSample,load_data,RandSample)  #Data structure & Sampling method
 from metamodeltrainer.models import (HyperParameters, RecModel, improve,
     improve_random,load_model)           #Neural Network management
 from metamodeltrainer.run_simulation import label,label_from_dataset
@@ -50,6 +53,10 @@ if model_path.is_dir():
     model = load_model(model_path)
 else:
     S = LHCuSample(PSpace, k = 25) # k indicates the number of points to sample
+
+    # parameters = pd.DataFrame(S,columns=S.columns)
+    # hist = parameters.hist()
+    # plt.show()
 
     label_cpu_start  = time.process_time()
     label_wall_start = time.perf_counter()
