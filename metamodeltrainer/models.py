@@ -923,13 +923,16 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
                 else:
                     P_var = P_var.append(pool_candidates[c])
                 pool_size_current +=1
-        if iteration > pool_size:
+        if iteration % pool_size == 0:
             print('cant find enough suitable candidates for pool'
                   f' {pool_size_current} of {pool_size}')
             if pool_size_current < k:
-                raise ValueError('can not find minimum pool candidates')
-            #P_var = P_var.append(pool_candidates)
-            break
+                #raise ValueError('can not find minimum pool candidates')
+                pspace_dist_threshold *= 0.5
+                continue
+            else:
+                P_var = P_var.append(pool_candidates)
+                break
 
     X = P_var.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)
