@@ -25,7 +25,7 @@ logging.basicConfig(level=logging.DEBUG,force=True)
 CONTINUE = True
 
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_HBE_05_16_red_stress_active_20231227")#{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_HBE_05_16_red_stress_active_{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 
