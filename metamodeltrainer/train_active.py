@@ -11,6 +11,7 @@ import pyVlab
 import time
 from datetime import datetime
 from pathlib import Path
+import logging
 
 #Local models
 
@@ -20,6 +21,7 @@ from metamodeltrainer.models import (HyperParameters, RecModel, improve,
     load_model)           #Neural Network management
 from metamodeltrainer.run_simulation import label,label_from_dataset
 
+logging.basicConfig(level=logging.DEBUG)
 CONTINUE = True
 
 cwd = Path(__file__).resolve().parents[1]
@@ -45,6 +47,7 @@ model_path = save_path / "model_base"
 if model_path.is_dir():
     if not CONTINUE:
         raise ValueError(f'found model at {model_path} but CONTINUE set to false')
+    logging.info(f'loading model {model_path}')
     model = load_model(model_path)
 else:
     S = LHCuSample(PSpace, k = 25) # k indicates the number of points to sample
@@ -86,13 +89,14 @@ if model_paths:
     if not CONTINUE:
         raise FileExistsError(f'{last_model_path} exists but CONTINUE set to False')
     i_start = get_it_from_name(last_model_path) + 1
+    logging.info(f'loading: {last_model_path}')
     model = load_model(last_model_path)
 else:
     i_start = 0
 
 
 for i in range(i_start,95):
-
+    logging.debug(f'starting training {i}')
     improve_cpu_start  = time.process_time()
     improve_wall_start = time.perf_counter()
     model_bis = improve(model,label_fn,PSpace,k=5)
