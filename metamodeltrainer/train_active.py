@@ -21,7 +21,7 @@ from metamodeltrainer.models import (HyperParameters, RecModel, improve,
     load_model)           #Neural Network management
 from metamodeltrainer.run_simulation import label,label_from_dataset
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG,force=True)
 CONTINUE = True
 
 cwd = Path(__file__).resolve().parents[1]
@@ -118,7 +118,6 @@ for i in range(i_start,95):
                 f"cpu_time_improve {improve_cpu}:\n"
                 f"wall_time_improve: {improve_wall}\n"
                 )
-
 
     model = model_bis
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from datetime import datetime
 from collections import namedtuple
 from typing import Any
+import logging
 #from dataclasses import dataclass, asdict
 
 #3rd party imports
@@ -28,6 +29,7 @@ from metamodeltrainer.utility import convert_to_stress,convert_to_force_disp
 from metamodeltrainer.explore_param_space import *
 from metamodeltrainer.file_process import *
 
+logger = logging.getLogger(__name__)
 
 class StandardScaler:
 
@@ -915,24 +917,23 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
     while pool_size_current < pool_size:
         iteration += 1
         pool_candidates = RandSample(PSpace,pool_size-pool_size_current)
+        logger.debug("finished sampling pool candidates")
         for c in range(len(pool_candidates)):
-            if distance_to_sample(pool_candidates[c],P_T,PSpace) < \
-                pspace_dist_threshold:
+            cur_min_distance = distance_to_sample(pool_candidates[c],P_T,PSpace)
+            if cur_min_distance >= pspace_dist_threshold:
                 if P_var is None:
                     P_var = pool_candidates[c]
                 else:
                     P_var = P_var.append(pool_candidates[c])
                 pool_size_current +=1
-        if iteration % pool_size == 0:
-            print('cant find enough suitable candidates for pool'
-                  f' {pool_size_current} of {pool_size}')
-            if pool_size_current < k:
-                #raise ValueError('can not find minimum pool candidates')
-                pspace_dist_threshold *= 0.5
-                continue
-            else:
-                P_var = P_var.append(pool_candidates)
-                break
+        logger.debug('iteration: %d pool size %d of %d',iteration,
+            pool_size_current,pool_size)
+        if pool_size_current < k:
+            #raise ValueError('can not find minimum pool candidates')
+            logger.debug('softening constraints on minimum distance')
+            pspace_dist_threshold *= 0.5
+        if iteration > pool_size:
+            raise ValueError('cant find pool candidates')
 
     X = P_var.spread(inputs, input_columns = X_T.columns[X_T.p:])
     Y,V = model.predict(X,return_var=True)

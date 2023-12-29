@@ -11,6 +11,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "train active",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/metamodeltrainer/train_active.py",
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
