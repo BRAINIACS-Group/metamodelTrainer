@@ -11,6 +11,7 @@ import pyVlab
 import time
 from datetime import datetime
 from pathlib import Path
+import logging
 
 #3rd party modules
 import pandas as pd
@@ -23,12 +24,14 @@ from metamodeltrainer.models import (HyperParameters, RecModel, improve,
     improve_random,load_model)           #Neural Network management
 from metamodeltrainer.run_simulation import label,label_from_dataset
 
+logging.basicConfig(level=logging.DEBUG,force=True)
+
 CONTINUE = True
 RANDOM   = True
 
 random_str = "random" if RANDOM else "active"
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_HBE_05_16_red_force_{random_str}_{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_HBE_05_16_red_force_{random_str}_20231230")#{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 
