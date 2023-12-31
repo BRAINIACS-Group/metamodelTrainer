@@ -42,8 +42,7 @@ cur_dir = Path(__file__).resolve().parent
 label_fn = lambda S: label(S,
     prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'),stress=True)
 
-
-model_path = save_path / "model_base"
+model_path = cwd / "models_HBE_05_16_red_stress_active_20231230" / "model_base"
 
 if model_path.is_dir():
     if not CONTINUE:
