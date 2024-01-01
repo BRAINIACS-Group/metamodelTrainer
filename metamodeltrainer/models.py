@@ -909,8 +909,8 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
     HP = model.sum['HP']
 
     pspace_min_dist = min_distance(P_T,PSpace)
-    pspace_dist_threshold = pspace_min_dist
-    
+    pspace_dist_threshold = 2 * pspace_min_dist
+
     P_var = None
     pool_size_current = 0
     iteration = 0
@@ -931,7 +931,7 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
         if pool_size_current < k:
             #raise ValueError('can not find minimum pool candidates')
             logger.debug('softening constraints on minimum distance')
-            pspace_dist_threshold *= 0.5
+            pspace_dist_threshold *= 0.75
         if iteration > pool_size:
             raise ValueError('cant find pool candidates')
 
