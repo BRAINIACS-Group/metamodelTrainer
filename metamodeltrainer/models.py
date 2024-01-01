@@ -928,10 +928,11 @@ def improve(model,label_fn,PSpace,k=10,pool_size=None,keep_weights:bool=False):
                 pool_size_current +=1
         logger.debug('iteration: %d pool size %d of %d',iteration,
             pool_size_current,pool_size)
-        if pool_size_current < k:
+        #if pool_size_current < k:
             #raise ValueError('can not find minimum pool candidates')
-            logger.debug('softening constraints on minimum distance')
-            pspace_dist_threshold *= 0.75
+        logger.debug('softening constraints on minimum distance')
+        pspace_dist_threshold *= 0.75
+       
         if iteration > pool_size:
             raise ValueError('cant find pool candidates')
 
