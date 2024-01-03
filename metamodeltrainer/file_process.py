@@ -101,7 +101,7 @@ def import_csv(data_dir,parameters:List[str],verbose:int=0,stress:bool=True):
     for file in os.listdir(data_dir):
         if file.endswith('.csv'):
             df = pd.read_csv(Path(data_dir, file),dtype=np.float32)\
-                .rename(columns = str.strip)
+                .rename(columns = str.strip).fillna(0.)
             if stress:
                 df = convert_to_stress(df,geom)
             df_list.append(pd.DataFrame({**default, **df},dtype=np.float32))

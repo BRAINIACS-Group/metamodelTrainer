@@ -24,7 +24,7 @@ PSpace = ParameterSpace(
 )
 
 cur_dir = Path(__file__).resolve().parent
-label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16.prm'))
+label_fn = lambda S: label(S,prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'))
 
 data_dir = cur_dir / Path('../data/PDsk_64_231121')
 if not data_dir.is_dir():
@@ -36,6 +36,12 @@ print(S.columns)
 print(S)
 
 X,Y = label_fn(S)
-print(X.columns)
-print(X[0,0,:5])
-['alpha_1','alpha_inf','mu_1','mu_inf','eta_1']
+
+HP = HyperParameters(layers=[64,64],        #Architecture of the network
+                        loss='mae',            #Loss to minimize
+                        dropout_rate=0.5,      #Allows uncertainty
+                        interpolation=1000)    #Faster computing
+
+model = RecModel(X,Y,HP)
+model.train(n_epochs=100,verbose=1)
+

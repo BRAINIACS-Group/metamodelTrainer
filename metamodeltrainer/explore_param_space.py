@@ -268,6 +268,7 @@ class ExData(Sample):
                     elif self.ndim == 2 : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=np.asarray(self)[:self.t]) == 1)
                     else: p = 0
                 except: p = 0
+                if p == 6: p = 5
                 self.p = p
             if not (hasattr(self,'columns')) and type(obj) != np.ndarray and hasattr(obj,'columns'):
                 self.columns = obj.columns

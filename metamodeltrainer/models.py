@@ -48,7 +48,11 @@ class StandardScaler:
         return StandardScaler(self.mu,self.std)
 
     def transform(self,X):
-        return (np.array(X) - self.mu)/self.std
+        X_scaled = (np.array(X) - self.mu)
+        #avoid division by 0
+        self.std = np.where(self.std < 1e-10,1.,self.std)
+        X_scaled /= self.std
+        return X_scaled
     
     def inverse_transform(self,X):
         return (np.array(X)*self.std) + self.mu
