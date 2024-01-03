@@ -29,7 +29,7 @@ label_fn = lambda S: label(S,
     prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'),stress=False)
 
 data_dir = cur_dir / Path(
-    f"../data/PDsk_100_red_{datetime.today().strftime('%Y%m%d')}")
+    f"../data/PDsk_100_red_compten_{datetime.today().strftime('%Y%m%d')}")
 if not data_dir.is_dir():
     data_dir.mkdir()
 
