@@ -30,7 +30,7 @@ RANDOM   = True
 
 random_str = "random" if RANDOM else "active"
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_HBE_05_16_red_stress_{random_str}_20231228")#{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_HBE_05_16_red_stress_compten_{random_str}_20231228")#{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 

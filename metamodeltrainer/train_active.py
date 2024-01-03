@@ -26,7 +26,7 @@ CONTINUE = True
 
 
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,f"models_HBE_05_16_red_stress_active_20231231")#{datetime.today().strftime('%Y%m%d')}")
+save_path = Path(cwd,f"models_HBE_05_16_red_stress_compten_active_{datetime.today().strftime('%Y%m%d')}")
 if not save_path.is_dir():
     save_path.mkdir()
 
@@ -42,7 +42,7 @@ cur_dir = Path(__file__).resolve().parent
 label_fn = lambda S: label(S,
     prm_file = cur_dir / Path('../FE/data/prm/HBE_05_16_red.prm'),stress=True)
 
-model_path = cwd / "models_HBE_05_16_red_stress_active_20231229" / "model_base"
+model_path = save_path / "model_base"
 
 if model_path.is_dir():
     if not CONTINUE:

@@ -314,17 +314,20 @@ class Model():
                 parameter_file = Path(Path(__file__).resolve().parents[1],'FE','data','prm','reference.prm'),
                 return_jac:bool=False):
         
-        columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
-        dataset = pd.DataFrame(columns=columns)
+        
+        dataset = None
         default = {'time': 0, 'displacement': 0, 'force': 0, 'angle': 0, 'torque': 0}
         #Get datacode
         for file in os.listdir(input_dir):
             if file.endswith('.csv'):
                 df = pd.read_csv(Path(input_dir, file),dtype=np.float32)\
-                    .rename(columns = str.strip)
+                    .rename(columns = str.strip).fillna(0.)
                 df = pd.DataFrame({**default, **df},dtype=np.float32)
-                dataset = pd.concat((dataset, df), ignore_index=True)\
-                    .sort_values(by=["time"])
+                if dataset is None:
+                    dataset = df.sort_values('time')
+                else:
+                    dataset = pd.concat((dataset, df), ignore_index=True)\
+                        .sort_values(by=["time"])
        
         prm = ParameterHandler.from_file(parameter_file)
         geom = Geometry.from_prm(prm,
@@ -334,6 +337,11 @@ class Model():
             dataset        = convert_to_force_disp(dataset_stress,
                geom=Cylinder(radius=4e-3,height=0.00454144140625)#0.00369233203125)
                )
+        else:
+            dataset = dataset_stress
+
+        input_columns = self.sum['input_col'][self.X_T.p:] + self.sum['output_col']
+        dataset = dataset[input_columns]
 
         #Convert into usable ExData
         P = S
