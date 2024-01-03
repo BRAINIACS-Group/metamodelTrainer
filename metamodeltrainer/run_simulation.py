@@ -61,8 +61,8 @@ def get_execPath():
 
 def label(X:Sample,prm_file = Path('../FE/data/prm/reference.prm'),
         stress:bool=True):
-    #path = run_sim(X,prm_file)
-    path = "/home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/ffce2913"
+    path = run_sim(X,prm_file)
+    #path = "/home/jan/Projects/PythonCodeBase/metamodelTrainer/FE/out/ffce2913"
     X_res, Y_res = load_FE(path,X.columns,stress=stress)
     P,S = X_res.separate()
     inputs = X_res.columns[X_res.p:]
