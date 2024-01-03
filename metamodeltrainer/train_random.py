@@ -15,6 +15,8 @@ from pathlib import Path
 #3rd party modules
 import pandas as pd
 import matplotlib.pyplot as plt
+import logging
+logging.basicConfig(level=logging.DEBUG,force=True)
 
 #Local models
 from metamodeltrainer.explore_param_space import (ParameterSpace, ExData, Sample,
