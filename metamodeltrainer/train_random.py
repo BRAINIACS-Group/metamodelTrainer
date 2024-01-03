@@ -16,7 +16,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 import logging
-logging.basicConfig(level=logging.DEBUG,force=True)
+
 
 #Local models
 from metamodeltrainer.explore_param_space import (ParameterSpace, ExData, Sample,
@@ -27,6 +27,7 @@ from metamodeltrainer.run_simulation import label,label_from_dataset
 
 CONTINUE = True
 RANDOM   = True
+logging.basicConfig(level=logging.DEBUG,force=True)
 
 random_str = "random" if RANDOM else "active"
 cwd = Path(__file__).resolve().parents[1]
