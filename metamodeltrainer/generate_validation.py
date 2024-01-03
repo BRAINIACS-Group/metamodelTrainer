@@ -11,7 +11,7 @@ from datetime import datetime
 
 #3rd party modules
 
-from metamodeltrainer.explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
+from metamodeltrainer.explore_param_space import ParameterSpace, ExData, Sample, PDskSample, LHCuSample  #Data structure & Sampling method
 from metamodeltrainer.models import HyperParameters, RecModel, improve, load_model           #Neural Network management
 from metamodeltrainer.run_simulation import label
 
@@ -33,7 +33,7 @@ data_dir = cur_dir / Path(
 if not data_dir.is_dir():
     data_dir.mkdir()
 
-S = PDskSample(PSpace, k = 100) # k indicates the number of points to sample
+S = LHCuSample(PSpace,k=100)#PDskSample(PSpace, k = 100) # k indicates the number of points to sample
 X_T, Y_T = label_fn(S)
 X_T.save(data_dir / 'X_T')
 Y_T.save(data_dir / 'Y_T')
