@@ -217,6 +217,13 @@ class Model():
         processor = self.processor_gen(self.X_T)
         Xs = processor.preprocessX(self.X_T)
         Ys = processor.preprocessY(self.Y_T,self.X_T)
+        
+        fig,(ax1,ax2) = plt.subplots(1,2)
+        #ax1.plot(Xs[0,:,self.X_T.columns.index('time')],Xs[0,:,self.X_T.columns.index('stretch')])
+        ax1.plot(self.X_T[0,:,self.X_T.columns.index('time')],self.X_T[0,:,self.X_T.columns.index('displacement')])
+        ax2.plot(self.X_T[0,:,self.X_T.columns.index('time')],self.Y_T[0,:,self.Y_T.columns.index('force')])
+        plt.show()
+
         #cb = EarlyStopping(monitor='val_loss',restore_best_weights=True,patience=max(int(n_epochs/10),50),start_from_epoch=int(n_epochs))
         history = self.model.fit(Xs,Ys,epochs=n_epochs,verbose=verbose,batch_size=int(len(Xs)/16),validation_split=0.1)
         self.sum['training_history'].append((n_epochs,self.X_T.n))
@@ -575,7 +582,7 @@ class R_Processor_I(R_Processor):
     def preprocessY(self,Y,X):
         '''Output preprocessing (only for training)'''
         return super().preprocessY(
-            interpolate(Y,self.new_time,old_time=X[:,:,X.columns.index('time')]),X)
+            interpolate(Y,self.new_time,old_time=X[0,:,X.columns.index('time')]),X)
 
     def postprocessY(self,Y,X):
         '''Output postprocessing'''
