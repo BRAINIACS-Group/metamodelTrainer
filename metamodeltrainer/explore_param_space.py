@@ -244,6 +244,7 @@ class ExData(Sample):
         if p == None:
             if len(X.shape) == 3: p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[0]) == 1)
             else : p = sum(np.apply_along_axis(lambda x: len(np.unique(x)), axis=0, arr=X[:obj.t]) == 1)
+        if p == 6: p = 5
         obj.p = p
 
         if columns == None:
