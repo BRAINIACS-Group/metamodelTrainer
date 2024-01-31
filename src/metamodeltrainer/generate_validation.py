@@ -1,9 +1,3 @@
-from pathlib import Path
-import sys
-parent_dir = Path(__file__).resolve().parents[2]
-pyLabPath = parent_dir / "efiPyVlab/src"
-sys.path += [str(pyLabPath),
-        str(Path(__file__).resolve().parents[1])]
 
 #STL modules
 from pathlib  import Path

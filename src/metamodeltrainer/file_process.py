@@ -15,8 +15,8 @@ import numpy as np
 import pandas as pd
 
 #pyVlab imports
-from pyVlab import ParameterHandler
-from pyVlab.geometry import Geometry,Cylinder
+from vlab_utilities import ParameterHandler
+from vlab_utilities.geometry import Geometry,Cylinder
 
 #local imports
 from metamodeltrainer.explore_param_space import *

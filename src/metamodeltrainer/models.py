@@ -20,8 +20,8 @@ import scipy.interpolate as spi
 import pandas as pd
 
 #vlab imports
-from pyVlab import ParameterHandler, TestingDevice
-from pyVlab.geometry import Geometry,Cylinder
+from vlab_utilities import ParameterHandler, TestingDevice
+from vlab_utilities.geometry import Geometry,Cylinder
 import matplotlib.pyplot as plt
 
 #local imports

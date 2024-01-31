@@ -11,18 +11,17 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 
-#Carl imports
-from file_process import load_FE
-from explore_param_space import Sample, ExData
+#vlab imports
+#FIXME  this is a circual dependency
+from param_identifier.simulation import FESimulation
+from vlab_utilities.parameters import ParameterHandler
+from vlab_utilities.optvars    import OptVars,OptVarData
+from vlab_utilities.testing_device import TestingDevice
+from vlab_utilities.geometry   import Geometry
 
-#EFI imports
-from efiopt.simulation import FESimulation
-from pyVlab.parameters import ParameterHandler
-from pyVlab.optvars    import OptVars,OptVarData
-from pyVlab.testing_device import TestingDevice
-from pyVlab.geometry   import Geometry
-
-#from efiPostProc import SimRes
+#local imports
+from .file_process import load_FE
+from .explore_param_space import Sample, ExData
 
 def label_from_dataset(dataset:Tuple[Sample],X:Sample):
     '''Find next closest point in dataset and return it'''

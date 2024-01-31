@@ -2,6 +2,8 @@
 models*/
 FE/out
 data/FE*
+git_version.txt
+
 
 #---Python--
 

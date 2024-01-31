@@ -2,20 +2,15 @@
 #this is meant as a make shift fix and can be removed
 #once the pyVlab module is made available thorugh pythons package system
 from pathlib import Path
-import sys
-parent_dir = Path(__file__).resolve().parents[2]
-pyLabPath = parent_dir / "efiPyVlab/src"
-pyPostPath = parent_dir / "efiPostProc/src"
-pyOptPath = parent_dir / "efiOpt/src"
-sys.path += [str(pyLabPath),
-             str(pyPostPath),
-             str(pyOptPath)]
+
+from ._git_version import get_git_version
+
+__git_version__ = get_git_version()
 
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-import pyVlab
 
 from .explore_param_space import Sample
 from .models import load_model
