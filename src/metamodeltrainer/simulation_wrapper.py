@@ -1,7 +1,13 @@
 
 #STL imports
+from __future__ import annotations
 from pathlib import Path
 from typing import List
+import logging
+import tempfile
+
+#3rd party imports
+import numpy as np
 
 #vlab imports
 from vlab_utilities import ParameterHandler, OptVars, Simulation
@@ -92,7 +98,7 @@ class MetaModel(Simulation):
     class SimJob(Simulation.SimJob):
         def __init__(self,sim:MetaModel,optVars: List[OptVars],throwExec: bool = True,
             del_outdir: bool = False, use_stress:bool = True, jacobian:bool=False) -> None:
-            self.logger          = logging.getLogger('efi')
+            self.logger          = logging.getLogger(__name__)
 
             assert issubclass(type(sim),Simulation), "sim argument needs to be derived from Simulation"
             

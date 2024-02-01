@@ -474,7 +474,7 @@ def ForwardModel(X_T,Y_T,HP = HyperParameters()):
     if HP['loss'] == 'mae': metric = 'mse'
     else: metric = 'mae'
         
-    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
     model.compile(optimizer=optimizer, loss=HP['loss'], metrics = [metric])
 
     #Build Scalers
@@ -629,7 +629,7 @@ def RecModel(X_T,Y_T,HP = HyperParameters()):
     if HP['loss'] == 'mae': metric = 'mse'
     else: metric = 'mae'
         
-    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
     model.compile(optimizer=optimizer, loss=HP['loss'], metrics = [metric])
 
     X_T.flatten()
@@ -711,7 +711,7 @@ def SWModel(X_T,Y_T,HP = HyperParameters()):
     model.add(Dropout(HP['dropout_rate']))
     model.add(Dense(Y_T.f))
         
-    optimizer = keras.optimizers.Adam(learning_rate=0.001)
+    optimizer = tf.keras.optimizers.Adam(learning_rate=0.001)
     model.compile(optimizer=optimizer, loss=HP['loss'], metrics = ['mse'])
     
     X_T.flatten()
