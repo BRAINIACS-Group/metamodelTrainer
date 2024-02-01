@@ -24,9 +24,10 @@ from vlab_utilities.geometry import Geometry,Cylinder
 import matplotlib.pyplot as plt
 
 #local imports
-from metamodeltrainer.utility import convert_to_stress,convert_to_force_disp
-from metamodeltrainer.explore_param_space import *
-from metamodeltrainer.file_process import *
+#if __package__ == "": __package__ = "metamodeltrainer"
+from .utility import convert_to_stress,convert_to_force_disp
+from .explore_param_space import *
+from .file_process import *
 
 logger = logging.getLogger(__name__)
 

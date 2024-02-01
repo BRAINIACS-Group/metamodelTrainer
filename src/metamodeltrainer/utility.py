@@ -5,7 +5,7 @@
 import pandas as pd
 
 #pyVlab imports
-from pyVlab import Geometry
+from vlab_utilities import Geometry
 
 def convert_to_stress(dataset:pd.DataFrame,geom:Geometry)->pd.DataFrame:
     '''convert to stress and strain values and return converted dataframe

@@ -7,17 +7,17 @@ This script is an example of how to use a model, once built (see build_example t
 3. Predict results.
 
 '''
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parents[1]))
 
+#STL imports
+from pathlib import Path
+
+#local imports
 from metamodeltrainer.explore_param_space import Sample
 from metamodeltrainer.models import load_model
 
 
-
 cwd = Path(__file__).resolve().parents[1]
-save_path = Path(cwd,"models")
+save_path = Path(cwd,"model_carl")
 
 '''
 STEP 1 : Load the saved model.

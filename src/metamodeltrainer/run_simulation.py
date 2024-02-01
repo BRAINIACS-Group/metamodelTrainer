@@ -12,8 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 #vlab imports
-#FIXME  this is a circual dependency
-from param_identifier.simulation import FESimulation
+from vlab_utilities.simulation import FESimulation
 from vlab_utilities.parameters import ParameterHandler
 from vlab_utilities.optvars    import OptVars,OptVarData
 from vlab_utilities.testing_device import TestingDevice

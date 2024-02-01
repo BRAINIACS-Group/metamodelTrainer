@@ -29,11 +29,11 @@ classifiers = [
 ]
 
 dependencies = [
-  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git@heads/develop-0-g928ed95",
+  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git@heads/develop-0-g31e4337",
   "numpy==1.23.5",
   "pandas==2.0.1",
   "scipy==1.11.2",
-  "tensorflow== 2.15.0",
+  "tensorflow==2.15.0",
   "matplotlib",
   "sympy",
 ]

@@ -6,7 +6,6 @@ from pathlib import Path
 import logging
 
 #3rd party modules
-import git
 import subprocess
 
 logger = logging.getLogger(__name__)

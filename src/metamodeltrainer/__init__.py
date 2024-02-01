@@ -3,6 +3,9 @@
 #once the pyVlab module is made available thorugh pythons package system
 from pathlib import Path
 
+from .models import load_model
+from .explore_param_space import Sample
+
 from ._git_version import get_git_version
 
 __git_version__ = get_git_version()
@@ -10,7 +13,3 @@ __git_version__ = get_git_version()
 import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
-
-from .explore_param_space import Sample
-from .models import load_model

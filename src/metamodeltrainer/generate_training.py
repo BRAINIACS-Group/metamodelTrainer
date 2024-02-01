@@ -4,9 +4,9 @@ from pathlib import Path
 
 #3rd party modules
 
-from metamodeltrainer.explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
-from metamodeltrainer.models import HyperParameters, RecModel, improve, load_model           #Neural Network management
-from metamodeltrainer.run_simulation import label
+from .explore_param_space import ParameterSpace, ExData, Sample, PDskSample  #Data structure & Sampling method
+from .models import HyperParameters, RecModel, improve, load_model           #Neural Network management
+from .run_simulation import label
 
 
 PSpace = ParameterSpace(
