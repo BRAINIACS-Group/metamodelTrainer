@@ -1,20 +1,4 @@
 
-#Find repositories
-from pathlib import Path
-import sys
-parent_dir = Path(__file__).resolve().parents[2]
-pyLabPath = parent_dir / "efiPyVlab/src"
-pyPostPath = parent_dir / "efiPostProc/src"
-pyOptPath = parent_dir / "efiOpt/src"
-metamodelTrainerPath = parent_dir / "metamodelTrainer"
-new_paths = [str(pyLabPath),
-    str(pyPostPath),
-    str(pyOptPath),
-    str(metamodelTrainerPath)]
-for new_path in new_paths:
-    if new_path not in sys.path:
-        sys.path.append(new_path)
-
 #STL modules
 from pathlib import Path
 from typing import List
