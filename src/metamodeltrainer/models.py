@@ -11,10 +11,9 @@ import logging
 #3rd party imports
 import numpy as np
 import tensorflow as tf
-from tensorflow import keras
-from keras.models import Sequential
-from keras.models import load_model as klm
-from keras.layers import Dense, Dropout, LSTM, TimeDistributed
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import load_model as klm
+from tensorflow.keras.layers import Dense, Dropout, LSTM, TimeDistributed
 #from keras.callbacks import EarlyStopping
 import scipy.interpolate as spi
 import pandas as pd
