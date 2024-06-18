@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 dependencies = [
-  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git@heads/develop-0-g665cf10",
+  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git@heads/develop-0-gf91a6d7",
   "numpy==1.23.5",
   "pandas==2.0.1",
   "scipy==1.11.2",
