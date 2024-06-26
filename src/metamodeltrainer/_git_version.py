@@ -18,16 +18,18 @@ def get_git_version()->str:
     Returns: string containing git describe output
     Raises: FileNotFoundError if git_version.txt is not found
     '''
+    this_dir = Path(__file__).resolve().parent
 
     try:
-        git_str = subprocess.check_output(["git", "describe","--all","--long"])\
+        git_str = subprocess.check_output(["git", "describe","--all","--long"],
+            cwd=this_dir)\
             .decode('utf-8').strip()
         return git_str
     except subprocess.CalledProcessError as cpe:
         logger.warning('git command failed (git installed?) and'
             'returned status %s output %s',cpe.returncode,cpe.output)
 
-    git_file = Path(__file__).resolve().parent / "git_version.txt"
+    git_file = this_dir / "git_version.txt"
     if not git_file.is_file():
         raise FileNotFoundError(f'git command failed and {git_file} not found')
     git_str = git_file.read_text(encoding='utf-8')

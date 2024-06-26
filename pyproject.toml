@@ -4,6 +4,8 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/metamodeltrainer"]
+artifacts = ["git_version.txt"]
+
 
 [tool.hatch.metadata]
 allow-direct-references = true
