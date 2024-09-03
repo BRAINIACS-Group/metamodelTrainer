@@ -25,7 +25,7 @@ authors = [
 ]
 description = "Routines to train feed forward or recurrent nerual network on simulation in and outputs as a surrogate model"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
