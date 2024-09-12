@@ -6,9 +6,7 @@ from pathlib import Path
 from .models import load_model
 from .explore_param_space import Sample
 
-from ._git_version import get_git_version
-
-__git_version__ = get_git_version()
+from ._version import __version__
 
 import logging
 logger = logging.getLogger(__name__)

@@ -1,41 +1,37 @@
 [build-system]
-requires = ["hatchling","hatch-build-scripts"]
+requires = ["hatchling","hatch-vcs"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/metamodeltrainer"]
-artifacts = ["git_version.txt"]
-
 
 [tool.hatch.metadata]
 allow-direct-references = true
 
-[[tool.hatch.build.hooks.build-scripts.scripts]]
-out_dir="."
-commands = [
-    "git describe --all --long > src/metamodeltrainer/git_version.txt",
-]
-artifacts = []
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/metamodeltrainer/_version.py"
 
 [project]
 name = "metamodeltrainer"
-version = "1.0.0"
+dynamic = ["version"]
 authors = [
   { name="Jan Hinrichsen", email="j.hinrichsen95@gmail.com" },
 ]
-description = "Routines to train feed forward or recurrent nerual network on simulation in and outputs as a surrogate model"
 readme = "README.md"
+description = "Routines to train feed forward or recurrent nerual network on simulation in and outputs as a surrogate model"
 requires-python = ">=3.0"
 classifiers = [
     "Programming Language :: Python :: 3",
 ]
-
 dependencies = [
-  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git",
-  "numpy==1.26.4",
-  "pandas==2.0.1",
-  "scipy==1.11.2",
-  "tensorflow==2.15.0",
+  "vlab_utilities @ git+ssh://git@github.com/BRAINIACS-Group/vlab_utilities.git@8ae21a0d7d38ef277559c6d3a229350fe27777be",
+  "numpy",
+  "pandas",
+  "scipy",
+  "tensorflow",
   "matplotlib",
   "sympy",
 ]
